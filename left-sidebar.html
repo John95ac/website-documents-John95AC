@@ -17,10 +17,14 @@
 	<body class="is-preload">
 		<div id="page-wrapper">
 
-			<!-- Header -->
-				<header id="header">
-					<h1 id="logo"><a href="index.html">Landed</a></h1>
-					<nav id="nav">
+  			<!-- Header -->
+  				<header id="header">
+					<h1 id="logo"><a href="index.html">Landed</a>
+						<!-- Speaker toggle icon -->
+						<a href="#" class="audio-toggle icon solid fa-volume-up" title="Toggle background audio" aria-label="Toggle background audio"></a>
+						<span class="audio-title" aria-live="polite"></span>
+					</h1>
+  					<nav id="nav">
 						<ul>
 							<li><a href="index.html">Home</a></li>
 							<li>
@@ -43,8 +47,11 @@
 							<li><a href="elements.html">Elements</a></li>
 							<li><a href="#" class="button primary">Join Discord</a></li>
 						</ul>
-					</nav>
-				</header>
+  					</nav>
+  				</header>
+
+				<!-- Background audio -->
+				<div id="ytAudio" data-video-id="nRe3xFeyhVY" aria-hidden="true"></div>
 
 			<!-- Main -->
 				<div id="main" class="wrapper style1">
