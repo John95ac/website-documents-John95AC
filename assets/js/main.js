@@ -263,7 +263,18 @@
 				} catch (e) { return 'playing'; }
 			})();
 
-			var videoId = $container.data('video-id');
+			// Parse list of available IDs from data attribute (comma-separated)
+			var rawIds = ($container.attr('data-video-ids') || '').trim();
+			var videoIds = rawIds ? rawIds.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+			// Ensure the primary data-video-id is present at the front
+			var primaryId = ($container.data('video-id') || '').toString();
+			if (primaryId) {
+				videoIds = [primaryId].concat(videoIds.filter(function(id){ return id !== primaryId; }));
+			}
+			// Restore last chosen track if exists
+			var selectionKey = 'bgAudioVideoId';
+			var storedVideoId = (function(){ try { return localStorage.getItem(selectionKey) || ''; } catch(e) { return ''; } })();
+			var videoId = (storedVideoId && videoIds.indexOf(storedVideoId) !== -1) ? storedVideoId : (videoIds[0] || primaryId);
 			var player = null;
 			var targetVolume = 3; // percent
 
@@ -293,17 +304,69 @@
 				};
 			};
 
-			var updateTitle = function() {
-				if (!player || !$title.length || !player.getVideoData) return;
-				try {
-					var data = player.getVideoData();
-					if (data && data.title) {
-						$title.text(data.title);
-						return true;
-					}
-				} catch(e) {}
-				return false;
+			// Try to resolve a title via YouTube oEmbed (no API key). Fallback to player data or ID.
+			var fetchTitleForId = function(id) {
+				return new Promise(function(resolve) {
+					var url = 'https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
+					$.ajax({ url: url, dataType: 'json', timeout: 4000 })
+					 .done(function(data){ resolve((data && data.title) ? data.title : id); })
+					 .fail(function(){ resolve(id); });
+				});
 			};
+
+			var updateTitle = function() {
+				if (!$title.length) return false;
+				// Prefer oEmbed for the current videoId
+				fetchTitleForId(videoId).then(function(t){ $title.text(t); });
+				return true;
+			};
+
+			// Build a small picker UI next to the audio title
+			var $pickerBtn = $('<a href="#" class="audio-picker icon solid fa-list" title="Choose background track" aria-label="Choose background track"></a>');
+			var $pickerMenu = $('<div class="audio-picker-menu" aria-hidden="true"></div>').css({
+				position: 'absolute', background: 'rgba(0,0,0,0.9)', color: '#fff', padding: '0.5rem',
+				borderRadius: '0.25rem', display: 'none', zIndex: 10000, maxHeight: '50vh', overflowY: 'auto',
+				minWidth: '220px'
+			});
+			var $pickerList = $('<ul style="list-style:none; margin:0; padding:0;"></ul>');
+			$pickerMenu.append($pickerList);
+			var buildPicker = function() {
+				$pickerList.empty();
+				videoIds.forEach(function(id){
+					var $li = $('<li style="margin:0; padding:0;"></li>');
+					var $a = $('<a href="#" style="display:block; padding:0.25rem 0.5rem; color:#fff;"></a>');
+					$a.attr('data-id', id);
+					// Fill titles async
+					fetchTitleForId(id).then(function(t){ $a.text((id === videoId ? '• ' : '') + t); });
+					$a.on('click', function(e){ e.preventDefault(); selectVideo($(this).data('id')); hideMenu(); });
+					$li.append($a);
+					$pickerList.append($li);
+				});
+			};
+			var showMenu = function() {
+				buildPicker();
+				var off = $pickerBtn.offset();
+				$pickerMenu.css({ left: off.left + 'px', top: (off.top + $pickerBtn.outerHeight()) + 'px' });
+				$pickerMenu.show();
+			};
+			var hideMenu = function(){ $pickerMenu.hide(); };
+			$pickerBtn.on('click', function(e){ e.preventDefault(); ($pickerMenu.is(':visible') ? hideMenu() : showMenu()); });
+			$(document).on('click', function(e){ if (!$(e.target).closest('.audio-picker, .audio-picker-menu').length) hideMenu(); });
+			// Insert controls if we have a title element available
+			if ($title.length) {
+				// Ensure exactly one blank space between title and picker button
+				var titleEl = $title.get(0);
+				var parent = titleEl.parentNode;
+				var space = document.createTextNode('  ');
+				if (titleEl.nextSibling) {
+					parent.insertBefore(space, titleEl.nextSibling);
+					parent.insertBefore($pickerBtn.get(0), space.nextSibling);
+				} else {
+					parent.appendChild(space);
+					parent.appendChild($pickerBtn.get(0));
+				}
+				$('body').append($pickerMenu);
+			}
 
 			var createPlayer = function() {
 				player = new YT.Player($container.get(0), {
@@ -314,7 +377,7 @@
 						autoplay: 1,
 						controls: 0,
 						loop: 1,
-						playlist: videoId,
+						playlist: (videoIds && videoIds.length ? videoIds.join(',') : videoId),
 						mute: 0,
 						playsinline: 1,
 						modestbranding: 1,
@@ -331,11 +394,9 @@
 								try { ev.target.unMute(); } catch(e) {}
 								tryPlay();
 							}
-							// Try immediately to set title, then retry shortly in case metadata lags.
-							if (!updateTitle()) {
-								setTimeout(updateTitle, 500);
-								setTimeout(updateTitle, 1500);
-							}
+							// Set title now and slightly later
+							updateTitle();
+							setTimeout(updateTitle, 600);
 						},
 						onStateChange: function(ev) {
 							if (ev.data === YT.PlayerState.PLAYING) setIcon(true);
@@ -353,6 +414,17 @@
 					setIcon(true);
 				} catch(e) {
 					setIcon(false);
+				}
+			};
+
+			// Switch to a different video id
+			var selectVideo = function(newId) {
+				if (!newId || newId === videoId) return;
+				videoId = newId;
+				try { localStorage.setItem(selectionKey, videoId); } catch(e) {}
+				if (player && typeof player.loadVideoById === 'function') {
+					try { player.loadVideoById(videoId); } catch(e) {}
+					updateTitle();
 				}
 			};
 
