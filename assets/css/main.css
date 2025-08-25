@@ -3117,6 +3117,45 @@ input, select, textarea {
 			top: 0;
 		}
 
+/* Hidden YouTube audio container */
+    #ytAudio, #ytAudio iframe {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+/* Audio toggle icon next to logo */
+    #header #logo .audio-toggle {
+        border: 0;
+        margin-left: 0.5em;
+        color: inherit;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: inherit;
+        opacity: 0.85;
+    }
+
+    #header #logo .audio-toggle:hover {
+        opacity: 1;
+        border: 0;
+    }
+
+/* Audio title text next to icon */
+    #header #logo .audio-title {
+        margin-left: 0.4em;
+        opacity: 0.9;
+        font-size: 0.9em;
+        vertical-align: middle;
+        white-space: nowrap;
+        display: inline-block;
+        max-width: 40vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
 		.spotlight.bottom .content {
 			border-top-width: 0.35em;
 			bottom: 0;
