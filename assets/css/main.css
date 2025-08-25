@@ -4110,3 +4110,13 @@ input, select, textarea {
 					}
 
 	}
+
+/* Custom Icons */
+/* Nexus Mods letter icon */
+.icons .icon.alt.fa-n:before,
+.icon.alt.fa-n:before {
+  content: "N";
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.1em;
+}
