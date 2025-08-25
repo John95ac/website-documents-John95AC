@@ -4114,9 +4114,7 @@ input, select, textarea {
 /* Custom Icons */
 /* Nexus Mods letter icon */
 .icons .icon.alt.fa-n:before,
-.icon.alt.fa-n:before,
-.icons .icon.alt.fa-arrows-turn-to-dots:before,
-.icon.alt.fa-arrows-turn-to-dots:before {
+.icon.alt.fa-n:before {
   content: "N";
   font-family: inherit;
   font-weight: 800;
