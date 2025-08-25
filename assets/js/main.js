@@ -428,21 +428,41 @@
 				}
 			};
 
-			// Initialize API + player
-			ensureApi(createPlayer);
+			// Defer: initialize API + player on interaction or idle to improve performance
+			var playerScheduled = false;
+			var initNow = function() {
+				if (playerScheduled) return;
+				playerScheduled = true;
+				ensureApi(createPlayer);
+			};
+
+			// If user prefers playing, schedule during idle; otherwise wait for interaction
+			if (desiredState === 'playing') {
+				if ('requestIdleCallback' in window) {
+					try { requestIdleCallback(function(){ initNow(); }, { timeout: 3000 }); }
+					catch(e) { setTimeout(initNow, 3000); }
+				} else {
+					setTimeout(initNow, 3000);
+				}
+			}
 
 			// Fallback: resume on first user interaction if autoplay is blocked (but only if desired state is 'playing').
 			var resumeOnInteract = function() {
+				// Ensure player exists on first interaction
+				if (!playerScheduled) initNow();
 				if (desiredState === 'playing' && player) tryPlay();
 				window.removeEventListener('click', resumeOnInteract);
 				window.removeEventListener('keydown', resumeOnInteract);
+				window.removeEventListener('touchstart', resumeOnInteract);
 			};
 			window.addEventListener('click', resumeOnInteract, { once: true });
 			window.addEventListener('keydown', resumeOnInteract, { once: true });
+			window.addEventListener('touchstart', resumeOnInteract, { once: true });
 
 			// Toggle click handler.
 			$toggle.on('click', function(e) {
 				e.preventDefault();
+				if (!playerScheduled) initNow();
 				if (!player) return;
 				var state = player.getPlayerState ? player.getPlayerState() : null;
 				if (state !== YT.PlayerState.PLAYING) {
