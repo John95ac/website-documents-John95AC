@@ -255,6 +255,14 @@
 			if ($container.length === 0 || $toggle.length === 0)
 				return;
 
+			// Persisted state across pages (localStorage): 'playing' | 'paused'
+			var storageKey = 'bgAudioState';
+			var desiredState = (function() {
+				try {
+					return localStorage.getItem(storageKey) || 'playing';
+				} catch (e) { return 'playing'; }
+			})();
+
 			var videoId = $container.data('video-id');
 			var player = null;
 			var targetVolume = 3; // percent
@@ -268,6 +276,9 @@
 					$toggle.attr('aria-label', 'Unmute background audio');
 				}
 			};
+
+			// Reflect stored preference immediately in the icon
+			setIcon(desiredState === 'playing');
 
 			var ensureApi = function(cb) {
 				if (window.YT && typeof YT.Player === 'function') return cb();
@@ -313,7 +324,13 @@
 					events: {
 						onReady: function(ev) {
 							try { ev.target.setVolume(targetVolume); } catch(e) {}
-							tryPlay();
+							if (desiredState === 'paused') {
+								try { ev.target.pauseVideo(); } catch(e) {}
+								setIcon(false);
+							} else {
+								try { ev.target.unMute(); } catch(e) {}
+								tryPlay();
+							}
 							// Try immediately to set title, then retry shortly in case metadata lags.
 							if (!updateTitle()) {
 								setTimeout(updateTitle, 500);
@@ -342,9 +359,9 @@
 			// Initialize API + player
 			ensureApi(createPlayer);
 
-			// Fallback: resume on first user interaction if autoplay is blocked.
+			// Fallback: resume on first user interaction if autoplay is blocked (but only if desired state is 'playing').
 			var resumeOnInteract = function() {
-				if (player) tryPlay();
+				if (desiredState === 'playing' && player) tryPlay();
 				window.removeEventListener('click', resumeOnInteract);
 				window.removeEventListener('keydown', resumeOnInteract);
 			};
@@ -360,9 +377,13 @@
 					try { player.setVolume(targetVolume); } catch(e) {}
 					try { player.unMute(); } catch(e) {}
 					tryPlay();
+					desiredState = 'playing';
+					try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
 				} else {
 					try { player.pauseVideo(); } catch(e) {}
 					setIcon(false);
+					desiredState = 'paused';
+					try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
 				}
 			});
 		})();
