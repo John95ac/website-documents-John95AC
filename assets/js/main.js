@@ -304,14 +304,61 @@
 				};
 			};
 
+			// Title caching (localStorage + in-memory) to reduce oEmbed requests
+			var TITLE_CACHE_PREFIX = 'ytTitle:';
+			var TITLE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+			var titleMemCache = {}; // id -> title
+			var titlePromiseCache = {}; // id -> Promise
+			var nowTs = function() { return Date.now ? Date.now() : +new Date(); };
+			var getCachedTitleLS = function(id) {
+				try {
+					var raw = localStorage.getItem(TITLE_CACHE_PREFIX + id);
+					if (!raw) return null;
+					var obj = JSON.parse(raw);
+					if (!obj || typeof obj.title !== 'string' || typeof obj.t !== 'number') return null;
+					if (nowTs() - obj.t > TITLE_TTL_MS) return null;
+					return obj.title;
+				} catch(e) { return null; }
+			};
+			var setCachedTitleLS = function(id, title) {
+				try {
+					localStorage.setItem(TITLE_CACHE_PREFIX + id, JSON.stringify({ t: nowTs(), title: title }));
+				} catch(e) {}
+			};
+
 			// Try to resolve a title via YouTube oEmbed (no API key). Fallback to player data or ID.
 			var fetchTitleForId = function(id) {
-				return new Promise(function(resolve) {
-					var url = 'https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
+				if (!id) return Promise.resolve('');
+				// In-memory cache hit
+				if (titleMemCache[id]) return Promise.resolve(titleMemCache[id]);
+				// localStorage cache hit
+				var cached = getCachedTitleLS(id);
+				if (cached) {
+					titleMemCache[id] = cached;
+					return Promise.resolve(cached);
+				}
+				// Coalesce concurrent requests
+				if (titlePromiseCache[id]) return titlePromiseCache[id];
+				var url = 'https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
+				titlePromiseCache[id] = new Promise(function(resolve) {
 					$.ajax({ url: url, dataType: 'json', timeout: 4000 })
-					 .done(function(data){ resolve((data && data.title) ? data.title : id); })
-					 .fail(function(){ resolve(id); });
+					 .done(function(data){
+						var title = (data && data.title) ? data.title : id;
+						titleMemCache[id] = title;
+						setCachedTitleLS(id, title);
+						resolve(title);
+					 })
+					 .fail(function(){
+						// Fail soft: use ID as title and cache briefly to avoid hammering
+						titleMemCache[id] = id;
+						resolve(id);
+					 })
+					 .always(function(){
+						// Clear promise cache after resolution
+						setTimeout(function(){ delete titlePromiseCache[id]; }, 0);
+					 });
 				});
+				return titlePromiseCache[id];
 			};
 
 			var updateTitle = function() {
