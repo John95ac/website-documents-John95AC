@@ -248,283 +248,320 @@
 			._parallax();
 
 	// Background audio (YouTube) + toggle.
-		(function() {
-			var $container = $('#ytAudio');
-			var $toggle = $('.audio-toggle').first();
-			var $title = $('.audio-title').first();
-			if ($container.length === 0 || $toggle.length === 0)
-				return;
+	(function() {
+		var $container = $('#ytAudio');
+		var $toggle = $('.audio-toggle').first();
+		var $title = $('.audio-title').first();
+		if ($container.length === 0 || $toggle.length === 0)
+			return;
 
-			// Persisted state across pages (localStorage): 'playing' | 'paused'
-			var storageKey = 'bgAudioState';
-			var desiredState = (function() {
-				try {
-					return localStorage.getItem(storageKey) || 'playing';
-				} catch (e) { return 'playing'; }
-			})();
-
-			// Parse list of available IDs from data attribute (comma-separated)
-			var rawIds = ($container.attr('data-video-ids') || '').trim();
-			var videoIds = rawIds ? rawIds.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
-			// Ensure the primary data-video-id is present at the front
-			var primaryId = ($container.data('video-id') || '').toString();
-			if (primaryId) {
-				videoIds = [primaryId].concat(videoIds.filter(function(id){ return id !== primaryId; }));
-			}
-			// Restore last chosen track if exists
-			var selectionKey = 'bgAudioVideoId';
-			var storedVideoId = (function(){ try { return localStorage.getItem(selectionKey) || ''; } catch(e) { return ''; } })();
-			var videoId = (storedVideoId && videoIds.indexOf(storedVideoId) !== -1) ? storedVideoId : (videoIds[0] || primaryId);
-			var player = null;
-			var targetVolume = 3; // percent
-
-			var setIcon = function(isPlaying) {
-				if (isPlaying) {
-					$toggle.removeClass('fa-volume-mute').addClass('fa-volume-up');
-					$toggle.attr('aria-label', 'Mute background audio');
-				} else {
-					$toggle.removeClass('fa-volume-up').addClass('fa-volume-mute');
-					$toggle.attr('aria-label', 'Unmute background audio');
-				}
-			};
-
-			// Reflect stored preference immediately in the icon
-			setIcon(desiredState === 'playing');
-
-			var ensureApi = function(cb) {
-				if (window.YT && typeof YT.Player === 'function') return cb();
-				var tag = document.createElement('script');
-				tag.src = 'https://www.youtube.com/iframe_api';
-				var firstScriptTag = document.getElementsByTagName('script')[0];
-				firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-				var prev = window.onYouTubeIframeAPIReady;
-				window.onYouTubeIframeAPIReady = function() {
-					if (typeof prev === 'function') try { prev(); } catch(e) {}
-					cb();
-				};
-			};
-
-			// Title caching (localStorage + in-memory) to reduce oEmbed requests
-			var TITLE_CACHE_PREFIX = 'ytTitle:';
-			var TITLE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-			var titleMemCache = {}; // id -> title
-			var titlePromiseCache = {}; // id -> Promise
-			var nowTs = function() { return Date.now ? Date.now() : +new Date(); };
-			var getCachedTitleLS = function(id) {
-				try {
-					var raw = localStorage.getItem(TITLE_CACHE_PREFIX + id);
-					if (!raw) return null;
-					var obj = JSON.parse(raw);
-					if (!obj || typeof obj.title !== 'string' || typeof obj.t !== 'number') return null;
-					if (nowTs() - obj.t > TITLE_TTL_MS) return null;
-					return obj.title;
-				} catch(e) { return null; }
-			};
-			var setCachedTitleLS = function(id, title) {
-				try {
-					localStorage.setItem(TITLE_CACHE_PREFIX + id, JSON.stringify({ t: nowTs(), title: title }));
-				} catch(e) {}
-			};
-
-			// Try to resolve a title via YouTube oEmbed (no API key). Fallback to player data or ID.
-			var fetchTitleForId = function(id) {
-				if (!id) return Promise.resolve('');
-				// In-memory cache hit
-				if (titleMemCache[id]) return Promise.resolve(titleMemCache[id]);
-				// localStorage cache hit
-				var cached = getCachedTitleLS(id);
-				if (cached) {
-					titleMemCache[id] = cached;
-					return Promise.resolve(cached);
-				}
-				// Coalesce concurrent requests
-				if (titlePromiseCache[id]) return titlePromiseCache[id];
-				var url = 'https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
-				titlePromiseCache[id] = new Promise(function(resolve) {
-					$.ajax({ url: url, dataType: 'json', timeout: 4000 })
-					 .done(function(data){
-						var title = (data && data.title) ? data.title : id;
-						titleMemCache[id] = title;
-						setCachedTitleLS(id, title);
-						resolve(title);
-					 })
-					 .fail(function(){
-						// Fail soft: use ID as title and cache briefly to avoid hammering
-						titleMemCache[id] = id;
-						resolve(id);
-					 })
-					 .always(function(){
-						// Clear promise cache after resolution
-						setTimeout(function(){ delete titlePromiseCache[id]; }, 0);
-					 });
-				});
-				return titlePromiseCache[id];
-			};
-
-			var updateTitle = function() {
-				if (!$title.length) return false;
-				// Prefer oEmbed for the current videoId
-				fetchTitleForId(videoId).then(function(t){ $title.text(t); });
-				return true;
-			};
-
-			// Build a small picker UI next to the audio title
-			var $pickerBtn = $('<a href="#" class="audio-picker icon solid fa-list" title="Choose background track" aria-label="Choose background track"></a>');
-			var $pickerMenu = $('<div class="audio-picker-menu" aria-hidden="true"></div>').css({
-				position: 'absolute', background: 'rgba(0,0,0,0.9)', color: '#fff', padding: '0.5rem',
-				borderRadius: '0.25rem', display: 'none', zIndex: 10000, maxHeight: '50vh', overflowY: 'auto',
-				minWidth: '220px'
-			});
-			var $pickerList = $('<ul style="list-style:none; margin:0; padding:0;"></ul>');
-			$pickerMenu.append($pickerList);
-			var buildPicker = function() {
-				$pickerList.empty();
-				videoIds.forEach(function(id){
-					var $li = $('<li style="margin:0; padding:0;"></li>');
-					var $a = $('<a href="#" style="display:block; padding:0.25rem 0.5rem; color:#fff;"></a>');
-					$a.attr('data-id', id);
-					// Fill titles async
-					fetchTitleForId(id).then(function(t){ $a.text((id === videoId ? '• ' : '') + t); });
-					$a.on('click', function(e){ e.preventDefault(); selectVideo($(this).data('id')); hideMenu(); });
-					$li.append($a);
-					$pickerList.append($li);
-				});
-			};
-			var showMenu = function() {
-				buildPicker();
-				var off = $pickerBtn.offset();
-				$pickerMenu.css({ left: off.left + 'px', top: (off.top + $pickerBtn.outerHeight()) + 'px' });
-				$pickerMenu.show();
-			};
-			var hideMenu = function(){ $pickerMenu.hide(); };
-			$pickerBtn.on('click', function(e){ e.preventDefault(); ($pickerMenu.is(':visible') ? hideMenu() : showMenu()); });
-			$(document).on('click', function(e){ if (!$(e.target).closest('.audio-picker, .audio-picker-menu').length) hideMenu(); });
-			// Insert controls if we have a title element available
-			if ($title.length) {
-				// Ensure exactly one blank space between title and picker button
-				var titleEl = $title.get(0);
-				var parent = titleEl.parentNode;
-				var space = document.createTextNode('  ');
-				if (titleEl.nextSibling) {
-					parent.insertBefore(space, titleEl.nextSibling);
-					parent.insertBefore($pickerBtn.get(0), space.nextSibling);
-				} else {
-					parent.appendChild(space);
-					parent.appendChild($pickerBtn.get(0));
-				}
-				$('body').append($pickerMenu);
-			}
-
-			var createPlayer = function() {
-				player = new YT.Player($container.get(0), {
-					height: '1',
-					width: '1',
-					videoId: videoId,
-					playerVars: {
-						autoplay: 1,
-						controls: 0,
-						loop: 1,
-						playlist: (videoIds && videoIds.length ? videoIds.join(',') : videoId),
-						mute: 0,
-						playsinline: 1,
-						modestbranding: 1,
-						iv_load_policy: 3,
-						rel: 0
-					},
-					events: {
-						onReady: function(ev) {
-							try { ev.target.setVolume(targetVolume); } catch(e) {}
-							if (desiredState === 'paused') {
-								try { ev.target.pauseVideo(); } catch(e) {}
-								setIcon(false);
-							} else {
-								try { ev.target.unMute(); } catch(e) {}
-								tryPlay();
-							}
-							// Set title now and slightly later
-							updateTitle();
-							setTimeout(updateTitle, 600);
-						},
-						onStateChange: function(ev) {
-							if (ev.data === YT.PlayerState.PLAYING) setIcon(true);
-							if (ev.data === YT.PlayerState.PAUSED || ev.data === YT.PlayerState.ENDED) setIcon(false);
-							updateTitle();
-						}
-					}
-				});
-			};
-
-			var tryPlay = function() {
-				if (!player || typeof player.playVideo !== 'function') return;
-				try {
-					player.playVideo();
-					setIcon(true);
-				} catch(e) {
-					setIcon(false);
-				}
-			};
-
-			// Switch to a different video id
-			var selectVideo = function(newId) {
-				if (!newId || newId === videoId) return;
-				videoId = newId;
-				try { localStorage.setItem(selectionKey, videoId); } catch(e) {}
-				if (player && typeof player.loadVideoById === 'function') {
-					try { player.loadVideoById(videoId); } catch(e) {}
-					updateTitle();
-				}
-			};
-
-			// Defer: initialize API + player on interaction or idle to improve performance
-			var playerScheduled = false;
-			var initNow = function() {
-				if (playerScheduled) return;
-				playerScheduled = true;
-				ensureApi(createPlayer);
-			};
-
-			// If user prefers playing, schedule during idle; otherwise wait for interaction
-			if (desiredState === 'playing') {
-				if ('requestIdleCallback' in window) {
-					try { requestIdleCallback(function(){ initNow(); }, { timeout: 3000 }); }
-					catch(e) { setTimeout(initNow, 3000); }
-				} else {
-					setTimeout(initNow, 3000);
-				}
-			}
-
-			// Fallback: resume on first user interaction if autoplay is blocked (but only if desired state is 'playing').
-			var resumeOnInteract = function() {
-				// Ensure player exists on first interaction
-				if (!playerScheduled) initNow();
-				if (desiredState === 'playing' && player) tryPlay();
-				window.removeEventListener('click', resumeOnInteract);
-				window.removeEventListener('keydown', resumeOnInteract);
-				window.removeEventListener('touchstart', resumeOnInteract);
-			};
-			window.addEventListener('click', resumeOnInteract, { once: true });
-			window.addEventListener('keydown', resumeOnInteract, { once: true });
-			window.addEventListener('touchstart', resumeOnInteract, { once: true });
-
-			// Toggle click handler.
-			$toggle.on('click', function(e) {
-				e.preventDefault();
-				if (!playerScheduled) initNow();
-				if (!player) return;
-				var state = player.getPlayerState ? player.getPlayerState() : null;
-				if (state !== YT.PlayerState.PLAYING) {
-					try { player.setVolume(targetVolume); } catch(e) {}
-					try { player.unMute(); } catch(e) {}
-					tryPlay();
-					desiredState = 'playing';
-					try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
-				} else {
-					try { player.pauseVideo(); } catch(e) {}
-					setIcon(false);
-					desiredState = 'paused';
-					try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
-				}
-			});
+		// Persisted state across pages (localStorage): 'playing' | 'paused'
+		var storageKey = 'bgAudioState';
+		var desiredState = (function() {
+			try {
+				return localStorage.getItem(storageKey) || 'playing';
+			} catch (e) { return 'playing'; }
 		})();
+
+		// Volume persistence
+		var volumeKey = 'bgAudioVolume';
+		var targetVolume = (function() {
+			try {
+				var stored = localStorage.getItem(volumeKey);
+				return stored ? parseInt(stored, 10) : 3;
+			} catch (e) { return 3; }
+		})();
+
+		// Parse list of available IDs from data attribute (comma-separated)
+		var rawIds = ($container.attr('data-video-ids') || '').trim();
+		var videoIds = rawIds ? rawIds.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+		// Ensure the primary data-video-id is present at the front
+		var primaryId = ($container.data('video-id') || '').toString();
+		if (primaryId) {
+			videoIds = [primaryId].concat(videoIds.filter(function(id){ return id !== primaryId; }));
+		}
+		// Restore last chosen track if exists
+		var selectionKey = 'bgAudioVideoId';
+		var storedVideoId = (function(){ try { return localStorage.getItem(selectionKey) || ''; } catch(e) { return ''; } })();
+		var videoId = (storedVideoId && videoIds.indexOf(storedVideoId) !== -1) ? storedVideoId : (videoIds[0] || primaryId);
+		var player = null;
+
+		// Volume slider
+		var $volumeSlider = $('<input type="range" id="volumeSlider" class="custom-volume-slider" min="0" max="100" step="1" value="' + targetVolume + '" style="width:120px; height:4px; margin-left:10px; vertical-align:middle;" aria-label="Volume control">');
+		var showSlider = function() {
+			$volumeSlider.show();
+		};
+		var hideSlider = function() {
+			$volumeSlider.hide();
+		};
+		// Append slider after title if title exists
+		if ($title.length) {
+			$title.after($volumeSlider);
+			// Initial visibility based on state
+			if (desiredState === 'playing') {
+				showSlider();
+			} else {
+				hideSlider();
+			}
+		}
+		// Slider event
+		$volumeSlider.on('input change', function() {
+			targetVolume = parseInt($(this).val(), 10);
+			try { localStorage.setItem(volumeKey, targetVolume); } catch(e) {}
+			if (player && typeof player.setVolume === 'function') {
+				try { player.setVolume(targetVolume); } catch(e) {}
+			}
+		});
+
+		var setIcon = function(isPlaying) {
+			if (isPlaying) {
+				$toggle.removeClass('fa-volume-mute').addClass('fa-volume-up');
+				$toggle.attr('aria-label', 'Mute background audio');
+				showSlider();
+			} else {
+				$toggle.removeClass('fa-volume-up').addClass('fa-volume-mute');
+				$toggle.attr('aria-label', 'Unmute background audio');
+				hideSlider();
+			}
+		};
+
+		// Reflect stored preference immediately in the icon
+		setIcon(desiredState === 'playing');
+
+		var ensureApi = function(cb) {
+			if (window.YT && typeof YT.Player === 'function') return cb();
+			var tag = document.createElement('script');
+			tag.src = 'https://www.youtube.com/iframe_api';
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+			var prev = window.onYouTubeIframeAPIReady;
+			window.onYouTubeIframeAPIReady = function() {
+				if (typeof prev === 'function') try { prev(); } catch(e) {}
+				cb();
+			};
+		};
+
+		// Title caching (localStorage + in-memory) to reduce oEmbed requests
+		var TITLE_CACHE_PREFIX = 'ytTitle:';
+		var TITLE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+		var titleMemCache = {}; // id -> title
+		var titlePromiseCache = {}; // id -> Promise
+		var nowTs = function() { return Date.now ? Date.now() : +new Date(); };
+		var getCachedTitleLS = function(id) {
+			try {
+				var raw = localStorage.getItem(TITLE_CACHE_PREFIX + id);
+				if (!raw) return null;
+				var obj = JSON.parse(raw);
+				if (!obj || typeof obj.title !== 'string' || typeof obj.t !== 'number') return null;
+				if (nowTs() - obj.t > TITLE_TTL_MS) return null;
+				return obj.title;
+			} catch(e) { return null; }
+		};
+		var setCachedTitleLS = function(id, title) {
+			try {
+				localStorage.setItem(TITLE_CACHE_PREFIX + id, JSON.stringify({ t: nowTs(), title: title }));
+			} catch(e) {}
+		};
+
+		// Try to resolve a title via YouTube oEmbed (no API key). Fallback to player data or ID.
+		var fetchTitleForId = function(id) {
+			if (!id) return Promise.resolve('');
+			// In-memory cache hit
+			if (titleMemCache[id]) return Promise.resolve(titleMemCache[id]);
+			// localStorage cache hit
+			var cached = getCachedTitleLS(id);
+			if (cached) {
+				titleMemCache[id] = cached;
+				return Promise.resolve(cached);
+			}
+			// Coalesce concurrent requests
+			if (titlePromiseCache[id]) return titlePromiseCache[id];
+			var url = 'https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
+			titlePromiseCache[id] = new Promise(function(resolve) {
+				$.ajax({ url: url, dataType: 'json', timeout: 4000 })
+				 .done(function(data){
+					var title = (data && data.title) ? data.title : id;
+					titleMemCache[id] = title;
+					setCachedTitleLS(id, title);
+					resolve(title);
+				 })
+				 .fail(function(){
+					// Fail soft: use ID as title and cache briefly to avoid hammering
+					titleMemCache[id] = id;
+					resolve(id);
+				 })
+				 .always(function(){
+					// Clear promise cache after resolution
+					setTimeout(function(){ delete titlePromiseCache[id]; }, 0);
+				 });
+			});
+			return titlePromiseCache[id];
+		};
+
+		var updateTitle = function() {
+			if (!$title.length) return false;
+			// Prefer oEmbed for the current videoId
+			fetchTitleForId(videoId).then(function(t){ $title.text(t); });
+			return true;
+		};
+
+		// Build a small picker UI next to the audio title
+		var $pickerBtn = $('<a href="#" class="audio-picker icon solid fa-list" title="Choose background track" aria-label="Choose background track"></a>');
+		var $pickerMenu = $('<div class="audio-picker-menu" aria-hidden="true"></div>').css({
+			position: 'absolute', background: 'rgba(0,0,0,0.9)', color: '#fff', padding: '0.5rem',
+			borderRadius: '0.25rem', display: 'none', zIndex: 10000, maxHeight: '50vh', overflowY: 'auto',
+			minWidth: '220px'
+		});
+		var $pickerList = $('<ul style="list-style:none; margin:0; padding:0;"></ul>');
+		$pickerMenu.append($pickerList);
+		var buildPicker = function() {
+			$pickerList.empty();
+			videoIds.forEach(function(id){
+				var $li = $('<li style="margin:0; padding:0;"></li>');
+				var $a = $('<a href="#" style="display:block; padding:0.25rem 0.5rem; color:#fff;"></a>');
+				$a.attr('data-id', id);
+				// Fill titles async
+				fetchTitleForId(id).then(function(t){ $a.text((id === videoId ? '• ' : '') + t); });
+				$a.on('click', function(e){ e.preventDefault(); selectVideo($(this).data('id')); hideMenu(); });
+				$li.append($a);
+				$pickerList.append($li);
+			});
+		};
+		var showMenu = function() {
+			buildPicker();
+			var off = $pickerBtn.offset();
+			$pickerMenu.css({ left: off.left + 'px', top: (off.top + $pickerBtn.outerHeight()) + 'px' });
+			$pickerMenu.show();
+		};
+		var hideMenu = function(){ $pickerMenu.hide(); };
+		$pickerBtn.on('click', function(e){ e.preventDefault(); ($pickerMenu.is(':visible') ? hideMenu() : showMenu()); });
+		$(document).on('click', function(e){ if (!$(e.target).closest('.audio-picker, .audio-picker-menu').length) hideMenu(); });
+		// Insert controls if we have a title element available
+		if ($title.length) {
+			// Ensure exactly one blank space between title and picker button
+			var titleEl = $title.get(0);
+			var parent = titleEl.parentNode;
+			var space = document.createTextNode('  ');
+			if (titleEl.nextSibling) {
+				parent.insertBefore(space, titleEl.nextSibling);
+				parent.insertBefore($pickerBtn.get(0), space.nextSibling);
+			} else {
+				parent.appendChild(space);
+				parent.appendChild($pickerBtn.get(0));
+			}
+			$('body').append($pickerMenu);
+		}
+
+		var createPlayer = function() {
+			player = new YT.Player($container.get(0), {
+				height: '1',
+				width: '1',
+				videoId: videoId,
+				playerVars: {
+					autoplay: 1,
+					controls: 0,
+					loop: 1,
+					playlist: (videoIds && videoIds.length ? videoIds.join(',') : videoId),
+					mute: 0,
+					playsinline: 1,
+					modestbranding: 1,
+					iv_load_policy: 3,
+					rel: 0
+				},
+				events: {
+					onReady: function(ev) {
+						try { ev.target.setVolume(targetVolume); } catch(e) {}
+						if (desiredState === 'paused') {
+							try { ev.target.pauseVideo(); } catch(e) {}
+							setIcon(false);
+						} else {
+							try { ev.target.unMute(); } catch(e) {}
+							tryPlay();
+						}
+						// Set title now and slightly later
+						updateTitle();
+						setTimeout(updateTitle, 600);
+					},
+					onStateChange: function(ev) {
+						if (ev.data === YT.PlayerState.PLAYING) setIcon(true);
+						if (ev.data === YT.PlayerState.PAUSED || ev.data === YT.PlayerState.ENDED) setIcon(false);
+						updateTitle();
+					}
+				}
+			});
+		};
+
+		var tryPlay = function() {
+			if (!player || typeof player.playVideo !== 'function') return;
+			try {
+				player.playVideo();
+				setIcon(true);
+			} catch(e) {
+				setIcon(false);
+			}
+		};
+
+		// Switch to a different video id
+		var selectVideo = function(newId) {
+			if (!newId || newId === videoId) return;
+			videoId = newId;
+			try { localStorage.setItem(selectionKey, videoId); } catch(e) {}
+			if (player && typeof player.loadVideoById === 'function') {
+				try { player.loadVideoById(videoId); } catch(e) {}
+				updateTitle();
+			}
+		};
+
+		// Defer: initialize API + player on interaction or idle to improve performance
+		var playerScheduled = false;
+		var initNow = function() {
+			if (playerScheduled) return;
+			playerScheduled = true;
+			ensureApi(createPlayer);
+		};
+
+		// If user prefers playing, schedule during idle; otherwise wait for interaction
+		if (desiredState === 'playing') {
+			if ('requestIdleCallback' in window) {
+				try { requestIdleCallback(function(){ initNow(); }, { timeout: 3000 }); }
+				catch(e) { setTimeout(initNow, 3000); }
+			} else {
+				setTimeout(initNow, 3000);
+			}
+		}
+
+		// Fallback: resume on first user interaction if autoplay is blocked (but only if desired state is 'playing').
+		var resumeOnInteract = function() {
+			// Ensure player exists on first interaction
+			if (!playerScheduled) initNow();
+			if (desiredState === 'playing' && player) tryPlay();
+			window.removeEventListener('click', resumeOnInteract);
+			window.removeEventListener('keydown', resumeOnInteract);
+			window.removeEventListener('touchstart', resumeOnInteract);
+		};
+		window.addEventListener('click', resumeOnInteract, { once: true });
+		window.addEventListener('keydown', resumeOnInteract, { once: true });
+		window.addEventListener('touchstart', resumeOnInteract, { once: true });
+
+		// Toggle click handler.
+		$toggle.on('click', function(e) {
+			e.preventDefault();
+			if (!playerScheduled) initNow();
+			if (!player) return;
+			var state = player.getPlayerState ? player.getPlayerState() : null;
+			if (state !== YT.PlayerState.PLAYING) {
+				try { player.setVolume(targetVolume); } catch(e) {}
+				try { player.unMute(); } catch(e) {}
+				tryPlay();
+				desiredState = 'playing';
+				try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
+			} else {
+				try { player.pauseVideo(); } catch(e) {}
+				setIcon(false);
+				desiredState = 'paused';
+				try { localStorage.setItem(storageKey, desiredState); } catch(e) {}
+			}
+		});
+	})();
 
 })(jQuery);
