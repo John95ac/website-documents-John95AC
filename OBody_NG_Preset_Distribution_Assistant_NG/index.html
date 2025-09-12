@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBody NG Preset Distribution Assistant NG</title>
+    <meta name="description" content="SKSE plugin for automated OBody preset distribution in Skyrim Special Edition">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">⚙️</span>
+                <span>OBody NG PDA</span>
+            </div>
+                            <ul class="nav-menu" id="navMenu">
+                    <li><a href="#functionality" class="nav-link">Functionality</a></li>
+                    <li><a href="#simulator" class="nav-link">Generator</a></li>
+                    <li><a href="#examples" class="nav-link">INI Rules</a></li>
+                    <li><a href="#installation" class="nav-link">Installation</a></li>
+                    <li><a href="#architecture" class="nav-link">Architecture</a></li>
+                    <li><a href="#features" class="nav-link">Features</a></li>
+                    <li><a href="#security" class="nav-link">Security</a></li>
+                    <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
+                </ul>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">OBody NG Preset Distribution Assistant NG</h1>
+                <p class="hero-subtitle">Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition</p>
+                <p class="hero-description">
+                    A lightweight SKSE DLL that processes simple rules written in ini configuration for OBody preset distribution to automatically manage in the OBody_presetDistributionConfig.json without direct intervention, avoiding human errors and reading time.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">🔍</div>
+                        <div class="stat-label">Automatic INI Search</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">⚡</div>
+                        <div class="stat-label">Fast Processing</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">🛡️</div>
+                        <div class="stat-label">Unicode Management Security</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">🎮</div>
+                        <div class="stat-label">SE, AE, GOG and VR Compatibility</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">📜</div>
+                        <div class="stat-label">Simple Preset Management</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">💃</div>
+                        <div class="stat-label">Apply OBody Preset to NPC without touching JSON</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functionality Section -->
+    <!-- Funcionalidades Principales -->
+        <section id="functionality" class="section">
+        <div class="container">
+            <h2 class="section-title">Main Features</h2>
+            <div class="functionality-grid">
+                <div class="functionality-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Intelligent Search</h3>
+                    <p>Automatically searches for files with pattern <code>OBodyNG_PDA_*.ini</code> in the data directory</p>
+                </div>
+                <div class="functionality-card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Rule Processing</h3>
+                    <p>Processes rules in a SPID-like format: <code>Key = Element|PresetA,PresetB,...|Mode</code></p>
+                </div>
+                <div class="functionality-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Advanced Modes</h3>
+                    <p>Applies different modes: <code>x</code>, <code>1</code>, <code>0</code>, <code>-</code>, <code>x-</code>, <code>*</code>, <code>x*</code></p>
+                </div>
+                <div class="functionality-card">
+                    <div class="card-icon">👥</div>
+                    <h3>NPC Distribution</h3>
+                    <p>Applies presets to female NPCs of a specific element</p>
+                </div>
+                <div class="functionality-card">
+                    <div class="card-icon">🏃‍♀️</div>
+                    <h3>Race Control</h3>
+                    <p>Applies presets to all female NPCs of a race</p>
+                </div>
+                <div class="functionality-card">
+                    <div class="card-icon">⚔️</div>
+                    <h3>Faction Management</h3>
+                    <p>Applies presets to female NPCs of a faction</p>
+                </div>
+                
+                
+            </div>
+
+            <!-- Modes Section -->
+            <div class="modes-section">
+                <h3>Available Modes</h3>
+                <div class="modes-grid">
+                    <div class="mode-card">
+                        <div class="mode-code">x</div>
+                        <div class="mode-info">
+                            <h4>Unlimited</h4>
+                            <p>Always checks and applies the preset, you can use x or leave the mode space empty</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">1</div>
+                        <div class="mode-info">
+                            <h4>Once</h4>
+                            <p>Applies preset once, then deactivates</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">0</div>
+                        <div class="mode-info">
+                            <h4>Disabled</h4>
+                            <p>Skips rule, makes no changes</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">-</div>
+                        <div class="mode-info">
+                            <h4>Remove Preset</h4>
+                            <p>Removes specific preset once</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">x-</div>
+                        <div class="mode-info">
+                            <h4>Unlimited Remove</h4>
+                            <p>Removes preset in every execution</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">*</div>
+                        <div class="mode-info">
+                            <h4>Remove Element</h4>
+                            <p>Removes complete element entry, updates INI to |0</p>
+                        </div>
+                    </div>
+                    <div class="mode-card">
+                        <div class="mode-code">x*</div>
+                        <div class="mode-info">
+                            <h4>Unlimited Element Remove</h4>
+                            <p>Removes element in every execution, without changes in INI</p>
+                        </div>
+                    </div>
+						<div class="mode-card">
+							<div class="mode-code">5,%&</div>
+							<div class="mode-info">
+								<h4>Element Not Considered</h4>
+								<p>Any unconsidered element is converted to 0</p>
+							</div>
+						</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Generador Interactivo de Reglas INI -->
+                <section id="simulator" class="section bg-celeste">
+            <div class="container">
+                <h2 class="section-title">Interactive INI Rule Generator</h2>
+                <div class="simulator-container">
+                    <div class="simulator-controls">
+                        <h3>Rule Configuration</h3>
+                        <form id="ruleForm">
+                            <div class="form-group">
+                                <label for="ruleType" class="form-label">Rule Type</label>
+                                <select id="ruleType" class="form-control">
+                                    <option value="">Select type...</option>
+                                    <option value="npcFormID">npcFormID</option>
+                                    <option value="npc">npc</option>
+                                    <option value="factionFemale">factionFemale</option>
+                                    <option value="factionMale">factionMale</option>
+                                    <option value="npcPluginFemale">npcPluginFemale</option>
+                                    <option value="npcPluginMale">npcPluginMale</option>
+                                    <option value="raceFemale">raceFemale</option>
+                                    <option value="raceMale">raceMale</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="elementValue" class="form-label">Element Value</label>
+                                <select id="elementValue" class="form-control" style="display: none;">
+                                    <option value="">Select race...</option>
+                                    <option value="NordRace">NordRace</option>
+                                    <option value="ImperialRace">ImperialRace</option>
+                                    <option value="BretonRace">BretonRace</option>
+                                    <option value="RedguardRace">RedguardRace</option>
+                                    <option value="DarkElfRace">DarkElfRace</option>
+                                    <option value="HighElfRace">HighElfRace</option>
+                                    <option value="WoodElfRace">WoodElfRace</option>
+                                    <option value="OrcRace">OrcRace</option>
+                                    <option value="KhajiitRace">KhajiitRace</option>
+                                    <option value="ArgonianRace">ArgonianRace</option>
+                                    <option value="ElderRace">ElderRace</option>
+                                    <option value="custom">Custom races</option>
+                                </select>
+                                <input type="text" id="elementValueInput" class="form-control" placeholder="E.g.: Serana, GuardFaction, xx0001...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="presets" class="form-label">Presets</label>
+                                <input type="text" id="presets" class="form-control" placeholder="E.g.: PresetA,PresetB,PresetC">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mode" class="form-label">Mode</label>
+                                <select id="mode" class="form-control">
+                                    <option value="">Select mode...</option>
+                                    <option value="x">x (unlimited)</option>
+                                    <option value="">Empty (unlimited)</option>
+                                    <option value="1">1 (once)</option>
+                                    <option value="0">0 (disabled)</option>
+                                    <option value="-">- (remove preset)</option>
+                                    <option value="x-">x- (unlimited remove)</option>
+                                    <option value="*">* (remove element)</option>
+                                    <option value="x*">x* (unlimited element remove)</option>
+                                </select>
+                            </div>
+
+                            <button type="button" id="newRule" class="btn btn--primary btn--full-width">New Rule</button>
+                        </form>
+                    </div>
+
+                    <div class="simulator-output">
+                                            <div class="output-header">
+                        <span class="editor-title">📋 Generated Rule</span>
+                        <div class="btn-group">
+                            <button id="cleanRuleBtn" class="copy-btn" style="background-color: var(--color-error);" title="Clear all rules">
+                                🗑️ CLEAN
+                            </button>
+                            <button id="copyRuleBtn" class="copy-btn" title="Copy rules to clipboard">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+                        <textarea id="generatedRule" class="ini-editor" readonly placeholder="; Select values to generate the INI rule"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reglas de INI -->
+        <section id="examples" class="section">
+        <div class="container">
+            <h2 class="section-title">INI Rules</h2>
+            <div class="examples-container">
+                <div class="example-editor">
+                    <div class="editor-header">
+                        <h3 class="editor-title">
+                            <span>📄</span>
+                            OBodyNG_PDA_(MOD NAME).ini
+                        </h3>
+                        <button id="copyBtn" class="copy-btn">📋 Copy</button>
+                    </div>
+                    <textarea id="iniEditor" class="ini-editor" readonly>;OBody_NG_Preset_Distribution_Assistant_NG
+
+;INI Rule Examples:
+
+; npcFormID = xx0001|Preset,...|x , 1 , 0 , - , *             ; FormID : presets Preset,... : mode
+; npc = EditorID|Preset,...|x , 1 , 0 , - , *                 ; EditorID : presets Preset,... : mode
+; factionFemale = Faction|Preset,...|x , 1 , 0 , - , *        ; Faction : presets Preset,... : mode
+; factionMale = Faction|Preset,...|x , 1 , 0 , - , *          ; Faction : presets Preset,... : mode
+; npcPluginFemale = Plugin.esp|Preset,...|x , 1 , 0 , - , *   ; Female Plugin : presets Preset,... : mode
+; npcPluginMale = Plugin.esp|Preset,...|x , 1 , 0 , - , *     ; Male Plugin : presets Preset,... : mode
+; raceFemale = Race|Preset,...|x , 1 , 0 , - , *              ; Race : presets Preset,... : mode
+; raceMale = Race|Preset,...|x , 1 , 0 , - , *                ; Race : presets Preset,... : mode
+
+;Real examples:
+
+;YurianaWench All Mod
+npcPluginFemale = YurianaWench.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
+
+;Immersive Wenches All Mod
+npcPluginFemale = Immersive Wenches.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
+
+;More examples:
+
+raceFemale = NordRace|Nordic Preset 1,Nordic Preset 2|1
+
+factionFemale = GuardFaction|Guard Body Preset|x
+
+npc = Lydia|Lydia Custom Preset|1
+
+;Default available races:
+
+;NordRace, ImperialRace, BretonRace, RedguardRace, DarkElfRace, HighElfRace, WoodElfRace, OrcRace, KhajiitRace, ArgonianRace, ElderRace
+;Custom races from mods can also be used
+
+;The blacklisted elements have not been touched yet in version 2.0, rules for them will be made</textarea>
+                </div>
+                <div class="example-explanation">
+                    <h3>Rule Description</h3>
+
+                    <div class="rule-item">
+                        <strong>npcFormID</strong>
+                        <p>Applies presets based on the specific NPC FormID (e.g.: xx0001)</p>
+                    </div>
+
+                    <div class="rule-item">
+                        <strong>npc</strong>
+                        <p>Applies presets by NPC EditorID (e.g.: Serana, Lydia, Aela)</p>
+                    </div>
+
+                    <div class="rule-item">
+                        <strong>factionFemale/factionMale</strong>
+                        <p>Applies presets to NPCs of a specific faction by gender</p>
+                    </div>
+
+                    <div class="rule-item">
+                        <strong>npcPluginFemale/npcPluginMale</strong>
+                        <p>Applies presets to NPCs from a specific element (.esp) by gender</p>
+                    </div>
+
+                    <div class="rule-item">
+                        <strong>raceFemale/raceMale</strong>
+                        <p>Applies presets to NPCs of a specific race by gender</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Instalación -->
+        <section id="installation" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Installation</h2>
+            <div class="installation-content">
+                <div class="requirements-section">
+                    <h3>Requirements</h3>
+                    <div class="requirements-list">
+                        <div class="requirement-item">
+                            <span class="req-icon">⚙️</span>
+                            <div>
+                                <strong>SKSE - Skyrim Script Extender</strong>
+                                <p>Required for the plugin to function</p>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="req-icon">👤</span>
+                            <div>
+                                <strong>OBody Next Generation</strong>
+                                <p>The base mod to be configured</p>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="req-icon">📚</span>
+                            <div>
+                                <strong>Address Library for SKSE Plugins</strong>
+                                <p>Library required for modern SKSE plugins</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="installation-steps">
+                    <h3>Installation Steps</h3>
+                    <div class="steps-list">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Download Mod Plugin</h4>
+                                <p>Get the latest version of the SKSE OBody NG PDA plugin from Nexus</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Install Mod Plugin</h4>
+                                <p>Install in your mod list, whether Nexus or Vortex</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Done</h4>
+                                <p>If it's ready, you can create your INI files or install mods that require PDA as a requirement</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-structure">
+                    <h3>File Structure</h3>
+                    <div class="file-tree">
+Skyrim Special Edition/
+├── Data/
+│   ├── SKSE/
+│   │   └── Plugins/
+│   │       └── OBodyNG_PDA.dll
+│   ├── OBodyNG_PDA_Config.ini
+│   ├── OBodyNG_PDA_NPCs.ini
+│   └── OBodyNG_PDA_Races.ini
+└── ...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Arquitectura del Sistema -->
+        <section id="architecture" class="section">
+        <div class="container">
+            <h2 class="section-title">System Architecture</h2>
+            <div class="architecture-diagram">
+                <div class="arch-step">
+                    <div class="arch-icon">📁</div>
+                    <h3>Rule Configuration</h3>
+                    <p>Creation of INI files with distribution rules</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-icon">⚙️</div>
+                    <h3>Rule Processing</h3>
+                    <p>The SKSE plugin reads and processes the rules automatically</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-icon">🔄</div>
+                    <h3>Presets Update</h3>
+                    <p>Safe modification of the OBody JSON file</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-icon">✅</div>
+                    <h3>Changes Application</h3>
+                    <p>The presets are applied in the game automatically</p>
+                </div>
+            </div>
+
+            <div class="data-flow">
+                <h3>Data Flow</h3>
+                <div class="flow-description">
+                    <p>The system reads INI files with distribution rules, processes them through the SKSE plugin, updates the OBody JSON files safely, and applies the changes preserving the integrity of existing data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Características Avanzadas -->
+        <section id="features" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Advanced Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Unicode Support</h3>
+                    <p>UTF-8 with ANSI fallbacks for international characters</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Automatic Backup</h3>
+                    <p>An automatic backup of the JSON is performed before any modification, can be configured from an ini</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Data Preservation</h3>
+                    <p>Preserves existing data and order during updates</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Detailed Logging</h3>
+                    <p>Detailed logs for debugging and monitoring</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Universal Compatibility</h3>
+                    <p>Supports SE, AE, GOG and VR editions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>JSON Structure</h3>
+                    <p>Maintains JSON structure and element order</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Seguridad y Confiabilidad -->
+        <section id="security" class="section">
+        <div class="container">
+            <h2 class="section-title">Security and Reliability</h2>
+            <div class="security-grid">
+                <div class="security-card">
+                    <span class="security-icon">🛡️</span>
+                    <h3>Backup System</h3>
+                    <p>Complete automatic backup before any modification:</p>
+                    <ul>
+                        <li>Backup of the original JSON before changes</li>
+                        <li>Automatically changes <code>Backup = 1</code> to <code>Backup = 0</code> after backup</li>
+                        <li>File integrity verification</li>
+                        <li>Automatic recovery in case of error</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <span class="security-icon">🔍</span>
+                    <h3>Robust Validation</h3>
+                    <p>Multiple layers of validation to prevent errors:</p>
+                    <ul>
+                        <li>Robust error handling in file processing</li>
+                        <li>INI rule format validation</li>
+                        <li>JSON structure verification</li>
+                        <li>Early detection of corrupted files</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <span class="security-icon">🌍</span>
+                    <h3>Unicode Compatibility</h3>
+                    <p>Full support for international characters:</p>
+                    <ul>
+                        <li>Unicode-safe handling for all character types</li>
+                        <li>UTF-8 encoding with ANSI fallbacks</li>
+                        <li>Compatibility with non-ASCII paths</li>
+                        <li>Prevention of crashes due to encoding</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <span class="security-icon">💾</span>
+                    <h3>Memory Management</h3>
+                    <p>Optimization and security in resource handling:</p>
+                    <ul>
+                        <li>Safe memory management in all operations</li>
+                        <li>Automatic resource release</li>
+                        <li>Memory leak prevention</li>
+                        <li>Safety limits in processing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Reconocimientos -->
+        <section id="acknowledgments" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Acknowledgments</h2>
+            <div class="acknowledgments-content">
+                <div class="beta-testers">
+                    <h3>Beta Testers</h3>
+                    <p>Special thanks to our dedicated beta testers who helped make this project possible:</p>
+
+                    <div class="testers-grid">
+                        <div class="tester-card">
+                            <img src="Beta Testers/Cryshy.png" alt="Cryshy" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Cryshy</h4>
+                                <p class="tester-contribution">Beta review, observation of future applications</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/IAleX.png" alt="IAleX" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">IAleX</h4>
+                                <p class="tester-contribution">Beta review</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Lucas.png" alt="Lucas" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Lucas</h4>
+                                <p class="tester-contribution">JSON analysis and observation of corrections in ini parameters</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/OpheliaMoonlight.png" alt="OpheliaMoonlight" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">OpheliaMoonlight</h4>
+                                <p class="tester-contribution">Testing Unicode support, multiple betas reviewed</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/storm12.png" alt="storm12" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">storm12</h4>
+                                <p class="tester-contribution">Mod betatester in complex mod list</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Thalzamar.png" alt="Thalzamar" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Thalzamar</h4>
+                                <p class="tester-contribution">Beta tester</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Edsley.png" alt="Edsley" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Edsley</h4>
+                                <p class="tester-contribution">Advisor on templates and free web addons</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="credits">
+                    <h3>Additional Credits</h3>
+                    <div class="credits-list">
+                        <div class="credit-item">
+                            <h4>CommonLibSSE NG</h4>
+                            <p>Fundamental framework for developing modern SKSE plugins</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>SKSE Team</h4>
+                            <p>For the continuous development and support of the Skyrim Script Extender</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>OBody NG Team</h4>
+                            <p>For creating the base that makes this functionality possible</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Modding Community</h4>
+                            <p>For the constant feedback and ideas for improvements</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-note">
+                    <h3>Final Note</h3>
+                    <p>
+                        This project is open source and available to the community. Contributions, bug reports, and suggestions are always welcome. Together we can make Skyrim even more immersive and customizable.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <span>⚙️</span>
+                        <span>OBody NG PDA</span>
+                    </div>
+                    <p>&copy; 2024 OBody NG Preset Distribution Assistant NG. Open source project.</p>
+                </div>
+                <div class="footer-right">
+                    <p>Developed with ❤️ for the Skyrim modding community</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
