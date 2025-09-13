@@ -1554,6 +1554,10 @@ body {
     line-height: 1.6;
 }
 
+.final-note-section {
+    padding-top: 0;
+}
+
 /* Footer */
 .footer {
     background-color: var(--color-surface);
