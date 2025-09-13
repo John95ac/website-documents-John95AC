@@ -45,7 +45,10 @@
                 <h1 class="hero-title">OBody NG Preset Distribution Assistant NG</h1>
                 <p class="hero-subtitle">Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition</p>
                 <p class="hero-description">
-                    A lightweight SKSE DLL that processes simple rules written in ini configuration for OBody preset distribution to automatically manage in the OBody_presetDistributionConfig.json without direct intervention, avoiding human errors and reading time.
+                    A lightweight SKSE DLL that processes simple rules written in INI, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.
+                </p>
+                <p class="hero-description" style="color: rgba(80, 200, 120, 0.8);">
+                    It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the 'O' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈
                 </p>
                 <div class="hero-stats">
                     <div class="stat stat-green">
@@ -292,19 +295,30 @@
 
 ;INI Rule Examples:
 
-; npcFormID = xx0001|Preset,...|x , 1 , 0 , - , *             ; FormID : presets Preset,... : mode
-; npc = EditorID|Preset,...|x , 1 , 0 , - , *                 ; EditorID : presets Preset,... : mode
-; factionFemale = Faction|Preset,...|x , 1 , 0 , - , *        ; Faction : presets Preset,... : mode
-; factionMale = Faction|Preset,...|x , 1 , 0 , - , *          ; Faction : presets Preset,... : mode
-; npcPluginFemale = Plugin.esp|Preset,...|x , 1 , 0 , - , *   ; Female Plugin : presets Preset,... : mode
-; npcPluginMale = Plugin.esp|Preset,...|x , 1 , 0 , - , *     ; Male Plugin : presets Preset,... : mode
-; raceFemale = Race|Preset,...|x , 1 , 0 , - , *              ; Race : presets Preset,... : mode
-; raceMale = Race|Preset,...|x , 1 , 0 , - , *                ; Race : presets Preset,... : mode
+; npcFormID = xx0001|Preset,...|x , 1 , 0 , - , *            ; FormID | Preset, Presets,... | mode
+; npc = EditorID|Preset,...|x , 1 , 0 , - , *                ; EditorID | Preset, Presets,... | mode
+; factionFemale = Faction|Preset,...|x , 1 , 0 , - , *       ; Faction | Preset, Presets,... | mode
+; factionMale = Faction|Preset,...|x , 1 , 0 , - , *         ; Faction | Preset, Presets,... | mode
+; npcPluginFemale = Plugin.esp|Preset,...|x , 1 , 0 , - , *  ; Plugin.esp | Preset, Presets,... | mode
+; npcPluginMale = Plugin.esp|Preset,...|x , 1 , 0 , - , *    ; Plugin.esp | Preset, Presets,... | mode
+; raceFemale = Race|Preset,...|x , 1 , 0 , - , *             ; Race | Preset, Presets,... | mode
+; raceMale = Race|Preset,...|x , 1 , 0 , - , *               ; Race | Preset, Presets,... | mode
+
+;Modes:
+; Nothing = Unlimited (Always checks and applies the preset; if it is already applied, it won’t make changes. You can use "x" or leave the mode empty).
+; x = Unlimited (Same as "Nothing", applies the preset every time the game starts, but if already applied, it won’t make changes).
+; 1 = Once (Applies the preset only once).
+; 0 = Disabled (Does nothing).
+; - = Remove preset (Removes the preset; checks the defined section first and removes it from the JSON without modifying anything else).
+; * = Remove element (Removes the element written in the rule, e.g., removes a full plugin from the configuration; checks the defined section first and removes it from the JSON without modifying anything else).
+; x- = Unlimited remove (Same as "-", but will do it every time the game starts; not recommended).
+; x* = Unlimited element remove (Same as "*", but will do it every time the game starts; not recommended).
+; Incoherent text = (Checks for any text that is not a valid mode and automatically replaces it with "0").
 
 ;Real examples:
 
 ;YurianaWench All Mod
-npcPluginFemale = YurianaWench.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
+npcPluginFemale = YurianaWench.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|
 
 ;Immersive Wenches All Mod
 npcPluginFemale = Immersive Wenches.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
@@ -322,7 +336,9 @@ npc = Lydia|Lydia Custom Preset|1
 ;NordRace, ImperialRace, BretonRace, RedguardRace, DarkElfRace, HighElfRace, WoodElfRace, OrcRace, KhajiitRace, ArgonianRace, ElderRace
 ;Custom races from mods can also be used
 
-;The blacklisted elements have not been touched yet in version 2.0, rules for them will be made</textarea>
+;The blacklisted elements have not been touched yet in version 2.0, rules for them will be made
+
+</textarea>
                 </div>
                 <div class="example-explanation">
                     <h3>Rule Description</h3>
@@ -666,7 +682,8 @@ npc = Lydia|Lydia Custom Preset|1
             </div>
             <p style="text-align: center; margin: 20px 0;">
                 <span style="font-size: 1em;">This is the progress of several projects I'm working on this year. I'll be uploading them as they are concluded, thanks to everyone who supports me with comments,</span><br>
-                <span style="font-size: 1.2em; font-weight: 600;">thanks for being so patient. 😿</span>
+                <span style="font-size: 1.2em; font-weight: 600;"></span><br>
+                <span style="font-size: 1.2em; font-weight: 600;">thanks for being so patient 😿</span>
             </p>
         </div>
     </section>

@@ -926,27 +926,32 @@ window.debugApp = {
  */
 function initializeTypewriterAnimation() {
     const subtitle = document.querySelector('.hero-subtitle');
-    const description = document.querySelector('.hero-description');
-
-    if (!subtitle || !description) {
+    const descriptions = document.querySelectorAll('.hero-description');
+ 
+    if (!subtitle || descriptions.length < 2) {
         console.warn('Hero text elements not found for typewriter animation');
         return;
     }
-
+ 
+    const [firstDescription, secondDescription] = descriptions;
+ 
     // Initial state: hide and set empty
     subtitle.style.opacity = '0';
-    description.style.opacity = '0';
+    firstDescription.style.opacity = '0';
+    secondDescription.style.opacity = '0';
     subtitle.textContent = '';
-    description.textContent = '';
-
+    firstDescription.textContent = '';
+    secondDescription.textContent = '';
+ 
     const subtitleText = 'Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition';
-    const descriptionText = 'A lightweight SKSE DLL that processes simple rules written in ini configuration for OBody preset distribution to automatically manage in the OBody_presetDistributionConfig.json without direct intervention, avoiding human errors and reading time.';
-
+    const firstDescText = 'A lightweight SKSE DLL that processes simple rules written in INI, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.';
+    const secondDescText = 'It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the \'O\' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈';
+ 
     // Typewriter function
     function typeWriter(element, text, speed = 50, callback) {
         let i = 0;
         element.style.opacity = '1';
-
+ 
         function type() {
             if (i < text.length) {
                 element.textContent += text.charAt(i);
@@ -958,14 +963,19 @@ function initializeTypewriterAnimation() {
         }
         type();
     }
-
-    // Animate subtitle first, then description
+ 
+    // Animate subtitle first, then first description, then second description
     typeWriter(subtitle, subtitleText, 20, () => {
-        // Small delay before starting description
+        // Small delay before starting first description
         setTimeout(() => {
-            typeWriter(description, descriptionText, 15);
+            typeWriter(firstDescription, firstDescText, 15, () => {
+                // Delay before second description
+                setTimeout(() => {
+                    typeWriter(secondDescription, secondDescText, 15);
+                }, 500);
+            });
         }, 300);
     });
-
+ 
     console.log('Typewriter animation started for hero section');
 }

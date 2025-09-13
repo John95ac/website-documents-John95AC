@@ -918,6 +918,13 @@ body {
     line-height: 1.6;
 }
 
+.hero-new-paragraph {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-32);
+    line-height: 1.6;
+    color: rgba(80, 200, 120, 0.8);
+}
+
 .hero-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -955,6 +962,13 @@ body {
     color: var(--color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+}
+
+.hero-new-paragraph {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-32);
+    line-height: 1.6;
+    color: rgba(80, 200, 120, 0.8);
 }
 
 /* Section Styles */
