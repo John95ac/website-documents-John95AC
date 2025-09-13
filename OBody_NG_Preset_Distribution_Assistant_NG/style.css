@@ -149,6 +149,10 @@
         --color-gray-300-rgb: 167, 169, 169;
         --color-gray-200-rgb: 245, 245, 245;
 
+        .hero-description {
+            color: rgba(var(--color-gray-200-rgb), 0.9);
+        }
+
         /* Background color tokens (Dark Mode) */
         --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
         --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
@@ -895,6 +899,17 @@ body {
     color: var(--color-text-secondary);
     margin-bottom: var(--space-24);
     font-weight: var(--font-weight-medium);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hero-description {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-32);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .hero-description {
@@ -921,6 +936,11 @@ body {
 
 .stat:hover {
     transform: translateY(-4px);
+}
+
+.stat-green {
+    background-color: rgba(22, 163, 74, 0.15); /* Darker elegant translucent green */
+    border-color: rgba(22, 163, 74, 0.3);
 }
 
 .stat-value {
@@ -1419,6 +1439,7 @@ body {
     font-size: var(--font-size-sm);
     overflow-x: auto;
     color: var(--color-text);
+    white-space: pre;
 }
 
 /* Acknowledgments Section */
@@ -1643,4 +1664,14 @@ body {
     .tester-avatar {
         align-self: center;
     }
+}
+/* Animated gradient background for body */
+body {
+    background: linear-gradient(-45deg, var(--color-teal-500), var(--color-teal-300), var(--color-primary), var(--color-bg-1), var(--color-bg-8));
+}
+
+
+/* Ensure canvas overlay doesn't interfere */
+#particles-canvas {
+    z-index: -1;
 }

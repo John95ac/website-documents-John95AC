@@ -3,6 +3,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing application...');
 
+    // Typewriter animation for hero text
+    initializeTypewriterAnimation();
+
     // Navigation functionality
     initializeNavigation();
 
@@ -917,3 +920,52 @@ window.debugApp = {
     initializeMobileMenu,
     initializeINISimulator
 };
+
+/**
+ * Initialize typewriter animation for hero section
+ */
+function initializeTypewriterAnimation() {
+    const subtitle = document.querySelector('.hero-subtitle');
+    const description = document.querySelector('.hero-description');
+
+    if (!subtitle || !description) {
+        console.warn('Hero text elements not found for typewriter animation');
+        return;
+    }
+
+    // Initial state: hide and set empty
+    subtitle.style.opacity = '0';
+    description.style.opacity = '0';
+    subtitle.textContent = '';
+    description.textContent = '';
+
+    const subtitleText = 'Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition';
+    const descriptionText = 'A lightweight SKSE DLL that processes simple rules written in ini configuration for OBody preset distribution to automatically manage in the OBody_presetDistributionConfig.json without direct intervention, avoiding human errors and reading time.';
+
+    // Typewriter function
+    function typeWriter(element, text, speed = 50, callback) {
+        let i = 0;
+        element.style.opacity = '1';
+
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            } else {
+                if (callback) callback();
+            }
+        }
+        type();
+    }
+
+    // Animate subtitle first, then description
+    typeWriter(subtitle, subtitleText, 20, () => {
+        // Small delay before starting description
+        setTimeout(() => {
+            typeWriter(description, descriptionText, 15);
+        }, 300);
+    });
+
+    console.log('Typewriter animation started for hero section');
+}

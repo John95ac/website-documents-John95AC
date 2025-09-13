@@ -11,15 +11,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation v2 -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <span class="logo-icon">⚙️</span>
                 <span>OBody NG PDA</span>
+                <a href="../index.html" class="nav-link" style="margin-left: 5px; text-decoration: none; color: inherit;" title="Back to Home">🏠 Home</a>
             </div>
-                            <ul class="nav-menu" id="navMenu">
-                    <li><a href="#functionality" class="nav-link">Functionality</a></li>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#functionality" class="nav-link">Functionality</a></li>
                     <li><a href="#simulator" class="nav-link">Generator</a></li>
                     <li><a href="#examples" class="nav-link">INI Rules</a></li>
                     <li><a href="#installation" class="nav-link">Installation</a></li>
@@ -46,29 +47,37 @@
                     A lightweight SKSE DLL that processes simple rules written in ini configuration for OBody preset distribution to automatically manage in the OBody_presetDistributionConfig.json without direct intervention, avoiding human errors and reading time.
                 </p>
                 <div class="hero-stats">
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">🔍</div>
                         <div class="stat-label">Automatic INI Search</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">⚡</div>
                         <div class="stat-label">Fast Processing</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">🛡️</div>
                         <div class="stat-label">Unicode Management Security</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">🎮</div>
                         <div class="stat-label">SE, AE, GOG and VR Compatibility</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">📜</div>
                         <div class="stat-label">Simple Preset Management</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">💃</div>
-                        <div class="stat-label">Apply OBody Preset to NPC without touching JSON</div>
+                        <div class="stat-label">Apply predefined OBody Preset to NPC without touching JSON</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">👁️</div>
+                        <div class="stat-label">Automatic Blacklisted Application (Coming Soon)</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">👓</div>
+                        <div class="stat-label">Automatic Preset Management List Analyzer (Coming Soon)</div>
                     </div>
                 </div>
             </div>
@@ -407,16 +416,11 @@ npc = Lydia|Lydia Custom Preset|1
 
                 <div class="file-structure">
                     <h3>File Structure</h3>
+                    <p>The structure is simple: you only need to place files with the OBodyNG_PDA_*.ini pattern in a zip or rar and publish it as a mod, then install it in your mod list. The plugin will detect them automatically and distribute the preset rules without additional configuration.</p>
                     <div class="file-tree">
-Skyrim Special Edition/
-├── Data/
-│   ├── SKSE/
-│   │   └── Plugins/
-│   │       └── OBodyNG_PDA.dll
-│   ├── OBodyNG_PDA_Config.ini
-│   ├── OBodyNG_PDA_NPCs.ini
-│   └── OBodyNG_PDA_Races.ini
-└── ...
+ Mod Archive (ZIP/RAR)
+ ├── OBodyNG_PDA_*.ini  (e.g., OBodyNG_PDA_MyMod.ini)
+ └── (Optional: other mod files)
                     </div>
                 </div>
             </div>
@@ -653,7 +657,7 @@ Skyrim Special Edition/
                 <div class="final-note">
                     <h3>Final Note</h3>
                     <p>
-                        This project is open source and available to the community. Contributions, bug reports, and suggestions are always welcome. Together we can make Skyrim even more immersive and customizable.
+                        This project is open source MIT and available to the community. Contributions, bug reports, and suggestions are always welcome. Together we can make Skyrim a more welcoming and comfortable place.
                     </p>
                 </div>
             </div>
@@ -669,7 +673,7 @@ Skyrim Special Edition/
                         <span>⚙️</span>
                         <span>OBody NG PDA</span>
                     </div>
-                    <p>&copy; 2024 OBody NG Preset Distribution Assistant NG. Open source project.</p>
+                    <p>&copy; 2025 John1995ac. MIT License. Open source project.</p>
                 </div>
                 <div class="footer-right">
                     <p>Developed with ❤️ for the Skyrim modding community</p>
@@ -679,5 +683,6 @@ Skyrim Special Edition/
     </footer>
 
     <script src="app.js"></script>
+    <script src="particles.js"></script>
 </body>
 </html>
