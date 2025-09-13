@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Typewriter animation for hero text
     initializeTypewriterAnimation();
 
+    // Simulator animation (after a delay to ensure section is visible)
+    setTimeout(initializeSimulatorAnimation, 1500);
+
     // Navigation functionality
     initializeNavigation();
 
@@ -978,4 +981,57 @@ function initializeTypewriterAnimation() {
     });
  
     console.log('Typewriter animation started for hero section');
+}
+
+/**
+ * Initialize typewriter animation for simulator descriptions
+ */
+function initializeSimulatorAnimation() {
+    const simulatorSection = document.getElementById('simulator');
+    if (!simulatorSection) {
+        console.warn('Simulator section not found for animation');
+        return;
+    }
+
+    const descriptions = simulatorSection.querySelectorAll('.simulator-description');
+    if (descriptions.length < 2) {
+        console.warn('Simulator description elements not found for animation');
+        return;
+    }
+
+    // Initial state: hide and set empty
+    descriptions.forEach(desc => {
+        desc.style.opacity = '0';
+        desc.textContent = '';
+    });
+
+    const firstSimDescText = 'Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. Remember that if you choose more than one preset for an element, it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.';
+    const secondSimDescText = 'If you don\'t know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.';
+
+    // Typewriter function (reuse from hero, or define if needed)
+    function typeWriter(element, text, speed = 50, callback) {
+        let i = 0;
+        element.style.opacity = '1';
+
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            } else {
+                if (callback) callback();
+            }
+        }
+        type();
+    }
+
+    // Animate first simulator description, then second
+    typeWriter(descriptions[0], firstSimDescText, 20, () => {
+        // Delay before second
+        setTimeout(() => {
+            typeWriter(descriptions[1], secondSimDescText, 15);
+        }, 400);
+    });
+
+    console.log('Simulator animation started');
 }
