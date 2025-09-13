@@ -1,4 +1,4 @@
-// Particles.js - Dedicated background particles animation for OBody NG landing page
+// Particles.js - Dedicated background particles animation for these guide pages, not the menu. But I still struggle to make it do what I want.
 // Creates a full-screen canvas overlay with floating particles on an animated gradient background (gradient handled in CSS)
 
 document.addEventListener('DOMContentLoaded', function() {

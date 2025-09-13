@@ -1681,7 +1681,7 @@ body {
 }
 /* Animated gradient background for body */
 body {
-    background: linear-gradient(-45deg, var(--color-teal-500), var(--color-teal-300), var(--color-primary), var(--color-bg-1), var(--color-bg-8));
+    background: linear-gradient(-45deg, rgba(128, 128, 128, 0.15), rgba(105, 105, 105, 0.15), rgba(169, 169, 169, 0.15), rgba(112, 128, 144, 0.15), rgba(119, 136, 153, 0.15));
 }
 
 
