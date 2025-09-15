@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTypewriterAnimation();
 
     // Simulator animation (after a delay to ensure section is visible)
-    setTimeout(initializeSimulatorAnimation, 1500);
+    initializeSimulatorAnimation();
 
     // Navigation functionality
     initializeNavigation();
@@ -365,8 +365,8 @@ function initializeINISimulator() {
 
         // Generate new permanent rule
         const modeDescriptions = {
-            'x': 'unlimited',
-            '': 'unlimited',
+            'x': 'simple application',
+            '': 'simple application',
             '1': 'once',
             '0': 'disabled',
             '-': 'remove preset',
@@ -417,8 +417,8 @@ function initializeINISimulator() {
 
         // Generar preview de la nueva regla
         const modeDescriptions = {
-            'x': 'unlimited',
-            '': 'unlimited',
+            'x': 'simple application',
+            '': 'simple application',
             '1': 'once',
             '0': 'disabled',
             '-': 'remove preset',
@@ -968,13 +968,13 @@ function initializeTypewriterAnimation() {
     }
  
     // Animate subtitle first, then first description, then second description
-    typeWriter(subtitle, subtitleText, 20, () => {
+    typeWriter(subtitle, subtitleText, 10, () => {
         // Small delay before starting first description
         setTimeout(() => {
-            typeWriter(firstDescription, firstDescText, 15, () => {
+            typeWriter(firstDescription, firstDescText, 8, () => {
                 // Delay before second description
                 setTimeout(() => {
-                    typeWriter(secondDescription, secondDescText, 15);
+                    typeWriter(secondDescription, secondDescText, 8);
                 }, 500);
             });
         }, 300);
@@ -1025,13 +1025,15 @@ function initializeSimulatorAnimation() {
         type();
     }
 
-    // Animate first simulator description, then second
-    typeWriter(descriptions[0], firstSimDescText, 20, () => {
-        // Delay before second
-        setTimeout(() => {
-            typeWriter(descriptions[1], secondSimDescText, 15);
-        }, 400);
-    });
+    // Animate descriptions
+    setTimeout(() => {
+        typeWriter(descriptions[0], firstSimDescText, 10, () => {
+            // Delay before second
+            setTimeout(() => {
+                typeWriter(descriptions[1], secondSimDescText, 8);
+            }, 400);
+        });
+    }, 200);
 
     console.log('Simulator animation started');
 }
