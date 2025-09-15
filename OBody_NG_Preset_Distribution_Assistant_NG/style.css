@@ -1086,6 +1086,43 @@ body {
     text-align: center;
 }
 
+/* Color específico para la x del modo Simple Application */
+.modes-grid .mode-card:first-child .mode-code {
+    background-color: rgba(30, 100, 50, 0.8);
+}
+
+/* Estilos para el mensaje informativo de los modos */
+.modes-info {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.modes-explanation {
+    color: var(--color-text);
+    line-height: 1.6;
+    font-size: var(--font-size-base);
+    margin: 0;
+}
+
+.modes-explanation strong {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Colores específicos para las palabras green y red en el texto */
+.modes-explanation .green-text {
+    color: rgba(30, 100, 50, 0.8);
+    font-weight: var(--font-weight-semibold);
+}
+
+.modes-explanation .red-text {
+    color: #dc2626;
+    font-weight: var(--font-weight-semibold);
+}
+
 .mode-info h4 {
     margin-bottom: var(--space-4);
     color: var(--color-text);
