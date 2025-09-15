@@ -1710,3 +1710,9 @@ body {
     z-index: -1;
     mix-blend-mode: screen; /* Better blending to reduce celeste accumulation */
 }
+
+/* Syntax highlighting for generated rules */
+.rule-key { color: var(--color-primary); }
+.rule-element { color: #10B981; }
+.rule-presets { color: #FBBF24; }
+.rule-mode { color: var(--color-gray-300); }

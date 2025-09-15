@@ -143,7 +143,7 @@ function initializeCopyFunction() {
         console.log('Rule copy functionality initialized');
         copyRuleBtn.addEventListener('click', function() {
             console.log('Copy rule button clicked');
-            let ruleText = generatedRule.value.trim();
+            let ruleText = generatedRule.innerText.trim();
 
             if (ruleText === '' || ruleText.includes('Complete all fields')) {
                 showCopyError(this, 'Generate a rule first');
@@ -174,7 +174,7 @@ function initializeCopyFunction() {
         cleanRuleBtn.addEventListener('click', function() {
             console.log('Clean button clicked');
             permanentRules = '';
-            generatedRule.value = '';
+            generatedRule.innerHTML = '';
 
             // Show clean feedback
             const originalText = this.innerHTML;
@@ -248,6 +248,43 @@ function copyToClipboard(text, button) {
 }
 
 /**
+ * Highlight INI rule syntax
+ */
+function highlightRule(text) {
+    const lines = text.split('\n');
+    const htmlLines = lines.map(line => {
+        const trimmedLine = line.trim();
+        if (trimmedLine.startsWith(';')) {
+            return `<span style="color: var(--color-text-secondary);">${line}</span>`;
+        }
+        if (!trimmedLine.includes('=')) {
+            return line;
+        }
+
+        const parts = line.split('=');
+        const key = parts[0].trim();
+        const value = parts.slice(1).join('=').trim();
+        const valueParts = value.split('|');
+
+        let element = '', presets = '', mode = '';
+        if (valueParts.length > 0) element = valueParts[0].trim();
+        if (valueParts.length > 1) presets = valueParts[1].trim();
+        if (valueParts.length > 2) mode = valueParts[2].trim();
+
+        let highlightedValue = `<span class="rule-element">${element}</span>`;
+        if (presets || valueParts.length > 1) {
+            highlightedValue += `|<span class="rule-presets">${presets}</span>`;
+        }
+        if (mode || valueParts.length > 2) {
+            highlightedValue += `|<span class="rule-mode">${mode}</span>`;
+        }
+
+        return `<span class="rule-key">${key}</span> = ${highlightedValue}`;
+    });
+    return htmlLines.join('\n');
+}
+
+/**
  * Initialize INI Simulator functionality
  */
 function initializeINISimulator() {
@@ -257,9 +294,9 @@ function initializeINISimulator() {
     const elementValueInput = document.getElementById('elementValueInput');
     const presetsInput = document.getElementById('presets');
     const modeSelect = document.getElementById('mode');
-    const generatedRuleTextarea = document.getElementById('generatedRule');
+    const generatedRuleEl = document.getElementById('generatedRule');
 
-    if (!newRuleBtn || !ruleTypeSelect || !elementValueSelect || !elementValueInput || !presetsInput || !modeSelect || !generatedRuleTextarea) {
+    if (!newRuleBtn || !ruleTypeSelect || !elementValueSelect || !elementValueInput || !presetsInput || !modeSelect || !generatedRuleEl) {
         console.warn('Simulator elements not found');
         return;
     }
@@ -359,7 +396,7 @@ function initializeINISimulator() {
         const mode = modeSelect.value;
 
         if (!ruleType || !elementValue || !presets) {
-            generatedRuleTextarea.value = permanentRules || '; Complete all fields to generate the INI rule';
+            generatedRuleEl.innerHTML = highlightRule(permanentRules || '; Complete all fields to generate the INI rule');
             return;
         }
 
@@ -381,7 +418,7 @@ function initializeINISimulator() {
 
         // Add to permanent rules
         permanentRules += (permanentRules ? '\n\n' : '') + newRuleText;
-        generatedRuleTextarea.value = permanentRules;
+        generatedRuleEl.innerHTML = highlightRule(permanentRules);
 
         // Clear form for new rule but keep rule type
         if (elementValueSelect.style.display !== 'none') {
@@ -411,7 +448,7 @@ function initializeINISimulator() {
 
         // Solo mostrar preview si hay datos suficientes
         if (!ruleType || !elementValue || !presets) {
-            generatedRuleTextarea.value = permanentRules || '; Complete all fields to generate the INI rule';
+            generatedRuleEl.innerHTML = highlightRule(permanentRules || '; Complete all fields to generate the INI rule');
             return;
         }
 
@@ -432,7 +469,7 @@ function initializeINISimulator() {
         const previewText = `${comment}\n${rule}`;
 
         // Mostrar permanent + preview (reemplaza preview anterior)
-        generatedRuleTextarea.value = permanentRules ? permanentRules + '\n\n' + previewText : previewText;
+        generatedRuleEl.innerHTML = highlightRule(permanentRules ? permanentRules + '\n\n' + previewText : previewText);
 
         console.log('Preview updated:', rule);
     }
