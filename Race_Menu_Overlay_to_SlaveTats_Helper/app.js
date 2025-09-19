@@ -37,10 +37,10 @@ function initializeTypewriterAnimation() {
     const descriptionText = 'Designed to optimize the creation, conversion, and management of NPC tattoos or textures. Focused on the relationship between the RaceMenu and SlaveTats systems. You can convert from one to the other or create from scratch.';
 
     // Start typewriter effect for subtitle
-    typeWriter(subtitleText, heroSubtitle, 25, () => {
+    typeWriter(subtitleText, heroSubtitle, 12, () => {
         // Start description after subtitle completes
         setTimeout(() => {
-            typeWriter(descriptionText, heroDescription, 10);
+            typeWriter(descriptionText, heroDescription, 5);
         }, 300);
     });
 }
