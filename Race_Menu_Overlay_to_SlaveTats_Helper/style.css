@@ -12,12 +12,12 @@
     --color-charcoal-700: rgba(31, 33, 33, 1);
     --color-charcoal-800: rgba(38, 40, 40, 1);
     --color-slate-900: rgba(19, 52, 59, 1);
-    --color-teal-300: rgba(50, 184, 198, 1);
-    --color-teal-400: rgba(45, 166, 178, 1);
-    --color-teal-500: rgba(33, 128, 141, 1);
-    --color-teal-600: rgba(29, 116, 128, 1);
-    --color-teal-700: rgba(26, 104, 115, 1);
-    --color-teal-800: rgba(41, 150, 161, 1);
+    --color-green-300: rgba(76, 175, 80, 1);
+    --color-green-400: rgba(102, 187, 106, 1);
+    --color-green-500: rgba(76, 175, 80, 1);
+    --color-green-600: rgba(69, 160, 73, 1);
+    --color-green-700: rgba(56, 142, 60, 1);
+    --color-green-800: rgba(46, 125, 50, 1);
     --color-red-400: rgba(255, 84, 89, 1);
     --color-red-500: rgba(192, 21, 47, 1);
     --color-orange-400: rgba(230, 129, 97, 1);
@@ -25,7 +25,7 @@
 
     /* RGB versions for opacity control */
     --color-brown-600-rgb: 94, 82, 64;
-    --color-teal-500-rgb: 33, 128, 141;
+    --color-green-500-rgb: 76, 175, 80;
     --color-slate-900-rgb: 19, 52, 59;
     --color-slate-500-rgb: 98, 108, 113;
     --color-red-500-rgb: 192, 21, 47;
@@ -48,9 +48,9 @@
     --color-surface: var(--color-cream-100);
     --color-text: var(--color-slate-900);
     --color-text-secondary: var(--color-slate-500);
-    --color-primary: var(--color-teal-500);
-    --color-primary-hover: var(--color-teal-600);
-    --color-primary-active: var(--color-teal-700);
+    --color-primary: var(--color-green-500);
+    --color-primary-hover: var(--color-green-600);
+    --color-primary-active: var(--color-green-700);
     --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
     --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
     --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
@@ -59,10 +59,10 @@
     --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
     --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
     --color-error: var(--color-red-500);
-    --color-success: var(--color-teal-500);
+    --color-success: var(--color-green-500);
     --color-warning: var(--color-orange-500);
     --color-info: var(--color-slate-500);
-    --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+    --color-focus-ring: rgba(var(--color-green-500-rgb), 0.4);
     --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
 
     /* Common style patterns */
@@ -74,7 +74,7 @@
     --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
     /* RGB versions for opacity control */
-    --color-success-rgb: 33, 128, 141;
+    --color-success-rgb: 76, 175, 80;
     --color-error-rgb: 192, 21, 47;
     --color-warning-rgb: 168, 75, 47;
     --color-info-rgb: 98, 108, 113;
@@ -145,7 +145,7 @@
     :root {
         /* RGB versions for opacity control (Dark Mode) */
         --color-gray-400-rgb: 119, 124, 124;
-        --color-teal-300-rgb: 50, 184, 198;
+        --color-green-300-rgb: 76, 175, 80;
         --color-gray-300-rgb: 167, 169, 169;
         --color-gray-200-rgb: 245, 245, 245;
 
@@ -168,18 +168,18 @@
         --color-surface: var(--color-charcoal-800);
         --color-text: var(--color-gray-200);
         --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
-        --color-primary: var(--color-teal-300);
-        --color-primary-hover: var(--color-teal-400);
-        --color-primary-active: var(--color-teal-800);
+        --color-primary: var(--color-green-300);
+        --color-primary-hover: var(--color-green-400);
+        --color-primary-active: var(--color-green-800);
         --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
         --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
         --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
         --color-border: rgba(var(--color-gray-400-rgb), 0.3);
         --color-error: var(--color-red-400);
-        --color-success: var(--color-teal-300);
+        --color-success: var(--color-green-300);
         --color-warning: var(--color-orange-400);
         --color-info: var(--color-gray-300);
-        --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+        --color-focus-ring: rgba(var(--color-green-300-rgb), 0.4);
         --color-btn-primary-text: var(--color-slate-900);
         --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
         --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
@@ -197,7 +197,7 @@
         --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
         /* RGB versions for dark mode */
-        --color-success-rgb: var(--color-teal-300-rgb);
+        --color-success-rgb: var(--color-green-300-rgb);
         --color-error-rgb: var(--color-red-400-rgb);
         --color-warning-rgb: var(--color-orange-400-rgb);
         --color-info-rgb: var(--color-gray-300-rgb);
@@ -208,7 +208,7 @@
 [data-color-scheme="dark"] {
     /* RGB versions for opacity control (dark mode) */
     --color-gray-400-rgb: 119, 124, 124;
-    --color-teal-300-rgb: 50, 184, 198;
+    --color-green-300-rgb: 76, 175, 80;
     --color-gray-300-rgb: 167, 169, 169;
     --color-gray-200-rgb: 245, 245, 245;
 
@@ -227,18 +227,18 @@
     --color-surface: var(--color-charcoal-800);
     --color-text: var(--color-gray-200);
     --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
-    --color-primary: var(--color-teal-300);
-    --color-primary-hover: var(--color-teal-400);
-    --color-primary-active: var(--color-teal-800);
+    --color-primary: var(--color-green-300);
+    --color-primary-hover: var(--color-green-400);
+    --color-primary-active: var(--color-green-800);
     --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
     --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
     --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
     --color-border: rgba(var(--color-gray-400-rgb), 0.3);
     --color-error: var(--color-red-400);
-    --color-success: var(--color-teal-300);
+    --color-success: var(--color-green-300);
     --color-warning: var(--color-orange-400);
     --color-info: var(--color-gray-300);
-    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-focus-ring: rgba(var(--color-green-300-rgb), 0.4);
     --color-btn-primary-text: var(--color-slate-900);
     --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
     --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
@@ -255,7 +255,7 @@
     --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
     /* RGB versions for dark mode */
-    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-success-rgb: var(--color-green-300-rgb);
     --color-error-rgb: var(--color-red-400-rgb);
     --color-warning-rgb: var(--color-orange-400-rgb);
     --color-info-rgb: var(--color-gray-300-rgb);
@@ -264,7 +264,7 @@
 [data-color-scheme="light"] {
     /* RGB versions for opacity control (light mode) */
     --color-brown-600-rgb: 94, 82, 64;
-    --color-teal-500-rgb: 33, 128, 141;
+    --color-green-500-rgb: 76, 175, 80;
     --color-slate-900-rgb: 19, 52, 59;
 
     /* Semantic Color Tokens (Light Mode) */
@@ -272,9 +272,9 @@
     --color-surface: var(--color-cream-100);
     --color-text: var(--color-slate-900);
     --color-text-secondary: var(--color-slate-500);
-    --color-primary: var(--color-teal-500);
-    --color-primary-hover: var(--color-teal-600);
-    --color-primary-active: var(--color-teal-700);
+    --color-primary: var(--color-green-500);
+    --color-primary-hover: var(--color-green-600);
+    --color-primary-active: var(--color-green-700);
     --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
     --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
     --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
@@ -283,10 +283,10 @@
     --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
     --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
     --color-error: var(--color-red-500);
-    --color-success: var(--color-teal-500);
+    --color-success: var(--color-green-500);
     --color-warning: var(--color-orange-500);
     --color-info: var(--color-slate-500);
-    --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+    --color-focus-ring: rgba(var(--color-green-500-rgb), 0.4);
 
     /* RGB versions for light mode */
     --color-success-rgb: var(--color-teal-500-rgb);
@@ -786,7 +786,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: var(--color-black);
+    background-color: rgba(var(--color-slate-900-rgb), 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-border);
     z-index: 1000;
@@ -888,7 +888,7 @@ body {
     font-size: clamp(var(--font-size-3xl), 5vw, 48px);
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--space-16);
-    background: linear-gradient(135deg, var(--color-primary), var(--color-teal-300));
+    background: linear-gradient(135deg, var(--color-primary), var(--color-green-300));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

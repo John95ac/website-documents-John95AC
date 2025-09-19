@@ -12,6 +12,37 @@
     <link rel="stylesheet" href="../assets/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="../assets/css/icons.css">
     <link rel="icon" type="image/x-icon" href="../images/log.ico">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: 'forest' });
+    </script>
+    <style>
+      details {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-16);
+        overflow: hidden;
+      }
+      summary {
+        padding: var(--space-16);
+        cursor: pointer;
+        font-weight: var(--font-weight-medium);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::after {
+        content: '▼';
+        transition: transform var(--duration-fast);
+      }
+      details[open] summary::after {
+        transform: rotate(180deg);
+      }
+      .mermaid {
+        padding: var(--space-16);
+      }
+    </style>
 </head>
 <body>
     <!-- Navigation v2 -->
@@ -28,6 +59,7 @@
                     <li><a href="#examples" class="nav-link">INI Rules</a></li>
                     <li><a href="#installation" class="nav-link">Installation</a></li>
                     <li><a href="#architecture" class="nav-link">Architecture</a></li>
+                    <li><a href="#diagrams" class="nav-link">Flowcharts</a></li>
                     <li><a href="#features" class="nav-link">Features</a></li>
                     <li><a href="#security" class="nav-link">Security</a></li>
                     <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
@@ -499,8 +531,419 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
+        <!-- Diagramas -->
+        <section id="diagrams" class="section bg-celeste">
+            <div class="container">
+                <h2 class="section-title">Operational Flowcharts</h2>
+
+                <div class="data-flow" style="margin-bottom: 30px;">
+                    <div class="flow-description">
+                        <p>It is a visual representation of how the mod works and how actions are gradually implemented. <span style="color: var(--color-primary); font-weight: bold;">This section is extensive and not necessary to understand the mod; if you are a normal user of the mod, the INI files will suffice.</span> However, if you want to know more about how the project is improving, you can read these flowcharts. I tend to use them a lot in all my projects.</p>
+                    </div>
+                </div>
+
+                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>✨ Show/Hide Flowchart v1.6.0</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>✨ Flowchart v1.6.0:</strong> This is the first public version. Although it has proven stable for beta testers, we plan to enhance the backup system in upcoming releases. The workflow is straightforward: it begins by reviewing the INI files, then checks for the JSON file, applies the necessary changes, verifies the structure, and performs a simple backup if this option is enabled in the configuration INI.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load Game starts] --> B[📁 Basic Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
+    C --> D[🔍 BASIC JSON Check<br/>Simple existence check]
+    
+    D --> E{❓ Master JSON<br/>Exists?}
+    E -->|NO| F[❌ END PROCESS<br/>JSON Not Found<br/>WITHOUT automatic restore]
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    
+    G -->|Backup=1| H[💾 BASIC Backup<br/>PerformJsonBackup]
+    G -->|Backup=0| I[📖 Read Existing JSON<br/>ReadCompleteJson<br/>Basic parseOrderedPlugins]
+    
+    H --> J[✏️ Update INI<br/>UpdateBackupConfigInIni<br/>Backup = 0]
+    J --> I
+    
+    I --> K{✅ JSON Read<br/>readSuccess?}
+    K -->|NO| L[❌ END PROCESS<br/>JSON READ FAILED<br/>WITHOUT recovery system]
+    K -->|YES| M[📂 Scan Data Folder<br/>directory_iterator<br/>OBodyNG_PDA_*.ini]
+    
+    M --> N[📝 Process INI Rules<br/>Basic ParseRuleLine<br/>Add/Remove Presets/Plugins<br/>Simple counts]
+    N --> O[🔢 Update INI Counts<br/>UpdateIniRuleCount<br/>Basic decrement]
+    O --> P[📊 Basic Log Summary<br/>Simple statistics<br/>Rules/Files/Presets]
+    
+    P --> Q[🏗️ Update JSON<br/>UpdateJsonSelectively<br/>Basic preserve original]
+    Q --> R[💾 BASIC Write<br/>Direct write to file]
+    
+    R --> S{✅ Write<br/>Successful?}
+    S -->|NO| T[❌ WRITE ERROR<br/>WITHOUT backup restore<br/>Process failed]
+    S -->|YES| U[🔍 BASIC FORMAT<br/>PrettyPrintJson<br/>Simple indentation]
+    
+    U --> V{📏 Format<br/>Applied?}
+    V -->|NO| W[✏️ BASIC REFORMAT<br/>4 simple spaces<br/>WITHOUT isEmptyBlock helper]
+    V -->|YES| X[✅ Basic JSON Complete<br/>Simple format applied]
+    
+    W --> Y{✅ Basic<br/>Reformat OK?}
+    Y -->|NO| Z[❌ FORMAT ERROR<br/>Process with warnings]
+    Y -->|YES| X
+    
+    X --> AA[📊 Basic Final Log<br/>Process completed<br/>Basic JSON formatting]
+    Z --> AA
+    T --> AA
+    
+    AA --> BB[💬 Basic Console Message<br/>OBody Assistant: Basic process completed!]
+    BB --> CC[🏁 END: Basic Process Complete<br/>JSON with simple format]
+    
+    F --> DD[🏁 END: JSON Not Found<br/>WITHOUT automatic recovery<br/>CONTACT MODDER OR REINSTALL!]
+    L --> EE[🏁 END: Read Error]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef basicFeature fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    
+    class A,CC,DD,EE startEnd
+    class B,C,I,M,N,O,P,Q,R process
+    class E,G,K,S,V,Y decision
+    class F,L,T,Z error
+    class H,J backup
+    class D,U,W,X basicFeature
+    class AA,BB logFeature
+                      </div>
+                    </details>
+                </div>
+
+                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>🧰 Show/Hide Flowchart v1.7.0</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>🧰 Flowchart v1.7.0:</strong> This new version was created to improve the backup system, featuring more elaborate logic, structure analysis, and automatic restoration. It was designed to handle exceptionally large templates, including master JSON files exceeding 7,000 lines. As one of the first versions to incorporate this level of logical review, the process is swift when everything runs smoothly. However, if any issues are detected, the system will automatically create and restore from backups to ensure data integrity.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+    
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|NO| F[❌ END PROCESS<br/>Corrupt JSON - CRITICAL ERROR<br/>No automatic restore in V1.7.2]
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy]
+    G -->|Backup=true| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Do not update INI]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse 8 valid keys]
+    
+    H --> J[✏️ Update INI<br/>UpdateBackupConfigInIni<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true without changes]
+    J --> I
+    K --> I
+    
+    I --> L{✅ JSON Read<br/>readSuccess?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup<br/>Manual restoration attempt]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Unique timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>directory_iterator<br/>OBodyNG_PDA_*.ini]
+    
+    L -->|YES| R
+    R --> S[📝 Process INI Rules<br/>ParseRuleLine + validKeys<br/>Add/Remove Presets/Plugins<br/>Dynamic counts]
+    S --> T[🔢 Update INI Counts<br/>UpdateIniRuleCount<br/>Automatic decrement]
+    T --> U[📊 Detailed Log Summary<br/>Complete statistics<br/>Rules/Files/Presets/Plugins]
+    
+    U --> V[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+    V --> W[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp file + PerformTripleValidation]
+    
+    W --> X{✅ Write<br/>Successful?}
+    X -->|NO| Y[🔄 Restore Backup<br/>RestoreJsonFromBackup<br/>Write failure]
+    X -->|YES| Z[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>Basic - WITHOUT advanced detection]
+    
+    Z --> AA{📏 Indentation<br/>Already Correct?}
+    AA -->|YES| BB[✅ JSON Already Perfect<br/>4 basic spaces<br/>Without advanced multi-line detection]
+    AA -->|NO| CC[✏️ BASIC REFORMAT<br/>4 spaces per level<br/>Without advanced isEmptyBlock helper]
+    
+    CC --> DD{✅ Basic<br/>Reformat Complete?}
+    DD -->|NO| EE[🔄 Restore Backup<br/>Indentation correction failure]
+    DD -->|YES| FF[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Integrity + Keys]
+    
+    BB --> FF
+    FF --> GG{✅ Final JSON<br/>Valid?}
+    GG -->|NO| HH[🔄 Restore Backup<br/>+ Forensic Analysis<br/>MoveCorruptedJsonToAnalysis]
+    GG -->|YES| II[📊 Final Log Success<br/>Process completed successfully<br/>Basic 4-space formatting]
+    
+    Y --> JJ[📊 Log Backup Restore<br/>JSON restored after write failure]
+    EE --> KK[📊 Log Backup Restore<br/>JSON restored after indent failure]  
+    HH --> LL[📊 Log Critical Error<br/>Could not restore from backup]
+    
+    JJ --> II
+    KK --> II
+    LL --> II
+    
+    II --> MM[💬 Console Message<br/>OBody Assistant: Process completed!]
+    MM --> NN[🏁 END: Process Complete<br/>JSON with basic format<br/>4-space hierarchy without optimizations]
+    
+    F --> OO[🏁 END: Corrupt JSON<br/>Without automatic restore<br/>CONTACT MODDER OR REINSTALL!]
+    Q --> PP[🏁 END: Critical Error<br/>JSON read failed]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef basicFeature fill:#e8eaf6,stroke:#5c6bc0,stroke-width:2px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    
+    class A,NN,OO,PP startEnd
+    class B,C,I,R,S,T,U,V,W process
+    class E,G,L,P,X,AA,DD,GG decision
+    class F,Q,Y,EE,HH error
+    class H,H1,J,K,M,N backup
+    class D,Z,CC,FF,BB basicFeature
+    class II,JJ,KK,LL,MM logFeature
+                      </div>
+                    </details>
+                </div>
+
+                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>⏩ Show/Hide Flowchart v1.7.5</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>⏩ Flowchart v1.7.5:</strong> This is the fifth revision of version 1.7. Although the previous version performed its function perfectly, we decided to further enhance the structure, simplify some messages to prevent confusion, and include a 3-step reading and structure analysis. Additionally, a more advanced method for modifying and incorporating rules has been implemented. The entire procedure, while seemingly extensive, executes in a fraction of a second, ensuring it is both fast and robust. This level of polish was achieved thanks to the valuable feedback from our beta testers.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+    
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt to recover from backup]
+    
+    F1 --> F2{✅ Restoration<br/>Successful?}
+    F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+    F2 -->|NO| F[❌ END PROCESS<br/>Corrupt JSON without valid backup<br/>CRITICAL ERROR + recommended actions]
+    F3 --> G
+    
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy to Backup_OBody_DPA]
+    G -->|Backup=true| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Do not update INI → Backup_OBody_DPA]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse 8 valid keys]
+    
+    H --> J[✏️ Update INI<br/>UpdateBackupConfigInIni<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true without changes]
+    J --> I
+    K --> I
+    
+    I --> L{✅ JSON Read<br/>readSuccess?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup<br/>Backup_OBody_DPA]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Unique timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>directory_iterator<br/>OBodyNG_PDA_*.ini]
+    
+    L -->|YES| R
+    R --> S[📝 Process INI Rules<br/>ParseRuleLine + validKeys<br/>Add/Remove Presets/Plugins<br/>Dynamic counts]
+    S --> T[🔢 Update INI Counts<br/>UpdateIniRuleCount<br/>Automatic decrement]
+    T --> U[📊 Detailed Log Summary<br/>Complete statistics<br/>Rules/Files/Presets/Plugins]
+    
+    U --> V[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+    V --> W[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp file + PerformTripleValidation]
+    
+    W --> X{✅ Write<br/>Successful?}
+    X -->|NO| Y[🔄 Restore Backup<br/>RestoreJsonFromBackup<br/>Write failure]
+    X -->|YES| Z[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>Detect Multi-line Empty Containers]
+    
+    Z --> AA{📏 Indentation<br/>Already Correct?}
+    AA -->|YES| BB[✅ JSON Already Perfect<br/>4 spaces + inline empty<br/>Multi-line empty detection]
+    AA -->|NO| CC[✏️ FULL REFORMAT<br/>isEmptyBlock Helper<br/>Empty containers inline<br/>With content 4 spaces]
+    
+    CC --> DD{🔧 isEmptyBlock<br/>Multi-line + inline?}
+    DD -->|Empty Container| EE[📝 Write inline<br/>containers or arrays same line]
+    DD -->|With Data| FF[📝 Standard format<br/>4 spaces per level]
+    
+    EE --> GG[🔄 Continue parsing<br/>Next container]
+    FF --> GG
+    GG --> HH{✅ Reformat<br/>Complete?}
+    
+    HH -->|NO| II[🔄 Restore Backup<br/>Indentation correction failure]
+    HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Integrity + Keys]
+    
+    BB --> JJ
+    JJ --> KK{✅ Final JSON<br/>Valid?}
+    KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis<br/>MoveCorruptedJsonToAnalysis]
+    KK -->|YES| MM[📊 Final Log Success<br/>Process completed successfully<br/>Perfect 4-space formatting]
+    
+    Y --> NN[📊 Log Backup Restore<br/>JSON restored after write failure]
+    II --> OO[📊 Log Backup Restore<br/>JSON restored after indent failure]  
+    LL --> PP[📊 Log Critical Error<br/>Could not restore from backup]
+    
+    NN --> MM
+    OO --> MM
+    PP --> MM
+    
+    MM --> QQ[💬 Console Message<br/>OBody Assistant: Process completed!]
+    QQ --> RR[🏁 END: Process Complete<br/>JSON with perfect format<br/>Inline empty + 4-space hierarchy<br/>Folder: Backup_OBody_DPA]
+    
+    F --> SS[🏁 END: Corrupt JSON<br/>No valid backup available<br/>CONTACT MODDER OR REINSTALL!]
+    Q --> TT[🏁 END: Critical Error<br/>JSON read failed]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+    classDef inlineFeature fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    classDef autoRestore fill:#e8eaf6,stroke:#3f51b5,stroke-width:3px,color:#333
+    
+    class A,RR,SS,TT startEnd
+    class B,C,I,R,S,T,U,V,W process
+    class E,G,L,P,X,AA,DD,HH,KK,F2 decision
+    class F,Q,Y,II,LL error
+    class H,H1,J,K,M,N backup
+    class D,Z,CC,JJ newFeature
+    class EE,FF,GG,BB inlineFeature
+    class MM,NN,OO,PP,QQ,F3 logFeature
+    class F1 autoRestore
+                      </div>
+                    </details>
+                </div>
+
+                <div class="flowchart-item" style="border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>🚀 Show/Hide Flowchart v1.7.12</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>🚀 Flowchart v1.7.12:</strong> This is likely the final and most polished revision of the 1.7 branch, designed to be exceptionally fail-proof. Its logic is engineered to prevent all types of issues by first initializing and verifying the environment. The process continues by reading the INI rules, checking the integrity of the master JSON, and then performing a backup. It re-verifies if new rules need to be applied, leaving the master JSON untouched if no changes are necessary. This is followed by a 3-step structural review, a method that minimizes direct modifications to the JSON, preventing file corruption by only writing when explicitly required. The entire operation is extremely fast, executing in less than a second, and supports highly complex JSON files, even those exceeding 7,000 lines or 50 MB—a scale we don't anticipate being common. Following this release, development will focus on version 1.8, which will introduce rules for automatic blacklisting and is expected in a few months.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+    
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt to recover from backup]
+    
+    F1 --> F2{✅ Restoration<br/>Successful?}
+    F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+    F2 -->|NO| F[❌ END PROCESS<br/>Corrupt JSON without valid backup<br/>CRITICAL ERROR + recommended actions]
+    F3 --> G
+    
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy to Backup_OBody_DPA]
+    G -->|Backup=true| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Do not update INI → Backup_OBody_DPA]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse 8 valid keys]
+    
+    H --> J[✏️ Update INI<br/>UpdateBackupConfigInIni<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true without changes]
+    J --> I
+    K --> I
+    
+    I --> L{✅ JSON Read<br/>readSuccess?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup<br/>Backup_OBody_DPA]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Unique timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>directory_iterator<br/>OBodyNG_PDA_*.ini]
+    
+    L -->|YES| R
+    R --> S[📝 Process INI Rules<br/>ParseRuleLine + validKeys<br/>Add/Remove Presets/Plugins<br/>Dynamic counts]
+    S --> T[🔢 Update INI Counts<br/>UpdateIniRuleCount<br/>Automatic decrement]
+    T --> U[📊 Detailed Log Summary<br/>Complete statistics<br/>Rules/Files/Presets/Plugins]
+    
+    U --> V[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+    V --> VV{🔍 VERIFY CHANGES<br/>Needed?}
+    
+    VV -->|YES| W[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp file + PerformTripleValidation]
+    VV -->|NO| Z[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>Detect Multi-line Empty Containers]
+    
+    W --> X{✅ Write<br/>Successful?}
+    X -->|NO| Y[🔄 Restore Backup<br/>RestoreJsonFromBackup<br/>Write failure]
+    X -->|YES| Z
+    
+    Z --> AA{📏 Indentation<br/>Already Correct?}
+    AA -->|YES| BB[✅ JSON Already Perfect<br/>4 spaces + inline empty<br/>Multi-line empty detection]
+    AA -->|NO| CC[✏️ FULL REFORMAT<br/>isEmptyBlock Helper<br/>Empty containers inline<br/>With content 4 spaces]
+    
+    CC --> DD{🔧 isEmptyBlock<br/>Multi-line + inline?}
+    DD -->|Empty Container| EE[📝 Write inline<br/>containers or arrays same line]
+    DD -->|With Data| FF[📝 Standard format<br/>4 spaces per level]
+    
+    EE --> GG[🔄 Continue parsing<br/>Next container]
+    FF --> GG
+    GG --> HH{✅ Reformat<br/>Complete?}
+    
+    HH -->|NO| II[🔄 Restore Backup<br/>Indentation correction failure]
+    HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Integrity + Keys]
+    
+    BB --> JJ
+    JJ --> KK{✅ Final JSON<br/>Valid?}
+    KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis<br/>MoveCorruptedJsonToAnalysis]
+    KK -->|YES| MM[📊 Final Log Success<br/>Process completed successfully<br/>Perfect 4-space formatting]
+    
+    Y --> NN[📊 Log Backup Restore<br/>JSON restored after write failure]
+    II --> OO[📊 Log Backup Restore<br/>JSON restored after indent failure]  
+    LL --> PP[📊 Log Critical Error<br/>Could not restore from backup]
+    
+    NN --> MM
+    OO --> MM
+    PP --> MM
+    
+    MM --> QQ[💬 Console Message<br/>OBody Assistant: Process completed!]
+    QQ --> RR[🏁 END: Process Complete<br/>JSON with perfect format<br/>Inline empty + 4-space hierarchy<br/>Folder: Backup_OBody_DPA]
+    
+    F --> SS[🏁 END: Corrupt JSON<br/>No valid backup available<br/>CONTACT MODDER OR REINSTALL!]
+    Q --> TT[🏁 END: Critical Error<br/>JSON read failed]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+    classDef inlineFeature fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    classDef autoRestore fill:#e8eaf6,stroke:#3f51b5,stroke-width:3px,color:#333
+    classDef verification fill:#fce4ec,stroke:#ad1457,stroke-width:3px,color:#333
+    
+    class A,RR,SS,TT startEnd
+    class B,C,I,R,S,T,U,V,W process
+    class E,G,L,P,X,AA,DD,HH,KK,F2,VV decision
+    class F,Q,Y,II,LL error
+    class H,H1,J,K,M,N backup
+    class D,Z,CC,JJ newFeature
+    class EE,FF,GG,BB inlineFeature
+    class MM,NN,OO,PP,QQ,F3 logFeature
+    class F1 autoRestore
+    class VV verification
+                      </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        
+
         <!-- Características Avanzadas -->
-        <section id="features" class="section bg-celeste">
+        <section id="features" class="section">
         <div class="container">
             <h2 class="section-title">Advanced Features</h2>
             <div class="features-grid">
@@ -539,7 +982,7 @@ npc = Lydia|Lydia Custom Preset|1
     </section>
 
         <!-- Seguridad y Confiabilidad -->
-        <section id="security" class="section">
+        <section id="security" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">Security and Reliability</h2>
             <div class="security-grid">
@@ -549,7 +992,9 @@ npc = Lydia|Lydia Custom Preset|1
                     <p>Complete automatic backup before any modification:</p>
                     <ul>
                         <li>Backup of the original JSON before changes</li>
-                        <li>Automatically changes <code>Backup = 1</code> to <code>Backup = 0</code> after backup</li>
+                        <li>Support for <code>Backup = true/false</code> </li>
+                        <li><code>Backup = 1</code>: Performs backup once, not recommended</li>
+                        <li><code>Backup = 0</code>: Disables backup, same as false</li>
                         <li>File integrity verification</li>
                         <li>Automatic recovery in case of error</li>
                     </ul>
@@ -595,7 +1040,7 @@ npc = Lydia|Lydia Custom Preset|1
     </section>
 
         <!-- Reconocimientos -->
-        <section id="acknowledgments" class="section bg-celeste">
+        <section id="acknowledgments" class="section">
         <div class="container">
             <h2 class="section-title">Acknowledgments</h2>
             <div class="acknowledgments-content">
@@ -667,22 +1112,32 @@ npc = Lydia|Lydia Custom Preset|1
                     <div class="credits-list">
                         <div class="credit-item">
                             <h4>CommonLibSSE NG</h4>
-                            <p>Fundamental framework for developing modern SKSE plugins</p>
+                            <p>Fundamental framework for developing modern SKSE plugins.</p>
                         </div>
 
                         <div class="credit-item">
                             <h4>SKSE Team</h4>
-                            <p>For the continuous development and support of the Skyrim Script Extender</p>
+                            <p>For the continuous development and support of the Skyrim Script Extender.</p>
                         </div>
 
                         <div class="credit-item">
                             <h4>OBody NG Team</h4>
-                            <p>For creating the base that makes this functionality possible</p>
+                            <p>For creating the base that makes this functionality possible.</p>
                         </div>
 
                         <div class="credit-item">
                             <h4>Modding Community</h4>
-                            <p>For the constant feedback and ideas for improvements</p>
+                            <p>For the constant feedback and ideas for improvements.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Music Skyrim</h4>
+                            <p>Thanks to the original authors of Skyrim for the music played directly from YouTube.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Flowchart, Whiteboard and Graphics</h4>
+                            <p>Thanks to <a href="https://mermaid.js.org/">Mermaid</a>, <a href="https://excalidraw.com/">Excalidraw</a> and <a href="https://time.graphics/">Graphics</a> for being free and very useful tools for drawing and creating diagrams.</p>
                         </div>
                     </div>
                 </div>
@@ -690,7 +1145,7 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        <section id="project-schedule-outline" class="section">
+        <section id="project-schedule-outline" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">Project Schedule Outline</h2>
             <div class="image-frame" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 10px; background: rgba(0, 0, 0, 0.1); margin: 20px 0;">
@@ -705,7 +1160,7 @@ npc = Lydia|Lydia Custom Preset|1
     </section>
 
     <!-- Final Note -->
-    <section class="section final-note-section">
+    <section class="section final-note-section bg-celeste">
         <div class="container">
             <div class="final-note">
                 <h3>Final Note</h3>
@@ -715,6 +1170,8 @@ npc = Lydia|Lydia Custom Preset|1
             </div>
         </div>
     </section>
+
+        
 
     <!-- Footer -->
     <footer class="footer">
@@ -745,6 +1202,7 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </footer>
 
+    <script src="audio-ball.js"></script>
     <script src="app.js"></script>
     <script src="particles.js"></script>
 </body>
