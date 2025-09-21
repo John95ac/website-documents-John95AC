@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="../assets/css/icons.css">
+    <link rel="icon" type="image/x-icon" href="../images/log.ico">
     <style>
         /* Override teal colors with green */
         :root {
@@ -44,12 +45,16 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <div class="logo-icon">🔧</div>
-                <span>Race Menu Overlay to SlaveTats Helper</span>
-                <a href="../index.html" class="nav-link" style="margin-left: 5px; text-decoration: none; color: inherit;" title="Back to Home">🏠 Home</a>
+                <span>RM to ST Helper</span>
+                <a href="../index.html" class="nav-link" style="text-decoration: none; color: inherit;" title="Back to Index">📜 Index</a>
             </div>
             <ul class="nav-menu">
-                <li><a href="#inicio" class="nav-link active">Home</a></li>
+                <li><a href="#inicio" class="nav-link active"></a></li>
                 <li><a href="#funcionalidad" class="nav-link">Functionality</a></li>
+                <li><a href="#installation" class="nav-link">Installation</a></li>
+                <li><a href="#st-to-rm-steps" class="nav-link">ST→RM</a></li>
+                <li><a href="#rm-to-st-steps" class="nav-link">RM→ST</a></li>
+                <li><a href="#rm-st-from-scratch" class="nav-link">RM/ST</a></li>
                 <li><a href="#simulador" class="nav-link">Simulator</a></li>
                 <li><a href="#ejemplos" class="nav-link">Examples</a></li>
                 <li><a href="#caracteristicas" class="nav-link">Features</a></li>
@@ -112,7 +117,7 @@
     </section>
 
     <!-- Functionality Section -->
-    <section id="funcionalidad" class="section">
+    <section id="funcionalidad" class="section bg-gray-translucent">
         <div class="container">
             <h2 class="section-title">Main Features</h2>
 
@@ -160,62 +165,151 @@
                 </div>
             </div>
 
-            <!-- Modes Section -->
-            <div class="modes-section">
-                <h3>Work Tabs</h3>
-                <div class="modes-grid">
-                    <div class="mode-card">
-                        <div class="mode-code">ST→RM</div>
-                        <div class="mode-info">
-                            <h4>SlaveTats to RaceMenu</h4>
-                            <p>Parses JSON and generates PSC with Overlays structure</p>
-                        </div>
-                    </div>
-                    <div class="mode-card">
-                        <div class="mode-code">RM→ST</div>
-                        <div class="mode-info">
-                            <h4>RaceMenu to SlaveTats</h4>
-                            <p>Extracts Add*Paint and creates normalized JSON</p>
-                        </div>
-                    </div>
-                    <div class="mode-card">
-                        <div class="mode-code">ST+</div>
-                        <div class="mode-info">
-                            <h4>ST Creator (DDS)</h4>
-                            <p>Creates SlaveTats from DDS folder</p>
-                        </div>
-                    </div>
-                    <div class="mode-card">
-                        <div class="mode-code">RM+</div>
-                        <div class="mode-info">
-                            <h4>RM Creator (DDS)</h4>
-                            <p>Creates RaceMenu from DDS folder</p>
-                        </div>
-                    </div>
-                    <div class="mode-card">
-                        <div class="mode-code">PCA</div>
-                        <div class="mode-info">
-                            <h4>PCA Helper</h4>
-                            <p>Papyrus compilation assistant</p>
-                        </div>
-                    </div>
-                    <div class="mode-card">
-                        <div class="mode-code">💡</div>
-                        <div class="mode-info">
-                            <h4>Tips</h4>
-                            <p>Motivational tips and cat pictures</p>
-                        </div>
-                    </div>
-                </div>
+            
+        </div>
+    </section>
 
-                <div class="modes-info">
-                    <p class="modes-explanation">
-                        <strong>Important note:</strong> The <span class="green-text">ST→RM and RM→ST</span> tabs are for conversion between existing systems.
-                        The <span class="green-text">ST+ and RM+</span> tabs are for creating completely new mods from DDS textures.
-                        The <span class="red-text">PCA</span> tab is optional but recommended for automatic script compilation.
-                    </p>
+    <!-- Installation Section -->
+    <section id="installation" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Installation</h2>
+            <div class="data-flow">
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Program Download</h4>
+                            <p style="display: block; width: 100%; margin-top: 8px; text-align: justify;">The program is available in two versions: one in Python and the other as an EXE. Choose the one you prefer. The EXE version is a port of the original Python script and is about 300 MB, while the Python version is only 100 MB. There is no functional difference between them. Simply download the program and place it wherever you like just remember the location. The EXE has an icon; click it to start the program. It is normal for it to take a moment to open.</p>
+                            <h4 style="color: #add8e6; margin-bottom: 15px; margin-top: 10px;">SSEEDIT Script Installation</h4>
+                            <p style="display: block; width: 100%; margin-top: 8px; text-align: justify;">Simply install it like any other mod. Once installed, the new Pascal script will appear in SSEEdit. This will be used in one of the final steps to create the port.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/v1.webm" type="video/webm">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- ST to RM Steps Section -->
+    <section id="st-to-rm-steps" class="section bg-gray-translucent">
+        <div class="container">
+            <h2 class="section-title">SlaveTats - RaceMenu steps</h2>
+            <div class="data-flow">
+                <h3>First step - automatic psc papyrus creation</h3>
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Using the Program to Generate the PSC File</h4>
+                            <p style="display: block; width: 100%; margin-top: 8px; text-align: justify;">Start the program and keep the first tab, 'SlaveTats - RaceMenu', open. Navigate to the directory of the tattoo mod you wish to convert. Inside that mod's folder, locate the following path: <code>(Mod name)\textures\actors\character\slavetats</code> You will find a JSON file in this directory. Drag and drop this file into the program window. A preview of the Papyrus (PSC) script will be automatically displayed. Click the <span style='color:lightgreen;'>Generate .psc File</span> button to generate the script file.</p>
+                            <h4 style="color: #add8e6; margin-bottom: 15px; margin-top: 10px;">Organizing Textures and Files for the Next Step</h4>
+                            <p style="display: block; width: 100%; margin-top: 8px; text-align: justify;">Once the folder containing the newly created PSC file opens, you can close it. Proceed by clicking the <span style='color:lightgreen;'>create organized texture folder</span> button. This action will copy the mod's textures into a new, organized folder structure required for the new mod. Finally, move the two newly created folders into your mod's main directory, as demonstrated in the accompanying video. This completes the first step. The next stage is to convert the PSC file into a PEX file.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/v1.webm" type="video/webm">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow">
+                <h3>Second Step - Easily Compile PSC to PEX</h3>
+                <div class="flow-description">
+                    <p style="text-align: justify; margin-bottom: 20px;">
+                        Now that your PSC file is ready, the next step is to compile it into PEX format. While there are several methods to do this, such as using the official Creation Kit, direct command-line compilation, or a setup in Visual Studio Code, the method I use most frequently for its speed and efficiency is the <a href="https://www.nexusmods.com/skyrimspecialedition/mods/23852" target="_blank" style="color: #87CEEB;">PCA SE</a> compiler. To make this even simpler, I've created a guided process within the tool.
+                    </p>
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/v1.webm" type="video/webm">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Guided Compilation Steps</h4>
+                            <p style="text-align: justify;">
+                                As shown in the video, navigate to the <code>(Mod name)\scripts\Source</code> directory to find your PSC file. In our conversion tool, go to the <span style='color:lightgreen;'>PCA Papyrus Compiler Helper</span> tab.
+                            </p>
+                            <ol style="text-align: left; padding-left: 20px; margin-top: 10px;">
+                                <li style="margin-bottom: 10px;">Click the gear icon and select "Emulate MO2" to generate a path, which you must copy.</li>
+                                <li style="margin-bottom: 10px;">Open the PCA program and paste the copied path into its MO2 configuration section.</li>
+                                <li style="margin-bottom: 10px;">Return to our tool, press the green button, and drag your PSC file into the window.</li>
+                                <li style="margin-bottom: 10px;">Finally, drag the same PSC file into the PCA program to compile it.</li>
+                            </ol>
+                            <p style="text-align: justify;">
+                                Upon completion, the compiled PEX file will be automatically placed in the correct directory.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow">
+                <h3>Third Step - Create the ESP/ESPFE with SSEEdit</h3>
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Launching SSEEdit for the Final Step</h4>
+                            <p style="text-align: justify;">
+                                The final piece is the plugin file (.esp). While this is typically done via the Creation Kit, I've developed a streamlined process using SSEEdit.
+                            </p>
+                            <ol style="text-align: left; padding-left: 20px; margin-top: 10px;">
+                                <li style="margin-bottom: 10px;">Open SSEEdit through your mod manager (e.g., MO2). When prompted, select only the <code>Example for creating racemenu overlays John95.esp</code> file and wait for it to load.</li>
+                                <li style="margin-bottom: 10px;">As shown in the video, right-click the template mod, choose "Apply Script," and select <code>0002 Race Menu Overlays ESP Creator.pas</code>.</li>
+                                <li style="margin-bottom: 10px;">A dialog will appear. You can create a new ESP, or an ESP flagged as an ESPFE (recommended).You will be prompted for a mod name and then the PEX file name. Enter your desired names.</li>
+                                <li style="margin-bottom: 10px;">Navigate into your new plugin to the "Quest" section and manually edit the "FormID" field to match the new quest's ID, as shown in the video.</li>
+                                <li style="margin-bottom: 10px;">Finally, run "Clean Masters" on your plugin, then close SSEEdit and save.</li>
+                            </ol>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px; margin-top: 40px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/v1.webm" type="video/webm">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="data-flow">
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                         <h4 style="color: #add8e6; margin-bottom: 15px;">Cleanup and Organization (Optional) - This final step is recommended to save space and keep your mod tidy</h4>
+                         <p style="text-align: justify;">
+                        </p>
+                        <ul style="text-align: left; padding-left: 20px; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;">Move the new ESP file you just saved into your main mod folder.</li>
+                            <li style="margin-bottom: 10px;">Since the mod is now a RaceMenu overlay, you can delete the now-unused SlaveTats texture folder, located at <code>(Mod name)\t extures\actors\character\slavetats</code>.</li>
+                        </ul>
+                         <p style="text-align: justify; margin-top: 20px;">
+                            That's it! For even greater space savings, I will be posting a guide on using assisted compression techniques, which can shrink a 4GB mod down to 60MB without quality loss.
+                        </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RM to ST Steps Section -->
+    <section id="rm-to-st-steps" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">RaceMenu - SlaveTats steps</h2>
+            
+        </div>
+    </section>
+
+    <!-- RM ST from scratch Section -->
+    <section id="rm-st-from-scratch" class="section bg-gray-translucent">
+        <div class="container">
+            <h2 class="section-title">RaceMenu - SlaveTats from scratch</h2>
+            
         </div>
     </section>
 
@@ -281,7 +375,7 @@ Workflow steps:
     </section>
 
     <!-- Examples Section -->
-    <section id="ejemplos" class="section">
+    <section id="ejemplos" class="section bg-gray-translucent">
         <div class="container">
             <h2 class="section-title">Usage Examples</h2>
 
@@ -404,7 +498,7 @@ textures/Actors/Character/Overlays/Fantasy/tribal_arm.dds</textarea>
     </section>
 
     <!-- Architecture Section -->
-    <section id="arquitectura" class="section">
+    <section id="arquitectura" class="section bg-gray-translucent">
         <div class="container">
             <h2 class="section-title">System Architecture</h2>
 
@@ -526,7 +620,7 @@ textures/Actors/Character/Overlays/Fantasy/tribal_arm.dds</textarea>
             <div class="acknowledgments-content">
                 <div class="beta-testers">
                     <h3>Beta Testers</h3>
-                    <p>Special thanks to our dedicated beta testers who helped make this project possible:</p>
+                    <p>Special thanks to everyone who followed this project, and to those who gave ideas for its development, both directly and indirectly.</p>
 
                     <div class="testers-grid">
                         <div class="tester-card">
