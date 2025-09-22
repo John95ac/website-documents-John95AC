@@ -37,6 +37,23 @@
         .bg-gray-translucent {
             background-color: rgba(128, 128, 128, 0.15) !important; /* Translucent gray */
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-description-green {
+            color: rgba(76, 175, 80, 1) !important;
+            animation: fadeIn 1s ease-out;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -77,6 +94,7 @@
                 <h1 class="hero-title">Race Menu Overlay to SlaveTats Helper</h1>
                 <p class="hero-subtitle">A comprehensive Python tool for Skyrim modders</p>
                 <p class="hero-description">Designed to streamline the creation, conversion, and management of character overlay mods between the RaceMenu and SlaveTats systems. Built with PyQt5, it features a modern dark theme interface for ease of use.</p>
+                <p class="hero-description-green">You can convert SlaveTats mods to RaceMenu and use them as resources for creating followers or presets and vice versa.</p>
 
                 <div class="hero-stats">
                     <div class="stat stat-green">
