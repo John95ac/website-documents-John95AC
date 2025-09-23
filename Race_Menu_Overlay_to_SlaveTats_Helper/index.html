@@ -72,8 +72,7 @@
                 <li><a href="#st-to-rm-steps" class="nav-link">ST→RM</a></li>
                 <li><a href="#rm-to-st-steps" class="nav-link">RM→ST</a></li>
                 <li><a href="#rm-st-from-scratch" class="nav-link">RM/ST</a></li>
-                <li><a href="#simulador" class="nav-link">Simulator</a></li>
-                <li><a href="#ejemplos" class="nav-link">Examples</a></li>
+                
                 <li><a href="#caracteristicas" class="nav-link">Features</a></li>
                 <li><a href="#arquitectura" class="nav-link">Architecture</a></li>
                 <li><a href="#seguridad" class="nav-link">Security</a></li>
@@ -340,6 +339,22 @@
     <section id="rm-to-st-steps" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">RaceMenu - SlaveTats steps</h2>
+            <div class="data-flow">
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Simple Conversion Process</h4>
+                            <p style="display: block; width: 100%; margin-top: 8px; text-align: justify;">This is simpler than the previous one and there's only one step. You just need to go to the <code>(Mod name)\scripts\Source</code> folder and find the PSC file, drag it into the program and it will be ready automatically. Then press the second green button, <span style='color:lightgreen;'>Created mod folder</span>, and that's it. The basic structure will be created. After that, just drag everything to where it should be and remove the old RaceMenu overlay traces, and you'll have the mod converted to RaceMenu.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/PA_corte.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
         </div>
     </section>
@@ -348,148 +363,37 @@
     <section id="rm-st-from-scratch" class="section bg-gray-translucent">
         <div class="container">
             <h2 class="section-title">RaceMenu - SlaveTats from scratch</h2>
-            
-        </div>
-    </section>
-
-    <!-- Simulator Section -->
-    <section id="simulador" class="section bg-celeste">
-        <div class="container">
-            <h2 class="section-title">Workflow Simulator</h2>
-
-            <div class="simulator-container">
-                <div class="simulator-controls">
-                    <h3>Workflow Configuration</h3>
-
-                    <div class="form-group">
-                        <label class="form-label">Conversion Type:</label>
-                        <select id="conversionType" class="form-control">
-                            <option value="st-to-rm">SlaveTats → RaceMenu</option>
-                            <option value="rm-to-st">RaceMenu → SlaveTats</option>
-                            <option value="dds-to-st">DDS → SlaveTats</option>
-                            <option value="dds-to-rm">DDS → RaceMenu</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Input File:</label>
-                        <input type="text" id="inputFile" class="form-control" placeholder="e.g., my_mod.json">
-                    </div>
-
-                    <div class="form-group" id="elementValue" style="display: none;">
-                        <label class="form-label">Mod Name:</label>
-                        <input type="text" id="elementValueInput" class="form-control" placeholder="MyModOverlay">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Output Format:</label>
-                        <select id="outputFormat" class="form-control">
-                            <option value="zip">ZIP Package</option>
-                            <option value="7z">7z Archive</option>
-                            <option value="folder">Folder</option>
-                        </select>
-                    </div>
-
-                    <button id="generateBtn" class="btn btn--primary btn--full-width">Simulate Conversion</button>
-                </div>
-
-                <div class="simulator-output">
-                    <div class="output-header">
-                        <h4>Workflow Result</h4>
-                        <button id="copyResult" class="copy-btn">Copy</button>
-                    </div>
-                    <textarea id="generatedRule" class="form-control" readonly>
-# Race Menu Helper - Workflow Result
-# Select a conversion type and file to see the result
-
-Workflow steps:
-1. Load input file
-2. Analysis and parsing
-3. Structure generation
-4. Copy DDS textures
-5. Create final package</textarea>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Examples Section -->
-    <section id="ejemplos" class="section bg-gray-translucent">
-        <div class="container">
-            <h2 class="section-title">Usage Examples</h2>
-
-            <div class="examples-container">
-                <div class="example-editor">
-                    <div class="editor-header">
-                        <div class="editor-title">
-                            📄 Example: JSON → PSC Conversion
+            <div class="data-flow">
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/PC1_corte_convertido.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
-                        <button class="copy-btn" onclick="copyToClipboard('exampleContent')">Copy</button>
-                    </div>
-                    <textarea id="exampleContent" class="ini-editor" readonly>
-# Input: my_tattoos.json (SlaveTats)
-{
-  "tattoos": [
-    {
-      "name": "Dragon Tattoo",
-      "section": "Fantasy",
-      "texture": "dragon_back.dds",
-      "area": "Body"
-    },
-    {
-      "name": "Tribal Marks",
-      "section": "Fantasy",
-      "texture": "tribal_arm.dds",
-      "area": "Body"
-    }
-  ]
-}
-
-# Output: Fantasy.psc (RaceMenu)
-scriptName Fantasy extends Quest
-
-function OnInit()
-    AddBodyPaint("Dragon Tattoo", "textures\Actors\Character\Overlays\Fantasy\dragon_back.dds")
-    AddBodyPaint("Tribal Marks", "textures\Actors\Character\Overlays\Fantasy\tribal_arm.dds")
-endFunction
-
-# Generated structure:
-scripts/Source/Fantasy.psc
-textures/Actors/Character/Overlays/Fantasy/dragon_back.dds
-textures/Actors/Character/Overlays/Fantasy/tribal_arm.dds</textarea>
-                </div>
-
-                <div class="example-explanation">
-                    <h3>Process Explanation</h3>
-
-                    <div class="rule-item">
-                        <strong>1. JSON Analysis</strong>
-                        <p>The tool parses the JSON file and extracts the name, section, texture, and area from each entry.</p>
-                    </div>
-
-                    <div class="rule-item">
-                        <strong>2. PSC Generation</strong>
-                        <p>Creates the Papyrus script with appropriate AddBodyPaint/AddWarpaint calls depending on the area.</p>
-                    </div>
-
-                    <div class="rule-item">
-                        <strong>3. Overlays Structure</strong>
-                        <p>Organizes the DDS textures into the structure required by RaceMenu in Overlays/&lt;section&gt;/</p>
-                    </div>
-
-                    <div class="rule-item">
-                        <strong>4. Compilation</strong>
-                        <p>Uses the PCA Helper to automatically compile PSC to PEX with MO2 or standalone mode.</p>
-                    </div>
-
-                    <div class="rule-item">
-                        <strong>5. ESP Plugin</strong>
-                        <p>Uses the Pascal script in SSEdit to create the ESP plugin with the assigned quest.</p>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <h4 style="color: #add8e6; margin-bottom: 15px;">Convert a set of DDS files into a complete mod</h4>
+                            <p style="text-align: justify;">
+                                This is simpler. My program has specific tabs: one for converting from RaceMenu to SlaveTats and another for the reverse conversion. You just need to drag the folder containing the DDS files you want to convert. The complete list of DDS files will appear.
+                            </p>
+                            <p style="text-align: justify;">
+                                Double-clicking on a DDS file name will allow you to preview it. You will have body textures and backgrounds for comparison, such as CBBE and UBE. To start, you can begin with a folder of DDS files. If you wish to perform maintenance or add more content to your mods, simply drag the corresponding JSON or PSC file to the creator.
+                            </p>
+                            <p style="text-align: justify;">
+                                Read the instructions carefully. The terminal is your friend; I spent a lot of time adding comments for different scenarios and, especially, the backup system. This prevents you from losing your configurations. It's like a large playground that avoids the need to write code manually.
+                            </p>
+                            <p style="text-align: justify;">
+                                I will leave a video for you to analyze how to create mods in both formats. Only DDS files are needed.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    
 
     <!-- Features Section -->
     <section id="caracteristicas" class="section bg-celeste">
