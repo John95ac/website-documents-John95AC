@@ -75,7 +75,8 @@
                 
                 <li><a href="#caracteristicas" class="nav-link">Features</a></li>
                 <li><a href="#arquitectura" class="nav-link">Architecture</a></li>
-                <li><a href="#seguridad" class="nav-link">Security</a></li>
+                <li><a href="#seguridad" class="nav-link">Tools</a></li>
+                <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
                 <li><a href="#project-schedule-outline" class="nav-link">Projects</a></li>
             </ul>
             <button class="nav-toggle">
@@ -110,7 +111,7 @@
                     </div>
                     <div class="stat stat-green">
                         <div class="stat-value">🚀</div>
-                        <div class="stat-label">No Creation Kit Required</div>
+                        <div class="stat-label">no need to run creation kit, just install dependency</div>
                     </div>
                     <div class="stat stat-green">
                         <div class="stat-value">📜</div>
@@ -395,46 +396,35 @@
 
     
 
-    <!-- Features Section -->
-    <section id="caracteristicas" class="section bg-celeste">
+        <section id="caracteristicas" class="section bg-celeste">
         <div class="container">
-            <h2 class="section-title">Advanced Features</h2>
+            <h2 class="section-title">Configuration and Recommendation</h2>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🖱️</div>
-                    <h3>Drag & Drop</h3>
-                    <p>Easily import JSON, PSC, or DDS folders directly into the tabs by dragging and dropping</p>
+            <div class="data-flow">
+                <h3>Papyrus Compiler App PCA</h3>
+                <div class="flow-description">
+                    <p>This tool has its own wiki at <a href="https://pca.kiyozz.com/" target="_blank">https://pca.kiyozz.com/</a> and it's one of the reasons i decided to learn how to create web pages for my projects, although i decided on a different design. the important thing is that once downloaded from the nexus page, you install it wherever you want, and in the configuration tab make sure to follow these hints. it cost me a lot to learn this on my own before. this app is very practical but not very intuitive hahaha, but i love it.</p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🌙</div>
-                    <h3>Dark Theme</h3>
-                    <p>Custom frameless window with gradient backgrounds, intuitive menus, and responsive UI elements</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Progress Tracking</h3>
-                    <p>Global progress bars and status updates for long operations like file copying</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Error Handling</h3>
-                    <p>Detailed terminal output in each tab (green for info, red for errors, orange for warnings)</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔊</div>
-                    <h3>Sound Feedback</h3>
-                    <p>Plays a success sound on key actions like file generation and operation completion</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📦</div>
-                    <h3>Packaging</h3>
-                    <p>Creates mod-ready ZIP/7z files with the correct structure and automatic cleanup</p>
+            </div>
+            <div class="image-frame" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 10px; background: rgba(0, 0, 0, 0.1); margin: 20px 0;">
+                <img src="Video/PCA_SE.webp" alt="PCA SE" style="width: 100%; height: auto; border-radius: 4px;">
+            </div>
+            <div class="data-flow">
+                <div class="flow-description">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color: #add8e6;">Compress mod to save space without losing quality</h3>
+                            <p>Texture mods often weigh too much, especially tattoo mods that aren't always running. This trick works very well for SSD or NVMe drives, but if your disk is an HDD, I don't recommend it.</p>
+                            <p>Look, go to the mod in question, select one or multiple, and apply in Properties → Advanced settings → Compress to save disk space. Then accept and wait for the file to compress, just like in the video. Done: you'll go from 10 GB of mods to just 700 MB.</p>
+                            <p>There's also the option of using Cathedral to reduce DDS quality, but it can lose quality, so I prefer this method.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; padding-left: 20px;">
+                            <video width="100%" controls style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                <source src="Video/v1.webm" type="video/webm">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -480,76 +470,75 @@
         </div>
     </section>
 
-    <!-- Security Section -->
+    <!-- Main Tools Section -->
     <section id="seguridad" class="section bg-celeste">
         <div class="container">
-            <h2 class="section-title">Security and Reliability</h2>
+            <h2 class="section-title">Main Tools</h2>
 
             <div class="security-grid">
                 <div class="security-card">
-                    <div class="security-icon">🔒</div>
-                    <h3>Secure Coding</h3>
-                    <p>UTF-8 support with ANSI fallbacks for international characters. Secure handling of paths and files.</p>
+                    <div class="security-icon">🔄</div>
+                    <h3>SlaveTats → RaceMenu</h3>
+                    <p>Drag a JSON to generate a Papyrus PSC script. Creates organized texture folders and packages the mod.</p>
                     <ul>
-                        <li>File input validation</li>
-                        <li>Path sanitization</li>
-                        <li>Prevention of accidental overwriting</li>
+                        <li>JSON to PSC</li>
+                        <li>Organized Textures</li>
+                        <li>Mod Package (ZIP/7z)</li>
                     </ul>
                 </div>
 
                 <div class="security-card">
-                    <div class="security-icon">💾</div>
-                    <h3>Automatic Backup</h3>
-                    <p>An automatic backup is performed before any modification, configurable from settings.</p>
-                    <code>Backup = true/false</code>
+                    <div class="security-icon">🔁</div>
+                    <h3>RaceMenu → SlaveTats</h3>
+                    <p>Drag a PSC file to extract data into a JSON file. Creates mod folders and packages the result.</p>
                     <ul>
-                        <li>Timestamped backups</li>
-                        <li>Version management</li>
-                        <li>Easy restoration</li>
+                        <li>PSC to JSON</li>
+                        <li>Structure Creation</li>
+                        <li>Automatic Cleanup</li>
                     </ul>
                 </div>
 
                 <div class="security-card">
-                    <div class="security-icon">✅</div>
-                    <h3>Multiple Validation</h3>
-                    <p>Multiple layers of validation to prevent errors and maintain data integrity.</p>
+                    <div class="security-icon">🎨</div>
+                    <h3>SlaveTats Creator</h3>
+                    <p>Create a SlaveTats mod from a folder of DDS textures. Features an editable table and backup management.</p>
                     <ul>
-                        <li>File format validation</li>
-                        <li>Structure verification</li>
-                        <li>Integrity checks</li>
+                        <li>DDS to JSON</li>
+                        <li>Editable Grid</li>
+                        <li>Backup/Restore</li>
                     </ul>
                 </div>
 
                 <div class="security-card">
-                    <div class="security-icon">🌐</div>
-                    <h3>International Support</h3>
-                    <p>Full support for international characters and different encodings.</p>
+                    <div class="security-icon">🎨</div>
+                    <h3>RaceMenu Creator</h3>
+                    <p>Create a RaceMenu mod from a folder of DDS textures. Supports loading existing PSC scripts for editing.</p>
                     <ul>
-                        <li>Native UTF-8</li>
-                        <li>ANSI Fallback</li>
-                        <li>Automatic detection</li>
+                        <li>DDS to PSC</li>
+                        <li>Editable Grid</li>
+                        <li>Load Existing Scripts</li>
                     </ul>
                 </div>
 
                 <div class="security-card">
-                    <div class="security-icon">⚡</div>
-                    <h3>Optimization</h3>
-                    <p>Optimization and security in resource management for efficient operations.</p>
+                    <div class="security-icon">⚙️</div>
+                    <h3>Papyrus Compile Helper</h3>
+                    <p>Assists with Papyrus compilation for MO2 or standalone. Automates file copying, moving, and cleaning.</p>
                     <ul>
-                        <li>Efficient memory management</li>
-                        <li>Asynchronous operations</li>
-                        <li>Automatic cleanup</li>
+                        <li>MO2 Integration</li>
+                        <li>Standalone Emulator</li>
+                        <li>Automated Workflow</li>
                     </ul>
                 </div>
 
                 <div class="security-card">
-                    <div class="security-icon">🔧</div>
-                    <h3>Auxiliary Tools</h3>
-                    <p>Includes Pascal script for SSEdit and complete workflow documentation.</p>
+                    <div class="security-icon">💡</div>
+                    <h3>Tips & Resources</h3>
+                    <p>Displays motivational tips and cute cat images for quick breaks. Includes links to online documentation.</p>
                     <ul>
-                        <li>Pascal script for ESP</li>
-                        <li>Video tutorials</li>
-                        <li>Detailed documentation</li>
+                        <li>Modding Tips</li>
+                        <li>Cat GIFs!</li>
+                        <li>Online Docs</li>
                     </ul>
                 </div>
             </div>
