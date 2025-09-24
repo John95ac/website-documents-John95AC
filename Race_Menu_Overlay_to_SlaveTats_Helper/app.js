@@ -33,7 +33,7 @@ function initializeTypewriterAnimation() {
     heroSubtitle.style.opacity = '1';
     heroDescription.style.opacity = '1';
 
-    const subtitleText = 'A simple tool to convert SlaveTats mods to Race Menu Overlays without Open the Creation Kit';
+    const subtitleText = 'A simple tool to convert SlaveTats mods to RaceMenu Overlays without Open the Creation Kit';
     const descriptionText = 'Designed to optimize the creation, conversion, and management of NPC tattoos or textures. Focused on the relationship between the RaceMenu and SlaveTats systems. You can convert from one to the other or create from scratch.';
 
     // Start typewriter effect for subtitle
