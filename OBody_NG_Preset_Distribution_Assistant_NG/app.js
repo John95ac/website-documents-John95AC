@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Typewriter animation for hero text
     initializeTypewriterAnimation();
 
-    // Simulator animation (after a delay to ensure section is visible)
-    initializeSimulatorAnimation();
-
     // Navigation functionality
     initializeNavigation();
 
@@ -983,8 +980,8 @@ function initializeTypewriterAnimation() {
     firstDescription.textContent = '';
     secondDescription.textContent = '';
  
-    const subtitleText = 'Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition';
-    const firstDescText = 'A lightweight SKSE DLL that processes simple rules written in INI, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.';
+    const subtitleText = 'Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition, Compatible with CBBE, 3BA, UBE, HIMBO...';
+    const firstDescText = 'A lightweight SKSE DLL mod that automatically detects UBE presets and applies them to the blacklist to prevent generation errors in OBody while simultaneously applying UBE presets to UBE NPCs in the game. It also includes a cleaning and maintenance system for OBody master JSON, and a system that processes simple rules written in INI files, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.';
     const secondDescText = 'It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the \'O\' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈';
  
     // Typewriter function
@@ -1018,59 +1015,4 @@ function initializeTypewriterAnimation() {
     });
  
     console.log('Typewriter animation started for hero section');
-}
-
-/**
- * Initialize typewriter animation for simulator descriptions
- */
-function initializeSimulatorAnimation() {
-    const simulatorSection = document.getElementById('simulator');
-    if (!simulatorSection) {
-        console.warn('Simulator section not found for animation');
-        return;
-    }
-
-    const descriptions = simulatorSection.querySelectorAll('.simulator-description');
-    if (descriptions.length < 2) {
-        console.warn('Simulator description elements not found for animation');
-        return;
-    }
-
-    // Initial state: hide and set empty
-    descriptions.forEach(desc => {
-        desc.style.opacity = '0';
-        desc.textContent = '';
-    });
-
-    const firstSimDescText = 'Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. Remember that if you choose more than one preset for an element, it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.';
-    const secondSimDescText = 'If you don\'t know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.';
-
-    // Typewriter function (reuse from hero, or define if needed)
-    function typeWriter(element, text, speed = 50, callback) {
-        let i = 0;
-        element.style.opacity = '1';
-
-        function type() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, speed);
-            } else {
-                if (callback) callback();
-            }
-        }
-        type();
-    }
-
-    // Animate descriptions
-    setTimeout(() => {
-        typeWriter(descriptions[0], firstSimDescText, 10, () => {
-            // Delay before second
-            setTimeout(() => {
-                typeWriter(descriptions[1], secondSimDescText, 8);
-            }, 400);
-        });
-    }, 200);
-
-    console.log('Simulator animation started');
 }

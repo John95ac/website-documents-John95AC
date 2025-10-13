@@ -78,7 +78,7 @@
         <div class="hero-container">
             <div class="hero-content">
                 <h1 class="hero-title">OBody NG Preset Distribution Assistant NG</h1>
-                <p class="hero-subtitle">Addition to OBody NG for Automated Preset Distribution in the Json for Skyrim Special Edition</p>
+                <p class="hero-subtitle">Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition</p>
                 <p class="hero-description">
                     A lightweight SKSE DLL that processes simple rules written in INI, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.
                 </p>
@@ -105,19 +105,19 @@
                     </div>
                     <div class="stat stat-green">
                         <div class="stat-value">📜</div>
-                        <div class="stat-label">Simple Preset Management</div>
+                        <div class="stat-label">Simple Preset Management, keys and a system similar to SPID but for Presets</div>
                     </div>
                     <div class="stat stat-green">
                         <div class="stat-value">💃</div>
                         <div class="stat-label">Apply predefined OBody Preset to NPC without touching JSON</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">👁️</div>
-                        <div class="stat-label">Automatic Blacklisted Application (Coming Soon)</div>
+                        <div class="stat-label">Automatic Blacklisted UBE and Application UBE presets in UBE NPCs</div>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-green">
                         <div class="stat-value">👓</div>
-                        <div class="stat-label">Automatic Preset Management List Analyzer (Coming Soon)</div>
+                        <div class="stat-label">Automatic Preset Management List Analyzer, recorded in logs</div>
                     </div>
                 </div>
                 </div>
@@ -243,7 +243,7 @@
             <div class="container">
                 <h2 class="section-title">Interactive ini PDA NG Rule Generator</h2>
                     <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
-                        Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.
+                        Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. Remember that if you choose more than one preset for an element, it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.
                     </p>
                     <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
                         If you don't know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.
@@ -969,6 +969,136 @@ npc = Lydia|Lydia Custom Preset|1
     class MM,NN,OO,PP,QQ,F3 logFeature
     class F1 autoRestore
     class VV verification
+                      </div>
+                    </details>
+                </div>
+
+                <div style="height: 2rem;"></div>
+
+                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>💃 Show/Hide Flowchart v2.2.5</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>💃 Flowchart v2.2.5:</strong> Version 2.2.5 adds a Smart Cleaning system with 6 levels of intelligent preset matching (exact, decoded, normalized, filename, normalized map, variations) that automatically detects incorrect or missing preset names and corrects or removes them as appropriate, with protection lists for critical presets like "Zeroed Sliders". THIS IS COMPLETELY CONFIGURABLE IN THE MOD'S CONFIGURATION INI. It incorporates automatic UBE preset detection through XML file analysis that identifies conflicting groups (3BA/3BBB/CBBE) and automatically distributes 22 UBE races (11 base + 11 vampire), adding presets to blacklist and races based on whether they have "UBE" in the name or not, with an exclusion list for special presets. It generates three specialized logs: Doctor.log lists all XMLs found in the BodySlide folder, SmartCleaning.log shows extracted internal names and filename-to-internal mappings, and Helper.log includes random usage examples with user presets and complete list separated into NORMAL vs UBE categories. It adds granular configuration through 5 independent flags (presetsSmartCleaning, blacklistedPresetsSmartCleaningFromRandomDistribution, blacklistedPresetsSmartCleaningFromAll, outfitsForceReSmartCleaning, modeUBE) that control cleaning behavior by section. It implements automatic truncation of preset names at ; and , delimiters, replacement of generic "CustomPreset" with real filename, improved multi-language support with triple fallback UTF-8→CP_ACP→ASCII safe, and deep XML information extraction with HTML entity decoding {which for some reasons presets use and took me a long time to realize, hahaha.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Config INI<br/>ReadConfigFromIni<br/>Backup, ModeUBE, Smart Cleaning flags]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+    
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt recovery from backup]
+    
+    F1 --> F2{✅ Restoration<br/>Successful?}
+    F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+    F2 -->|NO| F[❌ END PROCESS<br/>CRITICAL ERROR<br/>No valid backup available]
+    F3 --> G
+    
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy]
+    G -->|Backup=true| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Keep INI unchanged]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse all valid keys]
+    
+    H --> J[✏️ Update INI<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true unchanged]
+    J --> I
+    K --> I
+    
+    I --> L{✅ JSON Read<br/>Success?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>OBodyNG_PDA_*.ini files]
+    
+    L -->|YES| R
+    R --> DD[📋 Generate Doctor Log<br/>GenerateDoctorLog<br/>List all XML files found]
+    DD --> S[🏗️ Build Preset Map<br/>BuildPresetNameMap<br/>Extract internal names from XML]
+    S --> SS[📋 Generate Smart Cleaning Log<br/>GenerateSmartCleaningLog<br/>Preset reference list]
+    SS --> T[📝 Process INI Rules<br/>ParseRuleLine<br/>Add/Remove Presets/Plugins]
+    T --> U[🔢 Update INI Counts<br/>UpdateIniRuleCount<br/>Automatic decrement]
+    
+    U --> V[🧹 Smart Cleaning<br/>PerformSmartCleaning<br/>Intelligent preset matching]
+    V --> V1{🛡️ Smart Cleaning<br/>Enabled?}
+    V1 -->|YES| V2[🔍 Match Presets<br/>FindPresetMatch<br/>6-level matching algorithm]
+    V2 --> V3[✂️ Remove Non-Existent<br/>🔧 Correct Preset Names<br/>📊 Log Missing Presets]
+    V1 -->|NO| W
+    V3 --> W[🎮 UBE XML Scan<br/>ProcessUBEXmlPresets<br/>Detect UBE + conflicts]
+    
+    W --> W1{🔍 UBE Groups<br/>Found?}
+    W1 -->|YES| W2[📊 Analyze XML Groups<br/>AnalyzeXmlGroups<br/>Detect 3BA/3BBB/CBBE conflicts]
+    W2 --> W3{⚠️ Conflict<br/>Detected?}
+    W3 -->|YES + UBE in name| W4[✅ Add to Blacklist + Races<br/>Allow in UBE races]
+    W3 -->|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY<br/>Exclude from UBE races]
+    W3 -->|NO Conflict| W6[✅ Add to Blacklist + Races<br/>Pure UBE preset]
+    W1 -->|NO| X
+    W4 --> X[🎯 Apply UBE to JSON<br/>ApplyUBEPresetsToJson<br/>Blacklist + 22 UBE Races]
+    W5 --> X
+    W6 --> X
+    
+    X --> Y[📋 Generate Helper Log<br/>GenerateHelperLog<br/>Preset list + INI examples]
+    Y --> Z[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys]
+    Z --> ZZ{🔍 VERIFY CHANGES<br/>CheckIfChangesNeeded?}
+    
+    ZZ -->|YES| AA[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp + PerformTripleValidation]
+    ZZ -->|NO| BB[ℹ️ Skip Write<br/>No changes detected]
+    
+    AA --> CC{✅ Write<br/>Successful?}
+    CC -->|NO| YY[🔄 Restore Backup<br/>Write failure]
+    CC -->|YES| DD1[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>4-space hierarchy]
+    BB --> DD1
+    
+    DD1 --> EE{📏 Indentation<br/>Correct?}
+    EE -->|YES| FF[✅ JSON Already Perfect<br/>4 spaces verified]
+    EE -->|NO| GG[✏️ FULL REFORMAT<br/>4 spaces per level<br/>Empty containers inline]
+    
+    GG --> HH{✅ Reformat<br/>Complete?}
+    HH -->|NO| II[🔄 Restore Backup<br/>Indentation failure]
+    HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Keys]
+    
+    FF --> JJ
+    JJ --> KK{✅ Final JSON<br/>Valid?}
+    KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis]
+    KK -->|YES| MM[📊 Final Log Summary<br/>Complete statistics<br/>All operations logged]
+    
+    YY --> NN[📊 Log Backup Restore]
+    II --> OO[📊 Log Backup Restore]
+    LL --> PP[📊 Log Critical Error]
+    
+    NN --> MM
+    OO --> MM
+    PP --> MM
+    
+    MM --> QQ[💬 Console Message<br/>OBody Assistant: Process completed!]
+    QQ --> RR[🏁 END: Success<br/>Perfect 4-space format<br/>Doctor/Helper/SmartCleaning logs generated<br/>UBE presets distributed]
+    
+    F --> SS1[🏁 END: Critical Error]
+    Q --> TT[🏁 END: JSON Read Failed]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+    classDef smartCleaning fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+    classDef ubeFeature fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    
+    class A,RR,SS1,TT startEnd
+    class B,C,I,R,T,U,Z,AA process
+    class E,G,L,P,CC,EE,HH,KK,F2,ZZ,V1,W1,W3 decision
+    class F,Q,YY,II,LL error
+    class H,H1,J,K,M,N backup
+    class D,DD1,GG,JJ newFeature
+    class V,V1,V2,V3,SS smartCleaning
+    class W,W1,W2,W3,W4,W5,W6,X ubeFeature
+    class DD,SS,Y,MM,NN,OO,PP,QQ,F3 logFeature
                       </div>
                     </details>
                 </div>
