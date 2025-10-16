@@ -264,6 +264,7 @@
                                     <option value="npcPluginMale">npcPluginMale</option>
                                     <option value="raceFemale">raceFemale</option>
                                     <option value="raceMale">raceMale</option>
+                                    <option value="blacklisted">blacklisted</option>
                                 </select>
                             </div>
 
@@ -361,6 +362,68 @@
             </div>
         </section>
 
+        <!-- Advanced Options Section -->
+        <section id="advanced-options" class="section bg-celeste">
+            <div class="container">
+                
+                <details>
+                    <summary class="advanced-summary">🔧 Advanced Options</summary>
+                    
+                    <div class="advanced-content">
+                        <div class="log-analyzer">
+                            <!-- Área de resultados (arriba) -->
+                            <div id="logResults" class="log-results" style="display: none;">
+                                <div class="results-header">
+                                    <h4>Extracted Presets</h4>
+                                    <div class="results-stats" id="resultsStats"></div>
+                                </div>
+                                
+                                <div class="presets-categories">
+                                    <div class="category-section">
+                                        <h5>🔥 NORMAL PRESETS (CBBE/3BA/BHUNP/etc.) (<span id="normalCount">0</span> total)</h5>
+                                        <div class="preset-list" id="normalPresets"></div>
+                                    </div>
+                                    
+                                    <div class="category-section">
+                                        <h5>💎 UBE PRESETS (<span id="ubeCount">0</span> total)</h5>
+                                        <div class="preset-list" id="ubePresets"></div>
+                                    </div>
+                                    
+                                    <div class="category-section">
+                                        <h5>💪 HIMBO PRESETS (<span id="himboCount">0</span> total)</h5>
+                                        <div class="preset-list" id="himboPresets"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="preset-actions">
+                                    <button type="button" id="copyAllBtn" class="btn btn--primary">Copy All Presets</button>
+                                    <button type="button" id="copyNormalBtn" class="btn btn--secondary">Copy Normal</button>
+                                    <button type="button" id="copyUbeBtn" class="btn btn--secondary">Copy UBE</button>
+                                    <button type="button" id="copyHimboBtn" class="btn btn--secondary">Copy HIMBO</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Área de arrastrar y soltar (abajo) -->
+                            <h3>Log File Analyzer</h3>
+                            <p class="log-description">
+                                Drag and drop your "OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log" file here to extract all preset names and organize them by category.
+                            </p>
+                            
+                            <div class="drop-zone" id="dropZone">
+                                <div class="drop-zone-content">
+                                    <span class="drop-zone-icon">📁</span>
+                                    <p class="drop-zone-text">Drag & Drop your log file here</p>
+                                    <p class="drop-zone-hint">Only accepts: OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log</p>
+                                    <input type="file" id="fileInput" accept=".log" style="display: none;">
+                                    <button type="button" id="browseBtn" class="btn btn--secondary">Browse Files</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
         <!-- Reglas de INI -->
         <section id="examples" class="section">
         <div class="container">
@@ -449,6 +512,11 @@ npc = Lydia|Lydia Custom Preset|1
                     <div class="rule-item">
                         <strong>raceFemale/raceMale</strong>
                         <p>Applies presets to NPCs of a specific race by gender. I use it a lot, it's easy to adjust for all of Skyrim.</p>
+                    </div>
+
+                    <div class="rule-item">
+                        <strong>blacklisted</strong>
+                        <p>This rule serves to apply presets, plugins, NPCs, races, clothing sets to the blacklist and prevent incorrect auto-applications by OBody.</p>
                     </div>
                 </div>
             </div>
@@ -1099,6 +1167,178 @@ npc = Lydia|Lydia Custom Preset|1
     class V,V1,V2,V3,SS smartCleaning
     class W,W1,W2,W3,W4,W5,W6,X ubeFeature
     class DD,SS,Y,MM,NN,OO,PP,QQ,F3 logFeature
+                      </div>
+                    </details>
+                </div>
+
+                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                    <details>
+                      <summary>🚀 Show/Hide Flowchart v2.4.1</summary>
+                      <div class="modes-info">
+                          <p class="modes-explanation">
+                              <strong>🚀 Flowchart v2.4.1:</strong> Example text for the new version.
+                          </p>
+                      </div>
+                      <div class="mermaid">
+                        flowchart TD
+    A[🚀 SKSE Plugin Load - Version 2.4.0] --&gt; B[📁 Secure Initialization&lt;br/&gt;GetDocumentsPath + GetGamePath&lt;br/&gt;CreateDirectoryIfNotExists]
+    B --&gt; C[⚙️ Read Config INI&lt;br/&gt;ReadConfigFromIni&lt;br/&gt;Backup, ModeUBE, ModeHIMBO&lt;br/&gt;Smart Cleaning flags&lt;br/&gt;Conflict Resolution flag]
+    C --&gt; D[🔍 SIMPLE JSON Validation&lt;br/&gt;PerformSimpleJsonIntegrityCheck&lt;br/&gt;Structure, balance, OBody keys]
+    
+    D --&gt; E{❓ Master JSON&lt;br/&gt;Valid?}
+    E --&gt;|YES| G{🔄 Backup&lt;br/&gt;Config?}
+    E --&gt;|NO| F1[🔄 AUTOMATIC RESTORE&lt;br/&gt;RestoreJsonFromBackup&lt;br/&gt;Attempt recovery from backup]
+    
+    F1 --&gt; F2{✅ Restoration&lt;br/&gt;Successful?}
+    F2 --&gt;|YES| F3[📊 Log: JSON Restored&lt;br/&gt;Continue normal process]
+    F2 --&gt;|NO| F[❌ END PROCESS&lt;br/&gt;CRITICAL ERROR&lt;br/&gt;No valid backup available]
+    F3 --&gt; G
+    
+    G --&gt;|Backup=1| H[💾 LITERAL Backup&lt;br/&gt;PerformLiteralJsonBackup&lt;br/&gt;Byte-by-byte copy]
+    G --&gt;|Backup=true/2| H1[💾 LITERAL Backup&lt;br/&gt;Always Active Mode&lt;br/&gt;Keep INI unchanged]
+    G --&gt;|Backup=0/false| I[📖 Read Master JSON&lt;br/&gt;ReadCompleteJson&lt;br/&gt;Parse all valid keys]
+    
+    H --&gt; J[✏️ Update INI&lt;br/&gt;Backup = 0]
+    H1 --&gt; K[ℹ️ Keep INI&lt;br/&gt;Backup = true unchanged]
+    J --&gt; I
+    K --&gt; I
+    
+    I --&gt; L{✅ JSON Read&lt;br/&gt;Success?}
+    L --&gt;|NO| M[🔄 Restore from Backup&lt;br/&gt;RestoreJsonFromBackup]
+    M --&gt; N[📁 Move Corrupted&lt;br/&gt;MoveCorruptedJsonToAnalysis&lt;br/&gt;Timestamp → Analysis]
+    N --&gt; O[🔄 Retry Read&lt;br/&gt;ReadCompleteJson]
+    O --&gt; P{✅ Read OK&lt;br/&gt;after restore?}
+    P --&gt;|NO| Q[❌ END PROCESS&lt;br/&gt;JSON READ FAILED]
+    P --&gt;|YES| R[📂 Scan Data Folder&lt;br/&gt;OBodyNG_PDA_*.ini files]
+    
+    L --&gt;|YES| R
+    R --&gt; R1[📋 Generate INI Analysis Log&lt;br/&gt;GenerateINIAnalysisLog&lt;br/&gt;Scan all INI files + statistics]
+    R1 --&gt; DD[📋 Generate Doctor Log&lt;br/&gt;GenerateDoctorLog&lt;br/&gt;List all XML files found]
+    DD --&gt; S[🏗️ Build Preset Map&lt;br/&gt;BuildPresetNameMap&lt;br/&gt;Extract internal names from XML&lt;br/&gt;Multi-preset support + HTML entity decoding]
+    S --&gt; SS[📋 Generate Smart Cleaning Log&lt;br/&gt;GenerateSmartCleaningLog&lt;br/&gt;Preset reference list + mapping]
+    
+    SS --&gt; T[📝 Parse & Prioritize INI Rules&lt;br/&gt;ParseRuleLine + GetRulePriority&lt;br/&gt;Sort by priority: Standard → Filter → Remove → Exclusive]
+    T --&gt; T1{🔍 Detect&lt;br/&gt;Conflicts?}
+    T1 --&gt;|YES| T2[🚨 Track Exclusive Conflicts&lt;br/&gt;RuleConflictTracker&lt;br/&gt;File modification timestamps]
+    T1 --&gt;|NO| U
+    T2 --&gt; T3{⚙️ Smart Resolution&lt;br/&gt;Enabled?}
+    T3 --&gt;|YES| T4[🔧 Resolve Conflicts&lt;br/&gt;ResolveConflicts&lt;br/&gt;Newest file wins → Update older count to 0]
+    T3 --&gt;|NO| T5[⚠️ Skip All Conflicting Rules&lt;br/&gt;Log conflicts only]
+    T4 --&gt; T6[📋 Generate Conflict Report&lt;br/&gt;GenerateConflictReport&lt;br/&gt;Detailed resolution log]
+    T5 --&gt; T6
+    T6 --&gt; U
+    
+    U[🎯 Process INI Rules&lt;br/&gt;Apply by priority order&lt;br/&gt;Add/Remove Presets/Plugins&lt;br/&gt;Support 43 rule modes]
+    U --&gt; U1[🔑 Process KEY Filtering Modes&lt;br/&gt;KeyWord/KeyWordChart/KeyAuthor&lt;br/&gt;KeyNormal/KeyUBE/KeyHIMBO&lt;br/&gt;With asterisk, dash, 1 variants]
+    U1 --&gt; U2[📊 Update INI Counts&lt;br/&gt;UpdateIniRuleCount&lt;br/&gt;Automatic decrement for ONCE modes]
+    
+    U2 --&gt; V[🧹 Smart Cleaning Evaluation&lt;br/&gt;Check enabled flags per section]
+    V --&gt; V1{🛡️ Presets&lt;br/&gt;Smart Cleaning?}
+    V1 --&gt;|YES| V2A[🔍 Clean General Presets&lt;br/&gt;6-level matching algorithm&lt;br/&gt;Protected presets exemption]
+    V1 --&gt;|NO| V3A
+    V2A --&gt; V3A{🛡️ Blacklisted Presets&lt;br/&gt;FromRandomDistribution?}
+    V3A --&gt;|YES| V4A[🔍 Clean Blacklist Random&lt;br/&gt;PerformSmartCleaning]
+    V3A --&gt;|NO| V5A
+    V4A --&gt; V5A{🛡️ Blacklisted Presets&lt;br/&gt;FromAll?}
+    V5A --&gt;|YES| V6A[🔍 Clean All Blacklists&lt;br/&gt;PerformSmartCleaning]
+    V5A --&gt;|NO| V7A
+    V6A --&gt; V7A{🛡️ OutfitsForceRe&lt;br/&gt;Smart Cleaning?}
+    V7A --&gt;|YES| V8A[🔍 Clean Outfits ForceRefit&lt;br/&gt;PerformSmartCleaning]
+    V7A --&gt;|NO| W
+    V8A --&gt; W
+    
+    W[🎮 UBE/HIMBO XML Processing&lt;br/&gt;ProcessUBEXmlPresets + ProcessHIMBOXmlPresets&lt;br/&gt;Multi-preset extraction]
+    W --&gt; W1{🔍 ModeUBE&lt;br/&gt;Enabled?}
+    W1 --&gt;|YES| W2[📊 Analyze UBE XMLs&lt;br/&gt;AnalyzeXmlGroups&lt;br/&gt;Detect 3BA/3BBB/CBBE conflicts]
+    W1 --&gt;|NO| W9
+    W2 --&gt; W3{⚠️ UBE Conflict&lt;br/&gt;Detected?}
+    W3 --&gt;|YES + UBE in name| W4[✅ Add to Blacklist + UBE Races&lt;br/&gt;Allow in 22 UBE races]
+    W3 --&gt;|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY&lt;br/&gt;Exclude from UBE races]
+    W3 --&gt;|NO Conflict| W6[✅ Add to Blacklist + UBE Races&lt;br/&gt;Pure UBE preset]
+    W4 --&gt; W7
+    W5 --&gt; W7
+    W6 --&gt; W7
+    W7[🎯 Apply UBE to JSON&lt;br/&gt;Blacklist + 22 UBE Races]
+    W7 --&gt; W9
+    
+    W9{🔍 ModeHIMBO&lt;br/&gt;Enabled?}
+    W9 --&gt;|YES| W10[📊 Analyze HIMBO XMLs&lt;br/&gt;AnalyzeXmlGroups&lt;br/&gt;Detect conflicts]
+    W9 --&gt;|NO| X
+    W10 --&gt; W11{⚠️ HIMBO Conflict&lt;br/&gt;Detected?}
+    W11 --&gt;|YES + HIMBO in name| W12[✅ Add to Blacklist + HIMBO Races&lt;br/&gt;Allow in 22 HIMBO races]
+    W11 --&gt;|YES + NO HIMBO in name| W13[✅ Add to Blacklist ONLY&lt;br/&gt;Exclude from HIMBO races]
+    W11 --&gt;|NO Conflict| W14[✅ Add to Blacklist + HIMBO Races&lt;br/&gt;Pure HIMBO preset]
+    W12 --&gt; W15
+    W13 --&gt; W15
+    W14 --&gt; W15
+    W15[🎯 Apply HIMBO to JSON&lt;br/&gt;Blacklist + 22 HIMBO races]
+    W15 --&gt; X
+    
+    X[📋 Generate Helper Log&lt;br/&gt;GenerateHelperLog&lt;br/&gt;Preset lists + INI examples&lt;br/&gt;NORMAL vs UBE vs HIMBO categorization]
+    X --&gt; Z[🏗️ Preserve Original&lt;br/&gt;PreserveOriginalSections&lt;br/&gt;Update only modified keys&lt;br/&gt;Exact 4-space format]
+    Z --&gt; ZZ{🔍 VERIFY CHANGES&lt;br/&gt;CheckIfChangesNeeded?}
+    
+    ZZ --&gt;|YES| AA[💾 ATOMIC Write&lt;br/&gt;WriteJsonAtomically&lt;br/&gt;.tmp + PerformTripleValidation]
+    ZZ --&gt;|NO| BB[ℹ️ Skip Write&lt;br/&gt;No changes detected]
+    
+    AA --&gt; CC{✅ Write&lt;br/&gt;Successful?}
+    CC --&gt;|NO| YY[🔄 Restore Backup&lt;br/&gt;Write failure]
+    CC --&gt;|YES| DD1[🔍 INDENTATION CORRECTION&lt;br/&gt;CorrectJsonIndentation&lt;br/&gt;4-space hierarchy + inline empty]
+    BB --&gt; DD1
+    
+    DD1 --&gt; EE{📏 Indentation&lt;br/&gt;Correct?}
+    EE --&gt;|YES| FF[✅ JSON Already Perfect&lt;br/&gt;4 spaces verified]
+    EE --&gt;|NO| GG[✏️ FULL REFORMAT&lt;br/&gt;isEmptyBlock Helper&lt;br/&gt;Empty containers inline&lt;br/&gt;With content 4 spaces]
+    
+    GG --&gt; HH{✅ Reformat&lt;br/&gt;Complete?}
+    HH --&gt;|NO| II[🔄 Restore Backup&lt;br/&gt;Indentation failure]
+    HH --&gt;|YES| JJ[🔍 Final TRIPLE Validation&lt;br/&gt;PerformTripleValidation&lt;br/&gt;Structure + Keys]
+    
+    FF --&gt; JJ
+    JJ --&gt; KK{✅ Final JSON&lt;br/&gt;Valid?}
+    KK --&gt;|NO| LL[🔄 Restore Backup&lt;br/&gt;+ Forensic Analysis]
+    KK --&gt;|YES| MM[📊 Final Log Summary&lt;br/&gt;Complete statistics&lt;br/&gt;All operations logged&lt;br/&gt;INI Analysis/Doctor/Helper/SmartCleaning logs]
+    
+    YY --&gt; NN[📊 Log Backup Restore]
+    II --&gt; OO[📊 Log Backup Restore]
+    LL --&gt; PP[📊 Log Critical Error]
+    
+    NN --&gt; MM
+    OO --&gt; MM
+    PP --&gt; MM
+    
+    MM --&gt; QQ[💬 Console Message&lt;br/&gt;OBody Assistant v2.4.0: Process completed!]
+    QQ --&gt; RR[🏁 END: Success&lt;br/&gt;Perfect 4-space format&lt;br/&gt;4 logs generated&lt;br/&gt;UBE + HIMBO distributed&lt;br/&gt;43 rule modes supported&lt;br/&gt;Conflict resolution applied]
+    
+    F --&gt; SS1[🏁 END: Critical Error]
+    Q --&gt; TT[🏁 END: JSON Read Failed]
+    
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+    classDef smartCleaning fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+    classDef ubeFeature fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#333
+    classDef himboFeature fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    classDef conflictFeature fill:#ffccbc,stroke:#d84315,stroke-width:3px,color:#333
+    classDef keyFeature fill:#b2dfdb,stroke:#00695c,stroke-width:3px,color:#333
+    
+    class A,RR,SS1,TT startEnd
+    class B,C,I,R,Z,AA process
+    class E,G,L,P,CC,EE,HH,KK,F2,ZZ,V1,V3A,V5A,V7A,W1,W3,W9,W11,T1,T3 decision
+    class F,Q,YY,II,LL error
+    class H,H1,J,K,M,N backup
+    class D,DD1,GG,JJ newFeature
+    class V,V2A,V4A,V6A,V8A,SS smartCleaning
+    class W,W2,W3,W4,W5,W6,W7 ubeFeature
+    class W10,W11,W12,W13,W14,W15 himboFeature
+    class DD,R1,SS,X,MM,NN,OO,PP,QQ,F3 logFeature
+    class T2,T4,T5,T6 conflictFeature
+    class T,U,U1,U2 keyFeature
                       </div>
                     </details>
                 </div>

@@ -335,6 +335,20 @@ function initializeINISimulator() {
         raceMale: {
             values: ['NordRace', 'ImperialRace', 'BretonRace'],
             presets: ['Nordic Male,Orcish Male']
+        },
+        blacklisted: {
+            values: ['Npcs', 'NpcsPluginFemale', 'NpcsPluginMale', 'RacesFemale', 'RacesMale', 'OutfitsFromORefit', 'OutfitsFromORefitPlugin', 'outfitsForceRefit', 'PresetsFromRandomDistribution'],
+            presets: {
+                'Npcs': 'Mjoll,Serana',
+                'NpcsPluginFemale': 'Immersive Wenches.esp,TDD.esp',
+                'NpcsPluginMale': 'Immersive Wenches.esp,TDD.esp',
+                'RacesFemale': 'NordRace,00UBE_BretonRace',
+                'RacesMale': 'NordRace,00UBE_BretonRace',
+                'OutfitsFromORefit': 'LS Force Naked,OBody Nude 32',
+                'OutfitsFromORefitPlugin': 'NewmChainmail.esp,NewmExtendedDressLong.esl',
+                'outfitsForceRefit': 'Nihon - Jacket,TB Cloth [Black]',
+                'PresetsFromRandomDistribution': 'HIMBO Zero for OBody,UBE Chonky'
+            }
         }
     };
 
@@ -343,7 +357,7 @@ function initializeINISimulator() {
         const selectedType = this.value;
 
         // Show/hide appropriate input based on rule type
-        if (selectedType === 'raceFemale' || selectedType === 'raceMale') {
+        if (selectedType === 'raceFemale' || selectedType === 'raceMale' || selectedType === 'blacklisted') {
             elementValueSelect.style.display = 'block';
             elementValueInput.style.display = 'none';
             elementValueSelect.value = '';
@@ -353,13 +367,90 @@ function initializeINISimulator() {
             elementValueInput.value = '';
         }
 
-        // Auto-fill sample data
+        // Auto-fill sample data and update dropdown content
         const data = sampleData[selectedType];
         if (data) {
-            const randomPresets = data.presets[Math.floor(Math.random() * data.presets.length)];
+            let randomPresets = '';
+            
+            if (selectedType === 'blacklisted') {
+                // Replace dropdown content with blacklisted options
+                elementValueSelect.innerHTML = '<option value="">Select blacklisted element...</option>' +
+                    '<option value="Npcs">Npcs</option>' +
+                    '<option value="NpcsPluginFemale">NpcsPluginFemale</option>' +
+                    '<option value="NpcsPluginMale">NpcsPluginMale</option>' +
+                    '<option value="RacesFemale">RacesFemale</option>' +
+                    '<option value="RacesMale">RacesMale</option>' +
+                    '<option value="OutfitsFromORefit">OutfitsFromORefit</option>' +
+                    '<option value="OutfitsFromORefitPlugin">OutfitsFromORefitPlugin</option>' +
+                    '<option value="outfitsForceRefit">outfitsForceRefit</option>' +
+                    '<option value="PresetsFromRandomDistribution">PresetsFromRandomDistribution</option>';
+                
+                // For blacklisted, use the selected element value to get specific presets
+                const selectedElement = elementValueSelect.value;
+                if (selectedElement && data.presets[selectedElement]) {
+                    randomPresets = data.presets[selectedElement];
+                } else {
+                    // If no element selected yet, use the first one as default
+                    const firstElement = data.values[0];
+                    randomPresets = data.presets[firstElement];
+                }
+            } else {
+                // Restore original dropdown content for race types
+                if (selectedType === 'raceFemale' || selectedType === 'raceMale') {
+                    elementValueSelect.innerHTML = '<option value="">Select race...</option>' +
+                        '<option value="NordRace">NordRace</option>' +
+                        '<option value="ImperialRace">ImperialRace</option>' +
+                        '<option value="BretonRace">BretonRace</option>' +
+                        '<option value="RedguardRace">RedguardRace</option>' +
+                        '<option value="DarkElfRace">DarkElfRace</option>' +
+                        '<option value="HighElfRace">HighElfRace</option>' +
+                        '<option value="WoodElfRace">WoodElfRace</option>' +
+                        '<option value="OrcRace">OrcRace</option>' +
+                        '<option value="KhajiitRace">KhajiitRace</option>' +
+                        '<option value="ArgonianRace">ArgonianRace</option>' +
+                        '<option value="ElderRace">ElderRace</option>' +
+                        '<option value="NordRaceVampire">NordRaceVampire</option>' +
+                        '<option value="ImperialRaceVampire">ImperialRaceVampire</option>' +
+                        '<option value="BretonRaceVampire">BretonRaceVampire</option>' +
+                        '<option value="RedguardRaceVampire">RedguardRaceVampire</option>' +
+                        '<option value="DarkElfRaceVampire">DarkElfRaceVampire</option>' +
+                        '<option value="HighElfRaceVampire">HighElfRaceVampire</option>' +
+                        '<option value="WoodElfRaceVampire">WoodElfRaceVampire</option>' +
+                        '<option value="OrcRaceVampire">OrcRaceVampire</option>' +
+                        '<option value="KhajiitRaceVampire">KhajiitRaceVampire</option>' +
+                        '<option value="ArgonianRaceVampire">ArgonianRaceVampire</option>' +
+                        '<option value="ElderRaceVampire">ElderRaceVampire</option>' +
+                        '<option value="00UBE_HighElfRace">00UBE_HighElfRace</option>' +
+                        '<option value="00UBE_BretonRace">00UBE_BretonRace</option>' +
+                        '<option value="00UBE_ImperialRace">00UBE_ImperialRace</option>' +
+                        '<option value="00UBE_RedguardRace">00UBE_RedguardRace</option>' +
+                        '<option value="00UBE_DarkElfRace">00UBE_DarkElfRace</option>' +
+                        '<option value="00UBE_WoodElfRace">00UBE_WoodElfRace</option>' +
+                        '<option value="00UBE_NordRace">00UBE_NordRace</option>' +
+                        '<option value="00UBE_OrcRace">00UBE_OrcRace</option>' +
+                        '<option value="00UBE_ElderRace">00UBE_ElderRace</option>' +
+                        '<option value="00UBE_KhajiitRace">00UBE_KhajiitRace</option>' +
+                        '<option value="00UBE_ArgonianRace">00UBE_ArgonianRace</option>' +
+                        '<option value="00UBE_HighElfRaceVampire">00UBE_HighElfRaceVampire</option>' +
+                        '<option value="00UBE_BretonRaceVampire">00UBE_BretonRaceVampire</option>' +
+                        '<option value="00UBE_ImperialRaceVampire">00UBE_ImperialRaceVampire</option>' +
+                        '<option value="00UBE_RedguardRaceVampire">00UBE_RedguardRaceVampire</option>' +
+                        '<option value="00UBE_DarkElfRaceVampire">00UBE_DarkElfRaceVampire</option>' +
+                        '<option value="00UBE_WoodElfRaceVampire">00UBE_WoodElfRaceVampire</option>' +
+                        '<option value="00UBE_NordRaceVampire">00UBE_NordRaceVampire</option>' +
+                        '<option value="00UBE_OrcRaceVampire">00UBE_OrcRaceVampire</option>' +
+                        '<option value="00UBE_ElderRaceVampire">00UBE_ElderRaceVampire</option>' +
+                        '<option value="00UBE_KhajiitRaceVampire">00UBE_KhajiitRaceVampire</option>' +
+                        '<option value="00UBE_ArgonianRaceVampire">00UBE_ArgonianRaceVampire</option>' +
+                        '<option value="custom">Custom races</option>';
+                }
+                
+                randomPresets = data.presets[Math.floor(Math.random() * data.presets.length)];
+            }
+            
             presetsInput.value = randomPresets;
 
-            if (selectedType !== 'raceFemale' && selectedType !== 'raceMale') {
+            if (selectedType !== 'raceFemale' && selectedType !== 'raceMale' && selectedType !== 'blacklisted') {
                 const randomValue = data.values[Math.floor(Math.random() * data.values.length)];
                 elementValueInput.value = randomValue;
             }
@@ -379,6 +470,12 @@ function initializeINISimulator() {
             elementValueInput.style.display = 'block';
             elementValueInput.placeholder = 'Escribe la raza personalizada...';
             elementValueInput.focus();
+        } else if (ruleTypeSelect.value === 'blacklisted') {
+            // Update presets when blacklisted element changes
+            const data = sampleData.blacklisted;
+            if (data && this.value && data.presets[this.value]) {
+                presetsInput.value = data.presets[this.value];
+            }
         }
     });
 
@@ -409,7 +506,15 @@ function initializeINISimulator() {
             'x*': 'unlimited element remove'
         };
         const modeDesc = modeDescriptions[mode] || mode;
-        const comment = `;${elementValue} presets in mode ${modeDesc}`;
+        
+        // Special comment for blacklisted rules
+        let comment = '';
+        if (ruleType === 'blacklisted') {
+            comment = `;${elementValue} blacklisted in mode simple application`;
+        } else {
+            comment = `;${elementValue} presets in mode ${modeDesc}`;
+        }
+        
         const rule = `${ruleType} = ${elementValue}|${presets}|${mode}`;
         const newRuleText = `${comment}\n${rule}`;
 
@@ -461,7 +566,15 @@ function initializeINISimulator() {
             'x*': 'unlimited element remove'
         };
         const modeDesc = modeDescriptions[mode] || mode;
-        const comment = `;${elementValue} presets in mode ${modeDesc}`;
+        
+        // Special comment for blacklisted rules
+        let comment = '';
+        if (ruleType === 'blacklisted') {
+            comment = `;${elementValue} blacklisted in mode simple application`;
+        } else {
+            comment = `;${elementValue} presets in mode ${modeDesc}`;
+        }
+        
         const rule = `${ruleType} = ${elementValue}|${presets}|${mode}`;
         const previewText = `${comment}\n${rule}`;
 
@@ -1016,3 +1129,238 @@ function initializeTypewriterAnimation() {
  
     console.log('Typewriter animation started for hero section');
 }
+
+// Log File Analyzer Functionality
+class LogAnalyzer {
+    constructor() {
+        this.dropZone = document.getElementById('dropZone');
+        this.fileInput = document.getElementById('fileInput');
+        this.browseBtn = document.getElementById('browseBtn');
+        this.logResults = document.getElementById('logResults');
+        this.normalPresets = document.getElementById('normalPresets');
+        this.ubePresets = document.getElementById('ubePresets');
+        this.himboPresets = document.getElementById('himboPresets');
+        this.normalCount = document.getElementById('normalCount');
+        this.ubeCount = document.getElementById('ubeCount');
+        this.himboCount = document.getElementById('himboCount');
+        this.resultsStats = document.getElementById('resultsStats');
+        
+        this.initializeEventListeners();
+    }
+
+    initializeEventListeners() {
+        // Drag and drop events
+        this.dropZone.addEventListener('dragover', this.handleDragOver.bind(this));
+        this.dropZone.addEventListener('dragleave', this.handleDragLeave.bind(this));
+        this.dropZone.addEventListener('drop', this.handleDrop.bind(this));
+        
+        // File input events
+        this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+        this.browseBtn.addEventListener('click', () => this.fileInput.click());
+        
+        // Copy buttons
+        document.getElementById('copyAllBtn')?.addEventListener('click', () => this.copyPresets('all'));
+        document.getElementById('copyNormalBtn')?.addEventListener('click', () => this.copyPresets('normal'));
+        document.getElementById('copyUbeBtn')?.addEventListener('click', () => this.copyPresets('ube'));
+        document.getElementById('copyHimboBtn')?.addEventListener('click', () => this.copyPresets('himbo'));
+    }
+
+    handleDragOver(e) {
+        e.preventDefault();
+        this.dropZone.classList.add('dragover');
+    }
+
+    handleDragLeave(e) {
+        e.preventDefault();
+        this.dropZone.classList.remove('dragover');
+    }
+
+    handleDrop(e) {
+        e.preventDefault();
+        this.dropZone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            this.processFile(files[0]);
+        }
+    }
+
+    handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+            this.processFile(file);
+        }
+    }
+
+    processFile(file) {
+        // Validate file name
+        const expectedFileName = 'OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log';
+        if (file.name !== expectedFileName) {
+            alert(`Error: The file must be named "${expectedFileName}"`);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const content = e.target.result;
+                this.extractPresets(content);
+            } catch (error) {
+                console.error('Error processing file:', error);
+                alert('Error processing the file. Please try again.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    extractPresets(content) {
+        const lines = content.split('\n');
+        const presets = {
+            normal: [],
+            ube: [],
+            himbo: []
+        };
+
+        let currentSection = null;
+        let inPresetList = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+
+            // Detect section headers
+            if (line.includes('NORMAL PRESETS')) {
+                currentSection = 'normal';
+                inPresetList = true;
+                continue;
+            } else if (line.includes('UBE PRESETS')) {
+                currentSection = 'ube';
+                inPresetList = true;
+                continue;
+            } else if (line.includes('HIMBO PRESETS')) {
+                currentSection = 'himbo';
+                inPresetList = true;
+                continue;
+            } else if (line.includes('----------------------------------------------------')) {
+                inPresetList = false;
+                continue;
+            }
+
+            // Extract preset names
+            if (inPresetList && currentSection && line && !line.startsWith('===') && !line.includes('total') && !line.includes('PRESETS')) {
+                // Skip empty lines and section headers
+                if (line && !line.includes('total') && !line.includes('PRESETS')) {
+                    // Clean up preset name - just trim whitespace, don't remove numbers
+                    let presetName = line.trim();
+                    
+                    // Skip if it's a count or other non-preset line
+                    if (presetName && !presetName.match(/^\d+$/) && presetName !== '-') {
+                        presets[currentSection].push(presetName);
+                    }
+                }
+            }
+        }
+
+        this.displayPresets(presets);
+    }
+
+    displayPresets(presets) {
+        // Clear existing content
+        this.normalPresets.innerHTML = '';
+        this.ubePresets.innerHTML = '';
+        this.himboPresets.innerHTML = '';
+
+        // Display normal presets
+        presets.normal.forEach(preset => {
+            const item = this.createPresetItem(preset, 'normal');
+            this.normalPresets.appendChild(item);
+        });
+
+        // Display UBE presets
+        presets.ube.forEach(preset => {
+            const item = this.createPresetItem(preset, 'ube');
+            this.ubePresets.appendChild(item);
+        });
+
+        // Display HIMBO presets
+        presets.himbo.forEach(preset => {
+            const item = this.createPresetItem(preset, 'himbo');
+            this.himboPresets.appendChild(item);
+        });
+
+        // Update counts
+        this.normalCount.textContent = presets.normal.length;
+        this.ubeCount.textContent = presets.ube.length;
+        this.himboCount.textContent = presets.himbo.length;
+
+        // Update stats
+        const total = presets.normal.length + presets.ube.length + presets.himbo.length;
+        this.resultsStats.textContent = `Total: ${total} presets`;
+
+        // Show results
+        this.logResults.style.display = 'block';
+    }
+
+    createPresetItem(name, type) {
+        const item = document.createElement('div');
+        item.className = `preset-item ${type}`;
+        item.textContent = name;
+        item.title = name;
+        
+        // Add click to copy functionality
+        item.addEventListener('click', () => {
+            navigator.clipboard.writeText(name).then(() => {
+                // Visual feedback
+                const originalText = item.textContent;
+                item.textContent = '✓ Copied!';
+                item.style.background = 'var(--color-success)';
+                
+                setTimeout(() => {
+                    item.textContent = originalText;
+                    item.style.background = '';
+                }, 1000);
+            });
+        });
+
+        return item;
+    }
+
+    copyPresets(type) {
+        let presets = [];
+        
+        switch (type) {
+            case 'all':
+                presets = [
+                    ...Array.from(this.normalPresets.children).map(item => item.textContent),
+                    ...Array.from(this.ubePresets.children).map(item => item.textContent),
+                    ...Array.from(this.himboPresets.children).map(item => item.textContent)
+                ];
+                break;
+            case 'normal':
+                presets = Array.from(this.normalPresets.children).map(item => item.textContent);
+                break;
+            case 'ube':
+                presets = Array.from(this.ubePresets.children).map(item => item.textContent);
+                break;
+            case 'himbo':
+                presets = Array.from(this.himboPresets.children).map(item => item.textContent);
+                break;
+        }
+
+        if (presets.length === 0) {
+            alert('No presets to copy');
+            return;
+        }
+
+        const text = presets.join('\n');
+        navigator.clipboard.writeText(text).then(() => {
+            alert(`Copied ${presets.length} presets to clipboard!`);
+        }).catch(() => {
+            alert('Error copying presets');
+        });
+    }
+}
+
+// Initialize log analyzer when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new LogAnalyzer();
+});
