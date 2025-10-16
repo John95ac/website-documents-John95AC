@@ -988,6 +988,7 @@ function addSkipToContentLink() {
 /**
  * Add CSS for ripple effect
  */
+
 function addRippleStyles() {
     // Check if styles already exist
     if (document.getElementById('ripple-styles')) {
