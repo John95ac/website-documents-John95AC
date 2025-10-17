@@ -2603,17 +2603,3 @@ body {
     }
 }
 
-/* Button group styles */
-.btn-group {
-    display: flex;
-    gap: 8px;
-}
-
-.copy-btn {
-    transition: all var(--duration-fast) var(--ease-standard);
-}
-
-.copy-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
