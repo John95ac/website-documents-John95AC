@@ -536,6 +536,11 @@ select.form-control {
     margin-bottom: var(--space-16);
 }
 
+/* Separación para el botón New Rule */
+#newRule {
+    margin-top: var(--space-32); /* Más espacio */
+}
+
 /* Card component */
 .card {
     background-color: var(--color-surface);
@@ -1076,7 +1081,7 @@ body {
 }
 
 .mode-code {
-    background-color: var(--color-bg-4);
+    background-color: var(--color-bg-4); /* Rojo por defecto */
     color: var(--color-text);
     padding: var(--space-8) var(--space-12);
     border-radius: var(--radius-sm);
@@ -1087,9 +1092,22 @@ body {
     text-align: center;
 }
 
-/* Color específico para la x del modo Simple Application */
-.modes-grid .mode-card:first-child .mode-code {
-    background-color: rgba(30, 100, 50, 0.8);
+/* Primeros 4 mode-cards: VERDE */
+.modes-grid .mode-card:nth-child(1) .mode-code,  /* | */
+.modes-grid .mode-card:nth-child(2) .mode-code,  /* |1 */
+.modes-grid .mode-card:nth-child(3) .mode-code,  /* |0 */
+.modes-grid .mode-card:nth-child(4) .mode-code {  /* |- */
+    background-color: rgba(30, 100, 50, 0.8); /* TU verde */
+    color: white;
+}
+
+/* Últimos 4 mode-cards: ROJO */
+.modes-grid .mode-card:nth-child(5) .mode-code,  /* |* */
+.modes-grid .mode-card:nth-child(6) .mode-code,  /* |Keys */
+.modes-grid .mode-card:nth-child(7) .mode-code,  /* *-1 */
+.modes-grid .mode-card:nth-child(8) .mode-code {  /* 5,%& */
+    background-color: rgba(185, 28, 28, 0.15); /* TU rojo */
+    color: var(--color-text);
 }
 
 /* Estilos para el mensaje informativo de los modos */
@@ -1148,6 +1166,7 @@ body {
     border: 1px solid var(--color-card-border);
     border-radius: var(--radius-lg);
     padding: var(--space-24);
+    padding-bottom: var(--space-8); /* Muy poco espacio */
 }
 
 .simulator-output {
@@ -2582,4 +2601,19 @@ body {
     .example-editor {
         position: relative;
     }
+}
+
+/* Button group styles */
+.btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.copy-btn {
+    transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.copy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

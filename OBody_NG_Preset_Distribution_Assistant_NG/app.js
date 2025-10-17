@@ -1175,7 +1175,7 @@ function initializeTypewriterAnimation() {
     secondDescription.textContent = '';
  
     const subtitleText = 'Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition, Compatible with CBBE, 3BA, UBE, HIMBO...';
-    const firstDescText = 'A lightweight SKSE DLL mod that automatically detects UBE presets and applies them to the blacklist to prevent generation errors in OBody while simultaneously applying UBE presets to UBE NPCs in the game. It also includes a cleaning and maintenance system for OBody master JSON, and a system that processes simple rules written in INI files, similar to SPID but called PDA, to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time.';
+    const firstDescText = 'Lightweight SKSE DLL that processes distribution rules similar to SPID (called PDA) to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time. Applies presets to NPCs, races, factions, and plugins while maintaining JSON integrity and preventing errors. In-game manual assignments via O menu always take priority. 🐈';
     const secondDescText = 'It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the \'O\' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈';
  
     // Typewriter function
@@ -1661,7 +1661,7 @@ function initializeKeysModal(baseJSON) {
                     <button class="keys-tab" data-tab="himbo">KeyHIMBO</button>
                 </div>
                 <div class="keys-content active" id="keyword-content">
-                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG and add them to the JSON. The words are accumulated so it is recommended to only use one per rule. If you want to use a preset or two families with text segments, just make two rules.</p>
+                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG and add them to the JSON. The words are accumulated so it is recommended to only use one per rule. If you want to use a preset or two families with text segments, just make two rules</p>
                 </div>
                 <div class="keys-content" id="wordchart-content">
                     <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG but only if they are inside () and add them to the json.</p>
@@ -2029,4 +2029,46 @@ document.addEventListener('keydown', function(event) {
         });
         document.body.style.overflow = '';
     }
+});
+
+// Download INI button functionality
+document.getElementById('downloadRuleBtn').addEventListener('click', function() {
+    const ruleContent = document.getElementById('generatedRule').textContent;
+    
+    if (!ruleContent || ruleContent.trim() === '') {
+        alert('⚠️ No rules generated yet!');
+        return;
+    }
+    
+    // Ask user for format
+    const useTxt = confirm('⚠️ Some browsers block .ini files.\n\n✅ Click OK to download as .txt (safe, rename later)\n❌ Click Cancel to download as .ini (may be blocked)');
+    
+    const fileName = useTxt ? 'OBodyNG_PDA_MyRules.txt' : 'OBodyNG_PDA_MyRules.ini';
+    
+    // Create blob with INI content
+    const blob = new Blob([ruleContent], { type: 'text/plain;charset=utf-8' });
+    
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    
+    // Trigger download
+    document.body.appendChild(a);
+    a.click();
+    
+    // Cleanup
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    // Visual feedback
+    const originalText = this.innerHTML;
+    this.innerHTML = '✅ Downloaded!';
+    this.style.backgroundColor = '#059669';
+    
+    setTimeout(() => {
+        this.innerHTML = originalText;
+        this.style.backgroundColor = '#10B981';
+    }, 2000);
 });

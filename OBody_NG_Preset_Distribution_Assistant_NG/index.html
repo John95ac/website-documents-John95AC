@@ -271,17 +271,17 @@
                 <div class="functionality-card">
                     <div class="card-icon">🔍</div>
                     <h3>Intelligent Search</h3>
-                    <p>Automatically searches for files with pattern <code>OBodyNG_PDA_*.ini</code> in the data directory</p>
+                    <p>Automatically searches for installed presets <code>presets*.xml</code> to automatically divide them among CBBE, 3BA, UBE, HIMBO, BHUNP. Leaves incompatible presets with NPCs separated: HIMBO with males, UBE with UBE NPCs, and the rest with NPCs that actually belong to those types</p>
                 </div>
                 <div class="functionality-card">
                     <div class="card-icon">⚙️</div>
-                    <h3>Rule Processing</h3>
-                    <p>Processes rules in a SPID-like format: <code>Key = Element|PresetA,PresetB,...|Mode</code></p>
+                    <h3>Rule Processing PDA</h3>
+                    <p>Processes rules in a SPID-like format: <code>Key = Element|PresetA,PresetB,...|Mode</code> with a very high level of customization. Allows modifying OBody's master JSON without having to manually edit it, preset presets for NPCs or races, and keep the JSON well organized</p>
                 </div>
                 <div class="functionality-card">
                     <div class="card-icon">🎯</div>
                     <h3>Advanced Modes</h3>
-                    <p>Applies different modes: <code>x</code>, <code>1</code>, <code>0</code>, <code>-</code>, <code>x-</code>, <code>*</code>, <code>x*</code></p>
+                    <p>Applies different modes: <code>|</code>, <code>|-</code>, <code>|*</code>, <code>|Key</code> and many more combinations. Divided into basic, medium, and advanced levels, including blacklists. Allows customization so presets, plugins, races, or other elements aren't managed by OBody by player choice</p>
                 </div>
                 <div class="functionality-card">
                     <div class="card-icon">👥</div>
@@ -628,8 +628,11 @@
                             <button id="copyRuleBtn" class="copy-btn" title="Copy rules to clipboard">
                                 📋 Copy
                             </button>
-                        </div>
+                            <button id="downloadRuleBtn" class="copy-btn" style="background-color: #10B981;" title="Download as INI file">
+                            💾 Download
+                            </button>
                     </div>
+                </div>
                     <pre id="generatedRule" class="ini-editor"></pre>
                 </div>
             </div>
