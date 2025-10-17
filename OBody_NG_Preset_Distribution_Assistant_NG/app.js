@@ -1661,7 +1661,7 @@ function initializeKeysModal(baseJSON) {
                     <button class="keys-tab" data-tab="himbo">KeyHIMBO</button>
                 </div>
                 <div class="keys-content active" id="keyword-content">
-                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG and add them to the json. THE WORDS ARE ACCUMULATED SO IT IS RECOMMENDED TO ONLY USE ONE PER RULE, IF YOU WANT TO USE A PRESET OR TWO FAMILIES WITH TEXT SEGMENTS JUST MAKE TWO RULES/// do this in lowercase ok</p>
+                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG and add them to the JSON. The words are accumulated so it is recommended to only use one per rule. If you want to use a preset or two families with text segments, just make two rules.</p>
                 </div>
                 <div class="keys-content" id="wordchart-content">
                     <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG but only if they are inside () and add them to the json.</p>
