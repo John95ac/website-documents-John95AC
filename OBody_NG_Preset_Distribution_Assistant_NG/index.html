@@ -42,6 +42,144 @@
       .mermaid {
         padding: var(--space-16);
       }
+      
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background-color: var(--color-surface);
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        width: 90%;
+        max-width: 1200px;
+        max-height: 85vh;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .close {
+        color: var(--color-gray-400);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+      }
+
+      .close:hover {
+        color: var(--color-error);
+      }
+
+      .modal-body {
+        background-color: transparent;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 0;
+      }
+
+      /* Grid layout for modal content */
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+        height: 100%;
+      }
+
+      .modal-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .modal-panel:first-child {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .modal-panel:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .modal-panel:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+      }
+
+      .modal-panel h3 {
+        color: var(--color-primary);
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        border-bottom: 2px solid var(--color-primary);
+        padding-bottom: 5px;
+      }
+
+      .modal-panel p {
+        line-height: 1.6;
+        color: var(--color-text);
+        margin-bottom: 15px;
+      }
+
+      .modal-panel pre {
+        background-color: var(--color-background);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        padding: 15px;
+        overflow-x: auto;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 0.9em;
+        line-height: 1.4;
+      }
+
+      .modal-panel code {
+        background-color: var(--color-background);
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 0.9em;
+      }
+
+      /* JSON colors - Updated */
+      .json-key { color: #10B981; font-weight: 600; }
+      .json-preset { color: #FBBF24; }
+      .json-string { color: #FBBF24; }
+      .json-number { color: #1a1aa6; }
+      .json-boolean { color: #d94949; }
+      .json-null { color: #d94949; }
+      .json-bracket { color: #ffffff; }
+      .json-comma { color: #ffffff; }
+      .json-colon { color: #ffffff; }
+      
+      /* INI syntax colors */
+      .ini-comment { color: #ffffff; }
+      .ini-rule-type { color: #00bcd4; }
+      .ini-plugin { color: #10B981; }
+      .ini-preset { color: #FBBF24; }
+      .ini-separator { color: #ffffff; }
+      .ini-equal { color: #ffffff; }
+    </style>
+    <style>
+      /* olcoreConfig specific colors */
+      .olcore-key { color: orange; font-weight: 600; }
+      .olcore-value { color: #10B981; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -55,16 +193,16 @@
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#functionality" class="nav-link">Functionality</a></li>
-                    <li><a href="#simulator" class="nav-link">Generator</a></li>
-                    <li><a href="#examples" class="nav-link">INI Rules</a></li>
-                    <li><a href="#installation" class="nav-link">Installation</a></li>
-                    <li><a href="#architecture" class="nav-link">Architecture</a></li>
-                    <li><a href="#diagrams" class="nav-link">Flowcharts</a></li>
-                    <li><a href="#features" class="nav-link">Features</a></li>
-                    <li><a href="#security" class="nav-link">Security</a></li>
-                    <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
-                    <li><a href="#project-schedule-outline" class="nav-link">Projects</a></li>
-                </ul>
+                <li><a href="#simulator" class="nav-link">Generator</a></li>
+                <li><a href="#examples" class="nav-link">INI Rules</a></li>
+                <li><a href="#installation" class="nav-link">Installation</a></li>
+                <li><a href="#architecture" class="nav-link">Architecture</a></li>
+                <li><a href="#diagrams" class="nav-link">Flowcharts</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#security" class="nav-link">Security</a></li>
+                <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
+                <li><a href="#project-schedule-outline" class="nav-link">Projects</a></li>
+            </ul>
             <button class="nav-toggle" id="navToggle">
                 <span></span>
                 <span></span>
@@ -126,8 +264,7 @@
     </section>
 
     <!-- Functionality Section -->
-    <!-- Funcionalidades Principales -->
-        <section id="functionality" class="section">
+    <section id="functionality" class="section">
         <div class="container">
             <h2 class="section-title">Main Features</h2>
             <div class="functionality-grid">
@@ -161,191 +298,328 @@
                     <h3>Faction Management</h3>
                     <p>Applies presets to female NPCs of a faction</p>
                 </div>
-                
-                
             </div>
 
             <!-- Modes Section -->
             <div class="modes-section">
                 <h3>Available Modes</h3>
                 <div class="modes-grid">
-                    <div class="mode-card">
-                        <div class="mode-code">x</div>
+                    <div class="mode-card" onclick="openModal('modal1');">
+                        <div class="mode-code">|</div>
                         <div class="mode-info">
                             <h4>Simple Application</h4>
-                            <p>Always checks and applies the preset, you can use x or leave the mode space empty</p>
+                            <p>Always checks and applies the preset, my preferred mode</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">1</div>
+                    <div class="mode-card" onclick="openModal('modal2');">
+                        <div class="mode-code">|1</div>
                         <div class="mode-info">
                             <h4>Once</h4>
                             <p>Applies preset once, then deactivates, updates INI to |0</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">0</div>
+                    <div class="mode-card" onclick="openModal('modal3');">
+                        <div class="mode-code">|0</div>
                         <div class="mode-info">
                             <h4>Disabled</h4>
-                            <p>Skips rule, makes no changes</p>
+                            <p>Skips rule, makes no changes, generally used by the mod itself</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">-</div>
+                    <div class="mode-card" onclick="openModal('modal4');">
+                        <div class="mode-code">|-</div>
                         <div class="mode-info">
                             <h4>Clean Preset</h4>
-                            <p>Clean specific preset once, updates INI to |0</p>
+                            <p>Searches and cleans specific preset from the rule in json</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">x-</div>
+                    <div class="mode-card" onclick="openModal('modal5');">
+                        <div class="mode-code">|*</div>
                         <div class="mode-info">
-                            <h4>Clean Preset Plus</h4>
-                            <p>Clean preset in every execution</p>
+                            <h4>Priority Preset</h4>
+                            <p>Cleans complete preset entry in particular and applies the rule preset</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">*</div>
+                    <div class="mode-card" onclick="openModal('modal6');">
+                        <div class="mode-code">|Keys</div>
                         <div class="mode-info">
-                            <h4>Clean Element</h4>
-                            <p>Clean complete element entry, updates INI to |0</p>
+                            <h4>Preset Plus Modes</h4>
+                            <p>Various search modes to apply presets to json</p>
                         </div>
                     </div>
-                    <div class="mode-card">
-                        <div class="mode-code">x*</div>
+                    <div class="mode-card" onclick="openModal('modal7');">
+                        <div class="mode-code">*-1</div>
                         <div class="mode-info">
-                            <h4>Clean Element Plus</h4>
-                            <p>Clean element in every execution</p>
+                            <h4>One-Time Application</h4>
+                            <p>Explanation how 1* and 1- elements are incorporated into all modes (advanced use)</p>
                         </div>
                     </div>
-						<div class="mode-card">
-							<div class="mode-code">5,%&</div>
-							<div class="mode-info">
-								<h4>Element Not Considered</h4>
-								<p>Any unconsidered element is converted to 0</p>
-							</div>
-						</div>
-						           </div>
-						           
-						           <!-- Mensaje informativo sobre los modos -->
-						           <div class="modes-info">
-						               <p class="modes-explanation">
-						                   <strong>Important note:</strong> The mode that is in <span class="green-text">green</span> (X or leaving space empty) is the one that will be used by default and is the one that fulfills the function of distributing the preset.<br>
-						                   The modes that are in <span class="red-text">red</span> color are for advanced use and can generate actions such as cleaning presets that you no longer want to use, or applying presets in the JSON only once. I created them for testing or for you to find a use for them, but they are not very used. I recommend just going for the X or the empty space, that's enough.
-						               </p>
-						           </div>
-						       </div>
-						   </div>
-					</section>
+                    <div class="mode-card" onclick="openModal('modal8');">
+                        <div class="mode-code">5,%&</div>
+                        <div class="mode-info">
+                            <h4>Element Not Considered</h4>
+                            <p>Any unconsidered element is converted to 0</p>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Generador Interactivo de Reglas INI -->
-                <section id="simulator" class="section bg-celeste">
-            <div class="container">
-                <h2 class="section-title">Interactive ini PDA NG Rule Generator</h2>
-                    <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
-                        Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. Remember that if you choose more than one preset for an element, it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.
+                
+                <!-- Information message about modes -->
+                <div class="modes-info">
+                    <p class="modes-explanation">
+                        <strong>Important note:</strong> The mode that is in <span class="green-text">green</span> (leaving space empty) is the one that will be used by default and is the one that fulfills the function of distributing the preset.<br>
+                        The modes that are in <span class="red-text">red</span> color are for advanced use and can generate actions such as cleaning presets that you no longer want to use, or applying presets in the JSON only once. I created them for testing or for you to find a use for them, but they are not very used. I recommend just going for the empty space, that's enough.
                     </p>
-                    <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
-                        If you don't know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.
-                    </p>
-                <div class="simulator-container">
-                    <div class="simulator-controls">
-                        <h3>Rule Configuration</h3>
-                        <form id="ruleForm">
-                            <div class="form-group">
-                                <label for="ruleType" class="form-label" style="color: var(--color-primary);">Rule Type</label>
-                                <select id="ruleType" class="form-control">
-                                    <option value="">Select type...</option>
-                                    <option value="npcFormID">npcFormID</option>
-                                    <option value="npc">npc</option>
-                                    <option value="factionFemale">factionFemale</option>
-                                    <option value="factionMale">factionMale</option>
-                                    <option value="npcPluginFemale">npcPluginFemale</option>
-                                    <option value="npcPluginMale">npcPluginMale</option>
-                                    <option value="raceFemale">raceFemale</option>
-                                    <option value="raceMale">raceMale</option>
-                                    <option value="blacklisted">blacklisted</option>
-                                </select>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Modal 1 - Simple Application -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal1')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2 - Once -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal2')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3 - Disabled -->
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal3')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4 - Clean Preset -->
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal4')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5 - Priority Preset -->
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal5')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 6 - Keys Mode -->
+    <div id="modal6" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal6')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 7 - Advanced Application -->
+    <div id="modal7" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal7')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 8 - Invalid Element -->
+    <div id="modal8" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal8')">&times;</span>
+            <div class="modal-body">
+                <!-- Content will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive INI Rule Generator -->
+    <section id="simulator" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Interactive INI PDA NG Rule Generator</h2>
+            <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
+                Rule generator in a simple way. It only requires knowing the name of what you are going to apply the preset to (whether NPC, faction, plugin, or race) and knowing whether it will apply one or more presets to this element. Remember that if you choose more than one preset for an element, it will be chosen randomly from the ones you write, limiting the variability between the presets you specify.
+            </p>
+            <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
+                If you don't know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.
+            </p>
+            <div class="simulator-container">
+                <div class="simulator-controls">
+                    <h3>Rule Configuration</h3>
+                    <form id="ruleForm">
+                        <div class="form-group">
+                            <label for="ruleType" class="form-label" style="color: var(--color-primary);">Rule Type</label>
+                            <select id="ruleType" class="form-control">
+                                <option value="">Select type...</option>
+                                <option value="npcFormID">npcFormID</option>
+                                <option value="npc">npc</option>
+                                <option value="factionFemale">factionFemale</option>
+                                <option value="factionMale">factionMale</option>
+                                <option value="npcPluginFemale">npcPluginFemale</option>
+                                <option value="npcPluginMale">npcPluginMale</option>
+                                <option value="raceFemale">raceFemale</option>
+                                <option value="raceMale">raceMale</option>
+                                <option value="blacklisted">blacklisted</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="elementValue" class="form-label" style="color: #10B981;">Element Value</label>
+                            <select id="elementValue" class="form-control" style="display: none;">
+                                <option value="">Select race...</option>
+                                <option value="NordRace">NordRace</option>
+                                <option value="ImperialRace">ImperialRace</option>
+                                <option value="BretonRace">BretonRace</option>
+                                <option value="RedguardRace">RedguardRace</option>
+                                <option value="DarkElfRace">DarkElfRace</option>
+                                <option value="HighElfRace">HighElfRace</option>
+                                <option value="WoodElfRace">WoodElfRace</option>
+                                <option value="OrcRace">OrcRace</option>
+                                <option value="KhajiitRace">KhajiitRace</option>
+                                <option value="ArgonianRace">ArgonianRace</option>
+                                <option value="ElderRace">ElderRace</option>
+                                <option value="NordRaceVampire">NordRaceVampire</option>
+                                <option value="ImperialRaceVampire">ImperialRaceVampire</option>
+                                <option value="BretonRaceVampire">BretonRaceVampire</option>
+                                <option value="RedguardRaceVampire">RedguardRaceVampire</option>
+                                <option value="DarkElfRaceVampire">DarkElfRaceVampire</option>
+                                <option value="HighElfRaceVampire">HighElfRaceVampire</option>
+                                <option value="WoodElfRaceVampire">WoodElfRaceVampire</option>
+                                <option value="OrcRaceVampire">OrcRaceVampire</option>
+                                <option value="KhajiitRaceVampire">KhajiitRaceVampire</option>
+                                <option value="ArgonianRaceVampire">ArgonianRaceVampire</option>
+                                <option value="ElderRaceVampire">ElderRaceVampire</option>
+                                <option value="00UBE_HighElfRace">00UBE_HighElfRace</option>
+                                <option value="00UBE_BretonRace">00UBE_BretonRace</option>
+                                <option value="00UBE_ImperialRace">00UBE_ImperialRace</option>
+                                <option value="00UBE_RedguardRace">00UBE_RedguardRace</option>
+                                <option value="00UBE_DarkElfRace">00UBE_DarkElfRace</option>
+                                <option value="00UBE_WoodElfRace">00UBE_WoodElfRace</option>
+                                <option value="00UBE_NordRace">00UBE_NordRace</option>
+                                <option value="00UBE_OrcRace">00UBE_OrcRace</option>
+                                <option value="00UBE_ElderRace">00UBE_ElderRace</option>
+                                <option value="00UBE_KhajiitRace">00UBE_KhajiitRace</option>
+                                <option value="00UBE_ArgonianRace">00UBE_ArgonianRace</option>
+                                <option value="00UBE_HighElfRaceVampire">00UBE_HighElfRaceVampire</option>
+                                <option value="00UBE_BretonRaceVampire">00UBE_BretonRaceVampire</option>
+                                <option value="00UBE_ImperialRaceVampire">00UBE_ImperialRaceVampire</option>
+                                <option value="00UBE_RedguardRaceVampire">00UBE_RedguardRaceVampire</option>
+                                <option value="00UBE_DarkElfRaceVampire">00UBE_DarkElfRaceVampire</option>
+                                <option value="00UBE_WoodElfRaceVampire">00UBE_WoodElfRaceVampire</option>
+                                <option value="00UBE_NordRaceVampire">00UBE_NordRaceVampire</option>
+                                <option value="00UBE_OrcRaceVampire">00UBE_OrcRaceVampire</option>
+                                <option value="00UBE_ElderRaceVampire">00UBE_ElderRaceVampire</option>
+                                <option value="00UBE_KhajiitRaceVampire">00UBE_KhajiitRaceVampire</option>
+                                <option value="00UBE_ArgonianRaceVampire">00UBE_ArgonianRaceVampire</option>
+                                <option value="custom">Custom races</option>
+                            </select>
+                            <input type="text" id="elementValueInput" class="form-control" placeholder="E.g.: Serana, GuardFaction, xx0001...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="presets" class="form-label" style="color: #FBBF24;">Presets</label>
+                            <input type="text" id="presets" class="form-control" placeholder="E.g.: PresetA,PresetB,PresetC">
+                        </div>
+
+                        <!-- ============================================ -->
+                        <!-- NEW MODE LEVEL SELECTOR - ADDED HERE -->
+                        <!-- ============================================ -->
+                        <div class="form-group">
+                            <label class="form-label" style="color: var(--color-gray-300);">Mode Level</label>
+                            <div class="mode-level-selector">
+                                <label class="radio-label">
+                                    <input type="radio" name="modeLevel" value="basic" checked>
+                                    <span class="radio-text">Basic</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="modeLevel" value="medium">
+                                    <span class="radio-text">Medium</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="modeLevel" value="advanced">
+                                    <span class="radio-text">Advanced</span>
+                                </label>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="elementValue" class="form-label" style="color: #10B981;">Element Value</label>
-                                <select id="elementValue" class="form-control" style="display: none;">
-                                    <option value="">Select race...</option>
-                                    <option value="NordRace">NordRace</option>
-                                    <option value="ImperialRace">ImperialRace</option>
-                                    <option value="BretonRace">BretonRace</option>
-                                    <option value="RedguardRace">RedguardRace</option>
-                                    <option value="DarkElfRace">DarkElfRace</option>
-                                    <option value="HighElfRace">HighElfRace</option>
-                                    <option value="WoodElfRace">WoodElfRace</option>
-                                    <option value="OrcRace">OrcRace</option>
-                                    <option value="KhajiitRace">KhajiitRace</option>
-                                    <option value="ArgonianRace">ArgonianRace</option>
-                                    <option value="ElderRace">ElderRace</option>
-                                    <option value="NordRaceVampire">NordRaceVampire</option>
-                                    <option value="ImperialRaceVampire">ImperialRaceVampire</option>
-                                    <option value="BretonRaceVampire">BretonRaceVampire</option>
-                                    <option value="RedguardRaceVampire">RedguardRaceVampire</option>
-                                    <option value="DarkElfRaceVampire">DarkElfRaceVampire</option>
-                                    <option value="HighElfRaceVampire">HighElfRaceVampire</option>
-                                    <option value="WoodElfRaceVampire">WoodElfRaceVampire</option>
-                                    <option value="OrcRaceVampire">OrcRaceVampire</option>
-                                    <option value="KhajiitRaceVampire">KhajiitRaceVampire</option>
-                                    <option value="ArgonianRaceVampire">ArgonianRaceVampire</option>
-                                    <option value="ElderRaceVampire">ElderRaceVampire</option>
-                                    <option value="00UBE_HighElfRace">00UBE_HighElfRace</option>
-                                    <option value="00UBE_BretonRace">00UBE_BretonRace</option>
-                                    <option value="00UBE_ImperialRace">00UBE_ImperialRace</option>
-                                    <option value="00UBE_RedguardRace">00UBE_RedguardRace</option>
-                                    <option value="00UBE_DarkElfRace">00UBE_DarkElfRace</option>
-                                    <option value="00UBE_WoodElfRace">00UBE_WoodElfRace</option>
-                                    <option value="00UBE_NordRace">00UBE_NordRace</option>
-                                    <option value="00UBE_OrcRace">00UBE_OrcRace</option>
-                                    <option value="00UBE_ElderRace">00UBE_ElderRace</option>
-                                    <option value="00UBE_KhajiitRace">00UBE_KhajiitRace</option>
-                                    <option value="00UBE_ArgonianRace">00UBE_ArgonianRace</option>
-                                    <option value="00UBE_HighElfRaceVampire">00UBE_HighElfRaceVampire</option>
-                                    <option value="00UBE_BretonRaceVampire">00UBE_BretonRaceVampire</option>
-                                    <option value="00UBE_ImperialRaceVampire">00UBE_ImperialRaceVampire</option>
-                                    <option value="00UBE_RedguardRaceVampire">00UBE_RedguardRaceVampire</option>
-                                    <option value="00UBE_DarkElfRaceVampire">00UBE_DarkElfRaceVampire</option>
-                                    <option value="00UBE_WoodElfRaceVampire">00UBE_WoodElfRaceVampire</option>
-                                    <option value="00UBE_NordRaceVampire">00UBE_NordRaceVampire</option>
-                                    <option value="00UBE_OrcRaceVampire">00UBE_OrcRaceVampire</option>
-                                    <option value="00UBE_ElderRaceVampire">00UBE_ElderRaceVampire</option>
-                                    <option value="00UBE_KhajiitRaceVampire">00UBE_KhajiitRaceVampire</option>
-                                    <option value="00UBE_ArgonianRaceVampire">00UBE_ArgonianRaceVampire</option>
-                                    <option value="custom">Custom races</option>
-                                </select>
-                                <input type="text" id="elementValueInput" class="form-control" placeholder="E.g.: Serana, GuardFaction, xx0001...">
-                            </div>
+                        <div class="form-group">
+                            <label for="mode" class="form-label" style="color: var(--color-gray-300);">Mode</label>
+                            <select id="mode" class="form-control">
+                                <!-- BASIC LEVEL OPTIONS -->
+                                <option value="" selected data-level="basic" style="color: #10B981;">Empty (simple application default)</option>
+                                <option value="1" data-level="basic" style="color: #10B981;">1 (once)</option>
+                                <option value="0" data-level="basic" style="color: #10B981;">0 (disabled)</option>
+                                <option value="-" data-level="basic" style="color: #10B981;">- (remove preset)</option>
+                                <option value="*" data-level="basic" style="color: #FBBF24;">* (Inserts only the presets from the rule and cleans the rest)</option>
+                                
+                                <!-- MEDIUM LEVEL OPTIONS -->
+                                <option value="KeyWord" data-level="medium" style="color: #10B981;">KeyWord (Search in your presets for those that contain those text fragments)</option>
+                                <option value="KeyWordChart" data-level="medium" style="color: #10B981;">KeyWordChart (Same as the previous one, but only text between (text) )</option>
+                                <option value="KeyAuthor" data-level="medium" style="color: #10B981;">KeyAuthor (Searches for the author name and can add conditions to it)</option>
+                                <option value="KeyNormal" data-level="medium" style="color: #10B981;">KeyNormal (Apply presets but filter out (CBBE/3BA/BHUNP/etc.))</option>
+                                <option value="KeyUBE" data-level="medium" style="color: #10B981;">KeyUBE (Apply presets but filter out UBE in)</option>
+                                <option value="KeyHIMBO" data-level="medium" style="color: #10B981;">KeyHIMBO (Apply presets but filter out HIMBO in)</option>
+                                <option value="KeyWord-" data-level="medium" style="color: #10B981;">KeyWord- (Same as the original but removes the element)</option>
+                                <option value="KeyWordChart-" data-level="medium" style="color: #10B981;">KeyWordChart- (Same as the original but removes the element)</option>
+                                <option value="KeyAuthor-" data-level="medium" style="color: #10B981;">KeyAuthor- (Same as the original but removes the element)</option>
+                                <option value="KeyNormal-" data-level="medium" style="color: #10B981;">KeyNormal- (Same as the original but removes the element)</option>
+                                <option value="KeyUBE-" data-level="medium" style="color: #10B981;">KeyUBE- (Same as the original but removes the element)</option>
+                                <option value="KeyHIMBO-" data-level="medium" style="color: #10B981;">KeyHIMBO- (Same as the original but removes the element)</option>
+                                <option value="KeyWord*" data-level="medium" style="color: #FBBF24;">KeyWord* (simple application) (same as leaving empty)</option>
+                                <option value="KeyWordChart*" data-level="medium" style="color: #FBBF24;">KeyWordChart* (The same, but this one applies the element and cleans any others.)</option>
+                                <option value="KeyAuthor*" data-level="medium" style="color: #FBBF24;">KeyAuthor* (The same, but this one applies the element and cleans any others.)</option>
+                                <option value="KeyNormal*" data-level="medium" style="color: #FBBF24;">KeyNormal* (The same, but this one applies the element and cleans any others.)</option>
+                                <option value="KeyUBE*" data-level="medium" style="color: #FBBF24;">KeyUBE* (The same, but this one applies the element and cleans any others.)</option>
+                                <option value="KeyHIMBO*" data-level="medium" style="color: #FBBF24;">KeyHIMBO* (The same, but this one applies the element and cleans any others.)</option>
+                                
+                                <!-- ADVANCED LEVEL OPTIONS -->
+                                <option value="KeyWord1" data-level="advanced" style="color: #FBBF24;">KeyWord1 (Same as the original but only works once)</option>
+                                <option value="KeyWordChart1" data-level="advanced" style="color: #FBBF24;">KeyWordChart1 (Same as the original but only works once)</option>
+                                <option value="KeyAuthor1" data-level="advanced" style="color: #FBBF24;">KeyAuthor1 (Same as the original but only works once)</option>
+                                <option value="KeyNormal1" data-level="advanced" style="color: #FBBF24;">KeyNormal1 (Same as the original but only works once)</option>
+                                <option value="KeyUBE1" data-level="advanced" style="color: #FBBF24;">KeyUBE1 (Same as the original but only works once)</option>
+                                <option value="KeyHIMBO1" data-level="advanced" style="color: #FBBF24;">KeyHIMBO1 (Same as the original but only works once)</option>
+                                <option value="KeyWord1-" data-level="advanced" style="color: #FBBF24;">KeyWord1- (Same as the original but only works once)</option>
+                                <option value="KeyWordChart1-" data-level="advanced" style="color: #FBBF24;">KeyWordChart1- (Same as the original but only works once)</option>
+                                <option value="KeyAuthor1-" data-level="advanced" style="color: #FBBF24;">KeyAuthor1- (Same as the original but only works once)</option>
+                                <option value="KeyNormal1-" data-level="advanced" style="color: #FBBF24;">KeyNormal1- (Same as the original but only works once)</option>
+                                <option value="KeyUBE1-" data-level="advanced" style="color: #FBBF24;">KeyUBE1- (Same as the original but only works once)</option>
+                                <option value="KeyHIMBO1-" data-level="advanced" style="color: #FBBF24;">KeyHIMBO1- (Same as the original but only works once)</option>
+                                <option value="KeyWord1*" data-level="advanced" style="color: #FBBF24;">KeyWord1* (Same as the original but only works once)</option>
+                                <option value="KeyWordChart1*" data-level="advanced" style="color: #FBBF24;">KeyWordChart1* (Same as the original but only works once)</option>
+                                <option value="KeyAuthor1*" data-level="advanced" style="color: #FBBF24;">KeyAuthor1* (Same as the original but only works once)</option>
+                                <option value="KeyNormal1*" data-level="advanced" style="color: #FBBF24;">KeyNormal1* (Same as the original but only works once)</option>
+                                <option value="KeyUBE1*" data-level="advanced" style="color: #FBBF24;">KeyUBE1* (Same as the original but only works once)</option>
+                                <option value="KeyHIMBO1*" data-level="advanced" style="color: #FBBF24;">KeyHIMBO1* (Same as the original but only works once)</option>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="presets" class="form-label" style="color: #FBBF24;">Presets</label>
-                                <input type="text" id="presets" class="form-control" placeholder="E.g.: PresetA,PresetB,PresetC">
-                            </div>
+                        <button type="button" id="newRule" class="btn btn--primary btn--full-width">New Rule</button>
+                    </form>
+                </div>
 
-                            <div class="form-group">
-                                <label for="mode" class="form-label" style="color: var(--color-gray-300);">Mode</label>
-                                <select id="mode" class="form-control">
-                                    <option value="" selected style="color: var(--color-success);">Empty (simple application) (default)</option>
-                                    <option value="x" style="color: var(--color-success);">x (simple application) (same as leaving empty)</option>
-                                    <option value="1" style="color: var(--color-warning);">1 (once) (not necessary, advanced users)</option>
-                                    <option value="0" style="color: var(--color-warning);">0 (disabled) (not necessary, advanced users)</option>
-                                    <option value="-" style="color: var(--color-warning);">- (remove preset) (not necessary, advanced users)</option>
-                                    <option value="x-" style="color: var(--color-warning);">x- (unlimited remove) (not necessary, advanced users)</option>
-                                    <option value="*" style="color: var(--color-warning);">* (remove element) (not necessary, advanced users)</option>
-                                    <option value="x*" style="color: var(--color-warning);">x* (unlimited element remove) (not necessary, advanced users)</option>
-                                </select>
-                            </div>
-
-                            <button type="button" id="newRule" class="btn btn--primary btn--full-width">New Rule</button>
-                        </form>
-                    </div>
-
-                    <div class="simulator-output">
-                                            <div class="output-header">
+                <div class="simulator-output">
+                    <div class="output-header">
                         <span class="editor-title">📋 Generated Rule</span>
                         <div class="btn-group">
                             <button id="cleanRuleBtn" class="copy-btn" style="background-color: var(--color-error);" title="Clear all rules">
@@ -356,76 +630,75 @@
                             </button>
                         </div>
                     </div>
-                        <pre id="generatedRule" class="ini-editor"></pre>
-                    </div>
+                    <pre id="generatedRule" class="ini-editor"></pre>
                 </div>
             </div>
-        </section>
-
-        <!-- Advanced Options Section -->
-        <section id="advanced-options" class="section bg-celeste">
-            <div class="container">
+        </div>
+    </section>
+    <!-- Advanced Options Section -->
+    <section id="advanced-options" class="section bg-celeste">
+        <div class="container">
+            
+            <details>
+                <summary class="advanced-summary">🔧 Advanced Options</summary>
                 
-                <details>
-                    <summary class="advanced-summary">🔧 Advanced Options</summary>
-                    
-                    <div class="advanced-content">
-                        <div class="log-analyzer">
-                            <!-- Área de resultados (arriba) -->
-                            <div id="logResults" class="log-results" style="display: none;">
-                                <div class="results-header">
-                                    <h4>Extracted Presets</h4>
-                                    <div class="results-stats" id="resultsStats"></div>
+                <div class="advanced-content">
+                    <div class="log-analyzer">
+                        <!-- Results area (top) -->
+                        <div id="logResults" class="log-results" style="display: none;">
+                            <div class="results-header">
+                                <h4>Extracted Presets</h4>
+                                <div class="results-stats" id="resultsStats"></div>
+                            </div>
+                            
+                            <div class="presets-categories">
+                                <div class="category-section">
+                                    <h5>🔥 NORMAL PRESETS (CBBE/3BA/BHUNP/etc.) (<span id="normalCount">0</span> total)</h5>
+                                    <div class="preset-list" id="normalPresets"></div>
                                 </div>
                                 
-                                <div class="presets-categories">
-                                    <div class="category-section">
-                                        <h5>🔥 NORMAL PRESETS (CBBE/3BA/BHUNP/etc.) (<span id="normalCount">0</span> total)</h5>
-                                        <div class="preset-list" id="normalPresets"></div>
-                                    </div>
-                                    
-                                    <div class="category-section">
-                                        <h5>💎 UBE PRESETS (<span id="ubeCount">0</span> total)</h5>
-                                        <div class="preset-list" id="ubePresets"></div>
-                                    </div>
-                                    
-                                    <div class="category-section">
-                                        <h5>💪 HIMBO PRESETS (<span id="himboCount">0</span> total)</h5>
-                                        <div class="preset-list" id="himboPresets"></div>
-                                    </div>
+                                <div class="category-section">
+                                    <h5>💎 UBE PRESETS (<span id="ubeCount">0</span> total)</h5>
+                                    <div class="preset-list" id="ubePresets"></div>
                                 </div>
                                 
-                                <div class="preset-actions">
-                                    <button type="button" id="copyAllBtn" class="btn btn--primary">Copy All Presets</button>
-                                    <button type="button" id="copyNormalBtn" class="btn btn--secondary">Copy Normal</button>
-                                    <button type="button" id="copyUbeBtn" class="btn btn--secondary">Copy UBE</button>
-                                    <button type="button" id="copyHimboBtn" class="btn btn--secondary">Copy HIMBO</button>
+                                <div class="category-section">
+                                    <h5>💪 HIMBO PRESETS (<span id="himboCount">0</span> total)</h5>
+                                    <div class="preset-list" id="himboPresets"></div>
                                 </div>
                             </div>
                             
-                            <!-- Área de arrastrar y soltar (abajo) -->
-                            <h3>Log File Analyzer</h3>
-                            <p class="log-description">
-                                Drag and drop your "OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log" file here to extract all preset names and organize them by category.
-                            </p>
-                            
-                            <div class="drop-zone" id="dropZone">
-                                <div class="drop-zone-content">
-                                    <span class="drop-zone-icon">📁</span>
-                                    <p class="drop-zone-text">Drag & Drop your log file here</p>
-                                    <p class="drop-zone-hint">Only accepts: OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log</p>
-                                    <input type="file" id="fileInput" accept=".log" style="display: none;">
-                                    <button type="button" id="browseBtn" class="btn btn--secondary">Browse Files</button>
-                                </div>
+                            <div class="preset-actions">
+                                <button type="button" id="copyAllBtn" class="btn btn--primary">Copy All Presets</button>
+                                <button type="button" id="copyNormalBtn" class="btn btn--secondary">Copy Normal</button>
+                                <button type="button" id="copyUbeBtn" class="btn btn--secondary">Copy UBE</button>
+                                <button type="button" id="copyHimboBtn" class="btn btn--secondary">Copy HIMBO</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Drag and drop area (bottom) -->
+                        <h3>Log File Analyzer</h3>
+                        <p class="log-description">
+                            Drag and drop your "OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log" file here to extract all preset names and organize them by category.
+                        </p>
+                        
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-content">
+                                <span class="drop-zone-icon">📁</span>
+                                <p class="drop-zone-text">Drag & Drop your log file here</p>
+                                <p class="drop-zone-hint">Only accepts: OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log</p>
+                                <input type="file" id="fileInput" accept=".log" style="display: none;">
+                                <button type="button" id="browseBtn" class="btn btn--secondary">Browse Files</button>
                             </div>
                         </div>
                     </div>
-                </details>
-            </div>
-        </section>
+                </div>
+            </details>
+        </div>
+    </section>
 
-        <!-- Reglas de INI -->
-        <section id="examples" class="section">
+    <!-- INI Rules Section -->
+    <section id="examples" class="section">
         <div class="container">
             <h2 class="section-title">INI Rules</h2>
             <div class="examples-container">
@@ -438,28 +711,75 @@
                         <button id="copyBtn" class="copy-btn">📋 Copy</button>
                     </div>
                     <textarea id="iniEditor" class="ini-editor" readonly>;OBody_NG_Preset_Distribution_Assistant_NG
-
 ;INI Rule Examples:
 
-; npcFormID = xx0001|Preset,...|x , 1 , 0 , - , *            ; FormID | Preset, Presets,... | mode
-; npc = EditorID|Preset,...|x , 1 , 0 , - , *                ; EditorID | Preset, Presets,... | mode
-; factionFemale = Faction|Preset,...|x , 1 , 0 , - , *       ; Faction | Preset, Presets,... | mode
-; factionMale = Faction|Preset,...|x , 1 , 0 , - , *         ; Faction | Preset, Presets,... | mode
-; npcPluginFemale = Plugin.esp|Preset,...|x , 1 , 0 , - , *  ; Plugin.esp | Preset, Presets,... | mode
-; npcPluginMale = Plugin.esp|Preset,...|x , 1 , 0 , - , *    ; Plugin.esp | Preset, Presets,... | mode
-; raceFemale = Race|Preset,...|x , 1 , 0 , - , *             ; Race | Preset, Presets,... | mode
-; raceMale = Race|Preset,...|x , 1 , 0 , - , *               ; Race | Preset, Presets,... | mode
+; npcFormID = xx0001|Preset,...|Mode                   ; FormID | Preset, Presets,... | mode
+; npc = EditorID|Preset,...|Mode                       ; EditorID | Preset, Presets,... | mode
+; factionFemale = Faction|Preset,...|Mode              ; Faction | Preset, Presets,... | mode
+; factionMale = Faction|Preset,...|Mode                ; Faction | Preset, Presets,... | mode
+; npcPluginFemale = Plugin.esp|Preset,...|Mode         ; Plugin.esp | Preset, Presets,... | mode
+; npcPluginMale = Plugin.esp|Preset,...|Mode           ; Plugin.esp | Preset, Presets,... | mode
+; raceFemale = Race|Preset,...|Mode                    ; Race | Preset, Presets,... | mode
+; raceMale = Race|Preset,...|Mode                      ; Race | Preset, Presets,... | mode
+; blacklisted = Category|Element,Preset,...|Mode       ; Category | Element,Preset,... | mode
 
-;Modes:
-; Nothing = Unlimited (Always checks and applies the preset; if it is already applied, it won’t make changes. You can use "x" or leave the mode empty).
-; x = Unlimited (Same as "Nothing", applies the preset every time the game starts, but if already applied, it won’t make changes).
-; 1 = Once (Applies the preset only once).
+;Basic Modes:
+; (empty) = Unlimited (Always checks and applies the preset).
+; 1 = Once (Applies the preset only once, then changes to 0).
 ; 0 = Disabled (Does nothing).
-; - = Remove preset (Removes the preset; checks the defined section first and removes it from the JSON without modifying anything else).
-; * = Remove element (Removes the element written in the rule, e.g., removes a full plugin from the configuration; checks the defined section first and removes it from the JSON without modifying anything else).
-; x- = Unlimited remove (Same as "-", but will do it every time the game starts; not recommended).
-; x* = Unlimited element remove (Same as "*", but will do it every time the game starts; not recommended).
-; Incoherent text = (Checks for any text that is not a valid mode and automatically replaces it with "0").
+
+;Organization Modes:
+; - = Remove preset (Removes ONLY specified presets, keeps the rest - Always).
+; * = Keep only (Removes ALL other presets, keeps ONLY specified ones - Always).
+; 1- = Remove preset (Same as "-", but only once, then changes to 0).
+; 1* = Keep only (Same as "*", but only once, then changes to 0).
+
+;Key Modes - Add presets by search:
+; KeyWord = Searches presets containing the specified keywords.
+; KeyWordChart = Searches presets containing text between parentheses (text).
+; KeyAuthor = Searches presets by author name.
+; KeyNormal = Applies presets from NORMAL family (CBBE/3BA/BHUNP/etc.) - Check Helper log.
+; KeyUBE = Applies presets from UBE family (Female) - Check Helper log.
+; KeyHIMBO = Applies presets from HIMBO family (Male) - Check Helper log.
+
+;Key Modes - Replace all with search results (add *):
+; KeyWord* = Removes all, keeps ONLY keyword matches.
+; KeyWordChart* = Removes all, keeps ONLY chart matches.
+; KeyAuthor* = Removes all, keeps ONLY author matches.
+; KeyNormal* = Removes all, keeps ONLY specified NORMAL family presets.
+; KeyUBE* = Removes all, keeps ONLY specified UBE family presets.
+; KeyHIMBO* = Removes all, keeps ONLY specified HIMBO family presets.
+
+;Key Modes - Remove presets by search (add -):
+; KeyWord- = Removes presets containing keywords, keeps the rest.
+; KeyWordChart- = Removes presets with chart text, keeps the rest.
+; KeyAuthor- = Removes presets by author, keeps the rest.
+; KeyNormal- = Removes specified NORMAL family presets, keeps the rest.
+; KeyUBE- = Removes specified UBE family presets, keeps the rest.
+; KeyHIMBO- = Removes specified HIMBO family presets, keeps the rest.
+
+;One-Time Key Modes (add 1 before Key):
+; All Key modes support "1" prefix to execute once, then change to 0.
+; Examples: KeyWord1, KeyWord1*, KeyWord1-, KeyNormal1, KeyUBE1*, KeyHIMBO1-
+
+;Default available races:
+
+;Vanilla: NordRace, ImperialRace, BretonRace, RedguardRace, DarkElfRace, HighElfRace, WoodElfRace, OrcRace, KhajiitRace, ArgonianRace, ElderRace
+;Vampire: NordRaceVampire, ImperialRaceVampire, BretonRaceVampire, RedguardRaceVampire, DarkElfRaceVampire, HighElfRaceVampire, WoodElfRaceVampire, OrcRaceVampire, KhajiitRaceVampire, ArgonianRaceVampire, ElderRaceVampire
+;UBE (22 total): 00UBE_NordRace, 00UBE_ImperialRace, 00UBE_BretonRace, 00UBE_RedguardRace, 00UBE_DarkElfRace, 00UBE_HighElfRace, 00UBE_WoodElfRace, 00UBE_OrcRace, 00UBE_KhajiitRace, 00UBE_ArgonianRace, 00UBE_ElderRace (and vampire variants)
+;HIMBO (22 total): Same races as UBE but for male body presets
+;Custom races from mods can also be used
+
+;IMPORTANT NOTE - UBE Beast and Elder Races:
+; Beast races (KhajiitRace, ArgonianRace) and Elder races (ElderRace) with UBE prefixes are NOT yet officially supported by these mods.
+; They are included in this DLL for future compatibility when Obody add support for them.
+
+;AUTOMATIC UBE/HIMBO SYSTEM:
+; The DLL automatically detects UBE and HIMBO presets from your BodySlide.
+; It adds them to blacklist (PresetsFromRandomDistribution) to prevent incorrect random distribution to normal races.
+; It applies UBE presets to the 22 UBE races and HIMBO presets to the 22 male races automatically.
+; This prevents errors like skinny UBE NPCs or wrong body types on specific races.
+; Check "OBody_NG_Preset_Distribution_Assistant-NG_List-Helper.log" for the complete preset categorization.
 
 ;Real examples:
 
@@ -469,20 +789,83 @@ npcPluginFemale = YurianaWench.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNak
 ;Immersive Wenches All Mod
 npcPluginFemale = Immersive Wenches.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
 
-;More examples:
-
+;Apply to race once
 raceFemale = NordRace|Nordic Preset 1,Nordic Preset 2|1
 
+;Apply to faction always
 factionFemale = GuardFaction|Guard Body Preset|x
 
+;Apply to specific NPC once
 npc = Lydia|Lydia Custom Preset|1
 
-;Default available races:
+;Male plugin presets (simple application)
+npcPluginMale = Male_follower.esp|Male Body Preset 1,Male Body Preset 2|
 
-;NordRace, ImperialRace, BretonRace, RedguardRace, DarkElfRace, HighElfRace, WoodElfRace, OrcRace, KhajiitRace, ArgonianRace, ElderRace
-;Custom races from mods can also be used
+;Remove specific presets from race (always)
+raceFemale = NordRace|Unwanted Preset 1,Unwanted Preset 2|-
 
-;The blacklisted elements have not been touched yet in version 2.0, rules for them will be made
+;Keep only these presets in race (once)
+raceFemale = NordRace|Preset A,Preset B|1*
+
+;Add all presets containing "Curvy" keyword
+raceFemale = BretonRace|Curvy|KeyWord
+
+;Add only NORMAL family presets
+raceFemale = ImperialRace|My Preset 1,My Preset 2|KeyNormal
+
+;Replace all with UBE family presets only
+raceFemale = 00UBE_NordRace|UBE Preset 1,UBE Preset 2|KeyUBE*
+
+;Remove all presets by specific author
+raceFemale = HighElfRace|AuthorName|KeyAuthor-
+
+;Add presets with (Slim) in name, once only
+raceFemale = WoodElfRace|Slim|KeyWordChart1
+
+;Blacklisted Categories and Examples:
+
+;Npcs blacklisted in mode simple application
+blacklisted = Npcs|Mjoll,Serana|
+
+;NpcsPluginFemale blacklisted in mode simple application
+blacklisted = NpcsPluginFemale|Immersive Wenches.esp,TDD.esp|
+
+;NpcsPluginMale blacklisted in mode simple application
+blacklisted = NpcsPluginMale|Male Followers.esp,Custom Males.esp|
+
+;RacesFemale blacklisted in mode simple application
+blacklisted = RacesFemale|NordRace,00UBE_BretonRace|
+
+;RacesMale blacklisted in mode simple application
+blacklisted = RacesMale|OrcRace,KhajiitRace|
+
+;OutfitsFromORefit blacklisted in mode simple application
+blacklisted = OutfitsFromORefit|LS Force Naked,OBody Nude 32|
+
+;OutfitsFromORefitPlugin blacklisted in mode simple application
+blacklisted = OutfitsFromORefitPlugin|NewmChainmail.esp,NewmExtendedDressLong.esl|
+
+;outfitsForceRefit blacklisted in mode simple application
+blacklisted = outfitsForceRefit|Nihon - Jacket,TB Cloth [Black]|
+
+;PresetsFromRandomDistribution blacklisted in mode simple application
+blacklisted = PresetsFromRandomDistribution|HIMBO Zero for OBody,UBE Chonky|
+
+;Blacklisted with KeyWord mode (adds all presets containing keyword)
+blacklisted = PresetsFromRandomDistribution|Broken|KeyWord
+
+;Blacklisted once mode (applies once, then changes to 0)
+blacklisted = Npcs|TemporaryNPC|1
+
+;Remove from blacklist (use - mode)
+blacklisted = Npcs|Mjoll|-
+
+;Notes:
+; - Invalid mode text will automatically be replaced with "0"
+; - Empty preset area works differently by mode: |- does nothing, |* removes all presets
+; - Blacklisted section uses specific categories (see examples above)
+; - All Key modes work with blacklisted categories
+; - Check logs for detailed information: Helper.log (preset families), Analysis_INIs.log (rule processing), Doctor.log (XML files found)
 
 </textarea>
                 </div>
@@ -523,8 +906,8 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        <!-- Instalación -->
-        <section id="installation" class="section bg-celeste">
+    <!-- Installation Section -->
+    <section id="installation" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">Installation</h2>
             <div class="installation-content">
@@ -595,8 +978,8 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        <!-- Arquitectura del Sistema -->
-        <section id="architecture" class="section">
+    <!-- System Architecture Section -->
+    <section id="architecture" class="section">
         <div class="container">
             <h2 class="section-title">System Architecture</h2>
             <div class="architecture-diagram">
@@ -633,28 +1016,27 @@ npc = Lydia|Lydia Custom Preset|1
             </div>
         </div>
     </section>
+    <!-- Flowcharts Section -->
+    <section id="diagrams" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Operational Flowcharts</h2>
 
-        <!-- Diagramas -->
-        <section id="diagrams" class="section bg-celeste">
-            <div class="container">
-                <h2 class="section-title">Operational Flowcharts</h2>
-
-                <div class="data-flow" style="margin-bottom: 30px;">
-                    <div class="flow-description">
-                        <p>It is a visual representation of how the mod works and how actions are gradually implemented. <span style="color: var(--color-primary); font-weight: bold;">This section is extensive and not necessary to understand the mod; if you are a normal user of the mod, the INI files will suffice.</span> However, if you want to know more about how the project is improving, you can read these flowcharts. I tend to use them a lot in all my projects.</p>
-                    </div>
+            <div class="data-flow" style="margin-bottom: 30px;">
+                <div class="flow-description">
+                    <p>It is a visual representation of how the mod works and how actions are gradually implemented. <span style="color: var(--color-primary); font-weight: bold;">This section is extensive and not necessary to understand the mod; if you are a normal user of the mod, the INI files will suffice.</span> However, if you want to know more about how the project is improving, you can read these flowcharts. I tend to use them a lot in all my projects.</p>
                 </div>
+            </div>
 
-                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>✨ Show/Hide Flowchart v1.6.0</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>✨ Flowchart v1.6.0:</strong> This is the first public version. Although it has proven stable for beta testers, we plan to enhance the backup system in upcoming releases. The workflow is straightforward: it begins by reviewing the INI files, then checks for the JSON file, applies the necessary changes, verifies the structure, and performs a simple backup if this option is enabled in the configuration INI.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>✨ Show/Hide Flowchart v1.6.0</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>✨ Flowchart v1.6.0:</strong> This is the first public version. Although it has proven stable for beta testers, we plan to enhance the backup system in upcoming releases. The workflow is straightforward: it begins by reviewing the INI files, then checks for the JSON file, applies the necessary changes, verifies the structure, and performs a simple backup if this option is enabled in the configuration INI.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
     A[🚀 SKSE Plugin Load Game starts] --> B[📁 Basic Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
     B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
     C --> D[🔍 BASIC JSON Check<br/>Simple existence check]
@@ -718,20 +1100,20 @@ npc = Lydia|Lydia Custom Preset|1
     class H,J backup
     class D,U,W,X basicFeature
     class AA,BB logFeature
-                      </div>
-                    </details>
-                </div>
+                  </div>
+                </details>
+            </div>
 
-                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>🧰 Show/Hide Flowchart v1.7.0</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>🧰 Flowchart v1.7.0:</strong> This new version was created to improve the backup system, featuring more elaborate logic, structure analysis, and automatic restoration. It was designed to handle exceptionally large templates, including master JSON files exceeding 7,000 lines. As one of the first versions to incorporate this level of logical review, the process is swift when everything runs smoothly. However, if any issues are detected, the system will automatically create and restore from backups to ensure data integrity.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>🧰 Show/Hide Flowchart v1.7.0</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>🧰 Flowchart v1.7.0:</strong> This new version was created to improve the backup system, featuring more elaborate logic, structure analysis, and automatic restoration. It was designed to handle exceptionally large templates, including master JSON files exceeding 7,000 lines. As one of the first versions to incorporate this level of logical review, the process is swift when everything runs smoothly. However, if any issues are detected, the system will automatically create and restore from backups to ensure data integrity.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
     A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
     B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
     C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
@@ -812,20 +1194,20 @@ npc = Lydia|Lydia Custom Preset|1
     class H,H1,J,K,M,N backup
     class D,Z,CC,FF,BB basicFeature
     class II,JJ,KK,LL,MM logFeature
-                      </div>
-                    </details>
-                </div>
+                  </div>
+                </details>
+            </div>
 
-                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>⏩ Show/Hide Flowchart v1.7.5</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>⏩ Flowchart v1.7.5:</strong> This is the fifth revision of version 1.7. Although the previous version performed its function perfectly, we decided to further enhance the structure, simplify some messages to prevent confusion, and include a 3-step reading and structure analysis. Additionally, a more advanced method for modifying and incorporating rules has been implemented. The entire procedure, while seemingly extensive, executes in a fraction of a second, ensuring it is both fast and robust. This level of polish was achieved thanks to the valuable feedback from our beta testers.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>⏩ Show/Hide Flowchart v1.7.5</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>⏩ Flowchart v1.7.5:</strong> This is the fifth revision of version 1.7. Although the previous version performed its function perfectly, we decided to further enhance the structure, simplify some messages to prevent confusion, and include a 3-step reading and structure analysis. Additionally, a more advanced method for modifying and incorporating rules has been implemented. The entire procedure, while seemingly extensive, executes in a fraction of a second, ensuring it is both fast and robust. This level of polish was achieved thanks to the valuable feedback from our beta testers.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
     A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
     B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
     C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
@@ -922,20 +1304,19 @@ npc = Lydia|Lydia Custom Preset|1
     class EE,FF,GG,BB inlineFeature
     class MM,NN,OO,PP,QQ,F3 logFeature
     class F1 autoRestore
-                      </div>
-                    </details>
-                </div>
-
-                <div class="flowchart-item" style="border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>🚀 Show/Hide Flowchart v1.7.12</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>🚀 Flowchart v1.7.12:</strong> This is likely the final and most polished revision of the 1.7 branch, designed to be exceptionally fail-proof. Its logic is engineered to prevent all types of issues by first initializing and verifying the environment. The process continues by reading the INI rules, checking the integrity of the master JSON, and then performing a backup. It re-verifies if new rules need to be applied, leaving the master JSON untouched if no changes are necessary. This is followed by a 3-step structural review, a method that minimizes direct modifications to the JSON, preventing file corruption by only writing when explicitly required. The entire operation is extremely fast, executing in less than a second, and supports highly complex JSON files, even those exceeding 7,000 lines or 50 MB—a scale we don't anticipate being common. Following this release, development will focus on version 1.8, which will introduce rules for automatic blacklisting and is expected in a few months.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
+                  </div>
+                </details>
+            </div>
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>🚀 Show/Hide Flowchart v1.7.12</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>🚀 Flowchart v1.7.12:</strong> This is likely the final and most polished revision of the 1.7 branch, designed to be exceptionally fail-proof. Its logic is engineered to prevent all types of issues by first initializing and verifying the environment. The process continues by reading the INI rules, checking the integrity of the master JSON, and then performing a backup. It re-verifies if new rules need to be applied, leaving the master JSON untouched if no changes are necessary. This is followed by a 3-step structural review, a method that minimizes direct modifications to the JSON, preventing file corruption by only writing when explicitly required. The entire operation is extremely fast, executing in less than a second, and supports highly complex JSON files, even those exceeding 7,000 lines or 50 MB—a scale we don't anticipate being common. Following this release, development will focus on version 1.8, which will introduce rules for automatic blacklisting and is expected in a few months.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
     A[🚀 SKSE Plugin Load Game starts] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
     B --> C[⚙️ Read Backup Config INI<br/>ReadBackupConfigFromIni<br/>Create if not exists with Backup=1]
     C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
@@ -1037,22 +1418,22 @@ npc = Lydia|Lydia Custom Preset|1
     class MM,NN,OO,PP,QQ,F3 logFeature
     class F1 autoRestore
     class VV verification
-                      </div>
-                    </details>
-                </div>
+                  </div>
+                </details>
+            </div>
 
-                <div style="height: 2rem;"></div>
+            <div style="height: 2rem;"></div>
 
-                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>💃 Show/Hide Flowchart v2.2.5</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>💃 Flowchart v2.2.5:</strong> Version 2.2.5 adds a Smart Cleaning system with 6 levels of intelligent preset matching (exact, decoded, normalized, filename, normalized map, variations) that automatically detects incorrect or missing preset names and corrects or removes them as appropriate, with protection lists for critical presets like "Zeroed Sliders". THIS IS COMPLETELY CONFIGURABLE IN THE MOD'S CONFIGURATION INI. It incorporates automatic UBE preset detection through XML file analysis that identifies conflicting groups (3BA/3BBB/CBBE) and automatically distributes 22 UBE races (11 base + 11 vampire), adding presets to blacklist and races based on whether they have "UBE" in the name or not, with an exclusion list for special presets. It generates three specialized logs: Doctor.log lists all XMLs found in the BodySlide folder, SmartCleaning.log shows extracted internal names and filename-to-internal mappings, and Helper.log includes random usage examples with user presets and complete list separated into NORMAL vs UBE categories. It adds granular configuration through 5 independent flags (presetsSmartCleaning, blacklistedPresetsSmartCleaningFromRandomDistribution, blacklistedPresetsSmartCleaningFromAll, outfitsForceReSmartCleaning, modeUBE) that control cleaning behavior by section. It implements automatic truncation of preset names at ; and , delimiters, replacement of generic "CustomPreset" with real filename, improved multi-language support with triple fallback UTF-8→CP_ACP→ASCII safe, and deep XML information extraction with HTML entity decoding {which for some reasons presets use and took me a long time to realize, hahaha.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>💃 Show/Hide Flowchart v2.2.5</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>💃 Flowchart v2.2.5:</strong> Version 2.2.5 adds a Smart Cleaning system with 6 levels of intelligent preset matching (exact, decoded, normalized, filename, normalized map, variations) that automatically detects incorrect or missing preset names and corrects or removes them as appropriate, with protection lists for critical presets like "Zeroed Sliders". THIS IS COMPLETELY CONFIGURABLE IN THE MOD'S CONFIGURATION INI. It incorporates automatic UBE preset detection through XML file analysis that identifies conflicting groups (3BA/3BBB/CBBE) and automatically distributes 22 UBE races (11 base + 11 vampire), adding presets to blacklist and races based on whether they have "UBE" in the name or not, with an exclusion list for special presets. It generates three specialized logs: Doctor.log lists all XMLs found in the BodySlide folder, SmartCleaning.log shows extracted internal names and filename-to-internal mappings, and Helper.log includes random usage examples with user presets and complete list separated into NORMAL vs UBE categories. It adds granular configuration through 5 independent flags (presetsSmartCleaning, blacklistedPresetsSmartCleaningFromRandomDistribution, blacklistedPresetsSmartCleaningFromAll, outfitsForceReSmartCleaning, modeUBE) that control cleaning behavior by section. It implements automatic truncation of preset names at ; and , delimiters, replacement of generic "CustomPreset" with real filename, improved multi-language support with triple fallback UTF-8→CP_ACP→ASCII safe, and deep XML information extraction with HTML entity decoding {which for some reasons presets use and took me a long time to realize, hahaha.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
     A[🚀 SKSE Plugin Load] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
     B --> C[⚙️ Read Config INI<br/>ReadConfigFromIni<br/>Backup, ModeUBE, Smart Cleaning flags]
     C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
@@ -1167,151 +1548,151 @@ npc = Lydia|Lydia Custom Preset|1
     class V,V1,V2,V3,SS smartCleaning
     class W,W1,W2,W3,W4,W5,W6,X ubeFeature
     class DD,SS,Y,MM,NN,OO,PP,QQ,F3 logFeature
-                      </div>
-                    </details>
-                </div>
+                  </div>
+                </details>
+            </div>
 
-                <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
-                    <details>
-                      <summary>🚀 Show/Hide Flowchart v2.4.1</summary>
-                      <div class="modes-info">
-                          <p class="modes-explanation">
-                              <strong>🚀 Flowchart v2.4.1:</strong> Example text for the new version.
-                          </p>
-                      </div>
-                      <div class="mermaid">
-                        flowchart TD
-    A[🚀 SKSE Plugin Load - Version 2.4.0] --&gt; B[📁 Secure Initialization&lt;br/&gt;GetDocumentsPath + GetGamePath&lt;br/&gt;CreateDirectoryIfNotExists]
-    B --&gt; C[⚙️ Read Config INI&lt;br/&gt;ReadConfigFromIni&lt;br/&gt;Backup, ModeUBE, ModeHIMBO&lt;br/&gt;Smart Cleaning flags&lt;br/&gt;Conflict Resolution flag]
-    C --&gt; D[🔍 SIMPLE JSON Validation&lt;br/&gt;PerformSimpleJsonIntegrityCheck&lt;br/&gt;Structure, balance, OBody keys]
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>🚀 Show/Hide Flowchart v2.4.1</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>🚀 Flowchart v2.4.1:</strong> This version introduces comprehensive HIMBO support alongside UBE, bringing the total to 44 UBE races (22 UBE + 22 HIMBO), intelligent conflict resolution system that automatically detects and resolves rule conflicts based on file modification timestamps, 43 different rule modes including KeyWord, KeyWordChart, KeyAuthor with filter, exclusive, and removal variants, INI Analysis Log generation that provides detailed statistics of all INI files, multi-preset extraction from single XML files, and enhanced smart cleaning with independent flags for each JSON section.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
+    A[🚀 SKSE Plugin Load - Version 2.4.1] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Config INI<br/>ReadConfigFromIni<br/>Backup, ModeUBE, ModeHIMBO<br/>Smart Cleaning flags<br/>Conflict Resolution flag]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
     
-    D --&gt; E{❓ Master JSON&lt;br/&gt;Valid?}
-    E --&gt;|YES| G{🔄 Backup&lt;br/&gt;Config?}
-    E --&gt;|NO| F1[🔄 AUTOMATIC RESTORE&lt;br/&gt;RestoreJsonFromBackup&lt;br/&gt;Attempt recovery from backup]
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt recovery from backup]
     
-    F1 --&gt; F2{✅ Restoration&lt;br/&gt;Successful?}
-    F2 --&gt;|YES| F3[📊 Log: JSON Restored&lt;br/&gt;Continue normal process]
-    F2 --&gt;|NO| F[❌ END PROCESS&lt;br/&gt;CRITICAL ERROR&lt;br/&gt;No valid backup available]
-    F3 --&gt; G
+    F1 --> F2{✅ Restoration<br/>Successful?}
+    F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+    F2 -->|NO| F[❌ END PROCESS<br/>CRITICAL ERROR<br/>No valid backup available]
+    F3 --> G
     
-    G --&gt;|Backup=1| H[💾 LITERAL Backup&lt;br/&gt;PerformLiteralJsonBackup&lt;br/&gt;Byte-by-byte copy]
-    G --&gt;|Backup=true/2| H1[💾 LITERAL Backup&lt;br/&gt;Always Active Mode&lt;br/&gt;Keep INI unchanged]
-    G --&gt;|Backup=0/false| I[📖 Read Master JSON&lt;br/&gt;ReadCompleteJson&lt;br/&gt;Parse all valid keys]
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy]
+    G -->|Backup=true/2| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Keep INI unchanged]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse all valid keys]
     
-    H --&gt; J[✏️ Update INI&lt;br/&gt;Backup = 0]
-    H1 --&gt; K[ℹ️ Keep INI&lt;br/&gt;Backup = true unchanged]
-    J --&gt; I
-    K --&gt; I
+    H --> J[✏️ Update INI<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true unchanged]
+    J --> I
+    K --> I
     
-    I --&gt; L{✅ JSON Read&lt;br/&gt;Success?}
-    L --&gt;|NO| M[🔄 Restore from Backup&lt;br/&gt;RestoreJsonFromBackup]
-    M --&gt; N[📁 Move Corrupted&lt;br/&gt;MoveCorruptedJsonToAnalysis&lt;br/&gt;Timestamp → Analysis]
-    N --&gt; O[🔄 Retry Read&lt;br/&gt;ReadCompleteJson]
-    O --&gt; P{✅ Read OK&lt;br/&gt;after restore?}
-    P --&gt;|NO| Q[❌ END PROCESS&lt;br/&gt;JSON READ FAILED]
-    P --&gt;|YES| R[📂 Scan Data Folder&lt;br/&gt;OBodyNG_PDA_*.ini files]
+    I --> L{✅ JSON Read<br/>Success?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>OBodyNG_PDA_*.ini files]
     
-    L --&gt;|YES| R
-    R --&gt; R1[📋 Generate INI Analysis Log&lt;br/&gt;GenerateINIAnalysisLog&lt;br/&gt;Scan all INI files + statistics]
-    R1 --&gt; DD[📋 Generate Doctor Log&lt;br/&gt;GenerateDoctorLog&lt;br/&gt;List all XML files found]
-    DD --&gt; S[🏗️ Build Preset Map&lt;br/&gt;BuildPresetNameMap&lt;br/&gt;Extract internal names from XML&lt;br/&gt;Multi-preset support + HTML entity decoding]
-    S --&gt; SS[📋 Generate Smart Cleaning Log&lt;br/&gt;GenerateSmartCleaningLog&lt;br/&gt;Preset reference list + mapping]
+    L -->|YES| R
+    R --> R1[📋 Generate INI Analysis Log<br/>GenerateINIAnalysisLog<br/>Scan all INI files + statistics]
+    R1 --> DD[📋 Generate Doctor Log<br/>GenerateDoctorLog<br/>List all XML files found]
+    DD --> S[🏗️ Build Preset Map<br/>BuildPresetNameMap<br/>Extract internal names from XML<br/>Multi-preset support + HTML entity decoding]
+    S --> SS[📋 Generate Smart Cleaning Log<br/>GenerateSmartCleaningLog<br/>Preset reference list + mapping]
     
-    SS --&gt; T[📝 Parse & Prioritize INI Rules&lt;br/&gt;ParseRuleLine + GetRulePriority&lt;br/&gt;Sort by priority: Standard → Filter → Remove → Exclusive]
-    T --&gt; T1{🔍 Detect&lt;br/&gt;Conflicts?}
-    T1 --&gt;|YES| T2[🚨 Track Exclusive Conflicts&lt;br/&gt;RuleConflictTracker&lt;br/&gt;File modification timestamps]
-    T1 --&gt;|NO| U
-    T2 --&gt; T3{⚙️ Smart Resolution&lt;br/&gt;Enabled?}
-    T3 --&gt;|YES| T4[🔧 Resolve Conflicts&lt;br/&gt;ResolveConflicts&lt;br/&gt;Newest file wins → Update older count to 0]
-    T3 --&gt;|NO| T5[⚠️ Skip All Conflicting Rules&lt;br/&gt;Log conflicts only]
-    T4 --&gt; T6[📋 Generate Conflict Report&lt;br/&gt;GenerateConflictReport&lt;br/&gt;Detailed resolution log]
-    T5 --&gt; T6
-    T6 --&gt; U
+    SS --> T[📝 Parse & Prioritize INI Rules<br/>ParseRuleLine + GetRulePriority<br/>Sort by priority: Standard → Filter → Remove → Exclusive]
+    T --> T1{🔍 Detect<br/>Conflicts?}
+    T1 -->|YES| T2[🚨 Track Exclusive Conflicts<br/>RuleConflictTracker<br/>File modification timestamps]
+    T1 -->|NO| U
+    T2 --> T3{⚙️ Smart Resolution<br/>Enabled?}
+    T3 -->|YES| T4[🔧 Resolve Conflicts<br/>ResolveConflicts<br/>Newest file wins → Update older count to 0]
+    T3 -->|NO| T5[⚠️ Skip All Conflicting Rules<br/>Log conflicts only]
+    T4 --> T6[📋 Generate Conflict Report<br/>GenerateConflictReport<br/>Detailed resolution log]
+    T5 --> T6
+    T6 --> U
     
-    U[🎯 Process INI Rules&lt;br/&gt;Apply by priority order&lt;br/&gt;Add/Remove Presets/Plugins&lt;br/&gt;Support 43 rule modes]
-    U --&gt; U1[🔑 Process KEY Filtering Modes&lt;br/&gt;KeyWord/KeyWordChart/KeyAuthor&lt;br/&gt;KeyNormal/KeyUBE/KeyHIMBO&lt;br/&gt;With asterisk, dash, 1 variants]
-    U1 --&gt; U2[📊 Update INI Counts&lt;br/&gt;UpdateIniRuleCount&lt;br/&gt;Automatic decrement for ONCE modes]
+    U[🎯 Process INI Rules<br/>Apply by priority order<br/>Add/Remove Presets/Plugins<br/>Support 43 rule modes]
+    U --> U1[🔑 Process KEY Filtering Modes<br/>KeyWord/KeyWordChart/KeyAuthor<br/>KeyNormal/KeyUBE/KeyHIMBO<br/>With asterisk, dash, 1 variants]
+    U1 --> U2[📊 Update INI Counts<br/>UpdateIniRuleCount<br/>Automatic decrement for ONCE modes]
     
-    U2 --&gt; V[🧹 Smart Cleaning Evaluation&lt;br/&gt;Check enabled flags per section]
-    V --&gt; V1{🛡️ Presets&lt;br/&gt;Smart Cleaning?}
-    V1 --&gt;|YES| V2A[🔍 Clean General Presets&lt;br/&gt;6-level matching algorithm&lt;br/&gt;Protected presets exemption]
-    V1 --&gt;|NO| V3A
-    V2A --&gt; V3A{🛡️ Blacklisted Presets&lt;br/&gt;FromRandomDistribution?}
-    V3A --&gt;|YES| V4A[🔍 Clean Blacklist Random&lt;br/&gt;PerformSmartCleaning]
-    V3A --&gt;|NO| V5A
-    V4A --&gt; V5A{🛡️ Blacklisted Presets&lt;br/&gt;FromAll?}
-    V5A --&gt;|YES| V6A[🔍 Clean All Blacklists&lt;br/&gt;PerformSmartCleaning]
-    V5A --&gt;|NO| V7A
-    V6A --&gt; V7A{🛡️ OutfitsForceRe&lt;br/&gt;Smart Cleaning?}
-    V7A --&gt;|YES| V8A[🔍 Clean Outfits ForceRefit&lt;br/&gt;PerformSmartCleaning]
-    V7A --&gt;|NO| W
-    V8A --&gt; W
+    U2 --> V[🧹 Smart Cleaning Evaluation<br/>Check enabled flags per section]
+    V --> V1{🛡️ Presets<br/>Smart Cleaning?}
+    V1 -->|YES| V2A[🔍 Clean General Presets<br/>6-level matching algorithm<br/>Protected presets exemption]
+    V1 -->|NO| V3A
+    V2A --> V3A{🛡️ Blacklisted Presets<br/>FromRandomDistribution?}
+    V3A -->|YES| V4A[🔍 Clean Blacklist Random<br/>PerformSmartCleaning]
+    V3A -->|NO| V5A
+    V4A --> V5A{🛡️ Blacklisted Presets<br/>FromAll?}
+    V5A -->|YES| V6A[🔍 Clean All Blacklists<br/>PerformSmartCleaning]
+    V5A -->|NO| V7A
+    V6A --> V7A{🛡️ OutfitsForceRe<br/>Smart Cleaning?}
+    V7A -->|YES| V8A[🔍 Clean Outfits ForceRefit<br/>PerformSmartCleaning]
+    V7A -->|NO| W
+    V8A --> W
     
-    W[🎮 UBE/HIMBO XML Processing&lt;br/&gt;ProcessUBEXmlPresets + ProcessHIMBOXmlPresets&lt;br/&gt;Multi-preset extraction]
-    W --&gt; W1{🔍 ModeUBE&lt;br/&gt;Enabled?}
-    W1 --&gt;|YES| W2[📊 Analyze UBE XMLs&lt;br/&gt;AnalyzeXmlGroups&lt;br/&gt;Detect 3BA/3BBB/CBBE conflicts]
-    W1 --&gt;|NO| W9
-    W2 --&gt; W3{⚠️ UBE Conflict&lt;br/&gt;Detected?}
-    W3 --&gt;|YES + UBE in name| W4[✅ Add to Blacklist + UBE Races&lt;br/&gt;Allow in 22 UBE races]
-    W3 --&gt;|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY&lt;br/&gt;Exclude from UBE races]
-    W3 --&gt;|NO Conflict| W6[✅ Add to Blacklist + UBE Races&lt;br/&gt;Pure UBE preset]
-    W4 --&gt; W7
-    W5 --&gt; W7
-    W6 --&gt; W7
-    W7[🎯 Apply UBE to JSON&lt;br/&gt;Blacklist + 22 UBE Races]
-    W7 --&gt; W9
+    W[🎮 UBE/HIMBO XML Processing<br/>ProcessUBEXmlPresets + ProcessHIMBOXmlPresets<br/>Multi-preset extraction]
+    W --> W1{🔍 ModeUBE<br/>Enabled?}
+    W1 -->|YES| W2[📊 Analyze UBE XMLs<br/>AnalyzeXmlGroups<br/>Detect 3BA/3BBB/CBBE conflicts]
+    W1 -->|NO| W9
+    W2 --> W3{⚠️ UBE Conflict<br/>Detected?}
+    W3 -->|YES + UBE in name| W4[✅ Add to Blacklist + UBE Races<br/>Allow in 22 UBE races]
+    W3 -->|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY<br/>Exclude from UBE races]
+    W3 -->|NO Conflict| W6[✅ Add to Blacklist + UBE Races<br/>Pure UBE preset]
+    W4 --> W7
+    W5 --> W7
+    W6 --> W7
+    W7[🎯 Apply UBE to JSON<br/>Blacklist + 22 UBE Races]
+    W7 --> W9
     
-    W9{🔍 ModeHIMBO&lt;br/&gt;Enabled?}
-    W9 --&gt;|YES| W10[📊 Analyze HIMBO XMLs&lt;br/&gt;AnalyzeXmlGroups&lt;br/&gt;Detect conflicts]
-    W9 --&gt;|NO| X
-    W10 --&gt; W11{⚠️ HIMBO Conflict&lt;br/&gt;Detected?}
-    W11 --&gt;|YES + HIMBO in name| W12[✅ Add to Blacklist + HIMBO Races&lt;br/&gt;Allow in 22 HIMBO races]
-    W11 --&gt;|YES + NO HIMBO in name| W13[✅ Add to Blacklist ONLY&lt;br/&gt;Exclude from HIMBO races]
-    W11 --&gt;|NO Conflict| W14[✅ Add to Blacklist + HIMBO Races&lt;br/&gt;Pure HIMBO preset]
-    W12 --&gt; W15
-    W13 --&gt; W15
-    W14 --&gt; W15
-    W15[🎯 Apply HIMBO to JSON&lt;br/&gt;Blacklist + 22 HIMBO races]
-    W15 --&gt; X
+    W9{🔍 ModeHIMBO<br/>Enabled?}
+    W9 -->|YES| W10[📊 Analyze HIMBO XMLs<br/>AnalyzeXmlGroups<br/>Detect conflicts]
+    W9 -->|NO| X
+    W10 --> W11{⚠️ HIMBO Conflict<br/>Detected?}
+    W11 -->|YES + HIMBO in name| W12[✅ Add to Blacklist + HIMBO Races<br/>Allow in 22 HIMBO races]
+    W11 -->|YES + NO HIMBO in name| W13[✅ Add to Blacklist ONLY<br/>Exclude from HIMBO races]
+    W11 -->|NO Conflict| W14[✅ Add to Blacklist + HIMBO Races<br/>Pure HIMBO preset]
+    W12 --> W15
+    W13 --> W15
+    W14 --> W15
+    W15[🎯 Apply HIMBO to JSON<br/>Blacklist + 22 HIMBO races]
+    W15 --> X
     
-    X[📋 Generate Helper Log&lt;br/&gt;GenerateHelperLog&lt;br/&gt;Preset lists + INI examples&lt;br/&gt;NORMAL vs UBE vs HIMBO categorization]
-    X --&gt; Z[🏗️ Preserve Original&lt;br/&gt;PreserveOriginalSections&lt;br/&gt;Update only modified keys&lt;br/&gt;Exact 4-space format]
-    Z --&gt; ZZ{🔍 VERIFY CHANGES&lt;br/&gt;CheckIfChangesNeeded?}
+    X[📋 Generate Helper Log<br/>GenerateHelperLog<br/>Preset lists + INI examples<br/>NORMAL vs UBE vs HIMBO categorization]
+    X --> Z[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+    Z --> ZZ{🔍 VERIFY CHANGES<br/>CheckIfChangesNeeded?}
     
-    ZZ --&gt;|YES| AA[💾 ATOMIC Write&lt;br/&gt;WriteJsonAtomically&lt;br/&gt;.tmp + PerformTripleValidation]
-    ZZ --&gt;|NO| BB[ℹ️ Skip Write&lt;br/&gt;No changes detected]
+    ZZ -->|YES| AA[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp + PerformTripleValidation]
+    ZZ -->|NO| BB[ℹ️ Skip Write<br/>No changes detected]
     
-    AA --&gt; CC{✅ Write&lt;br/&gt;Successful?}
-    CC --&gt;|NO| YY[🔄 Restore Backup&lt;br/&gt;Write failure]
-    CC --&gt;|YES| DD1[🔍 INDENTATION CORRECTION&lt;br/&gt;CorrectJsonIndentation&lt;br/&gt;4-space hierarchy + inline empty]
-    BB --&gt; DD1
+    AA --> CC{✅ Write<br/>Successful?}
+    CC -->|NO| YY[🔄 Restore Backup<br/>Write failure]
+    CC -->|YES| DD1[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>4-space hierarchy + inline empty]
+    BB --> DD1
     
-    DD1 --&gt; EE{📏 Indentation&lt;br/&gt;Correct?}
-    EE --&gt;|YES| FF[✅ JSON Already Perfect&lt;br/&gt;4 spaces verified]
-    EE --&gt;|NO| GG[✏️ FULL REFORMAT&lt;br/&gt;isEmptyBlock Helper&lt;br/&gt;Empty containers inline&lt;br/&gt;With content 4 spaces]
+    DD1 --> EE{📏 Indentation<br/>Correct?}
+    EE -->|YES| FF[✅ JSON Already Perfect<br/>4 spaces verified]
+    EE -->|NO| GG[✏️ FULL REFORMAT<br/>isEmptyBlock Helper<br/>Empty containers inline<br/>With content 4 spaces]
     
-    GG --&gt; HH{✅ Reformat&lt;br/&gt;Complete?}
-    HH --&gt;|NO| II[🔄 Restore Backup&lt;br/&gt;Indentation failure]
-    HH --&gt;|YES| JJ[🔍 Final TRIPLE Validation&lt;br/&gt;PerformTripleValidation&lt;br/&gt;Structure + Keys]
+    GG --> HH{✅ Reformat<br/>Complete?}
+    HH -->|NO| II[🔄 Restore Backup<br/>Indentation failure]
+    HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Keys]
     
-    FF --&gt; JJ
-    JJ --&gt; KK{✅ Final JSON&lt;br/&gt;Valid?}
-    KK --&gt;|NO| LL[🔄 Restore Backup&lt;br/&gt;+ Forensic Analysis]
-    KK --&gt;|YES| MM[📊 Final Log Summary&lt;br/&gt;Complete statistics&lt;br/&gt;All operations logged&lt;br/&gt;INI Analysis/Doctor/Helper/SmartCleaning logs]
+    FF --> JJ
+    JJ --> KK{✅ Final JSON<br/>Valid?}
+    KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis]
+    KK -->|YES| MM[📊 Final Log Summary<br/>Complete statistics<br/>All operations logged<br/>INI Analysis/Doctor/Helper/SmartCleaning logs]
     
-    YY --&gt; NN[📊 Log Backup Restore]
-    II --&gt; OO[📊 Log Backup Restore]
-    LL --&gt; PP[📊 Log Critical Error]
+    YY --> NN[📊 Log Backup Restore]
+    II --> OO[📊 Log Backup Restore]
+    LL --> PP[📊 Log Critical Error]
     
-    NN --&gt; MM
-    OO --&gt; MM
-    PP --&gt; MM
+    NN --> MM
+    OO --> MM
+    PP --> MM
     
-    MM --&gt; QQ[💬 Console Message&lt;br/&gt;OBody Assistant v2.4.0: Process completed!]
-    QQ --&gt; RR[🏁 END: Success&lt;br/&gt;Perfect 4-space format&lt;br/&gt;4 logs generated&lt;br/&gt;UBE + HIMBO distributed&lt;br/&gt;43 rule modes supported&lt;br/&gt;Conflict resolution applied]
+    MM --> QQ[💬 Console Message<br/>OBody Assistant v2.4.1: Process completed!]
+    QQ --> RR[🏁 END: Success<br/>Perfect 4-space format<br/>4 logs generated<br/>UBE + HIMBO distributed<br/>43 rule modes supported<br/>Conflict resolution applied]
     
-    F --&gt; SS1[🏁 END: Critical Error]
-    Q --&gt; TT[🏁 END: JSON Read Failed]
+    F --> SS1[🏁 END: Critical Error]
+    Q --> TT[🏁 END: JSON Read Failed]
     
     %% Styles
     classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
@@ -1339,16 +1720,14 @@ npc = Lydia|Lydia Custom Preset|1
     class DD,R1,SS,X,MM,NN,OO,PP,QQ,F3 logFeature
     class T2,T4,T5,T6 conflictFeature
     class T,U,U1,U2 keyFeature
-                      </div>
-                    </details>
-                </div>
+                  </div>
+                </details>
             </div>
-        </section>
+        </div>
+    </section>
 
-        
-
-        <!-- Características Avanzadas -->
-        <section id="features" class="section">
+    <!-- Advanced Features -->
+    <section id="features" class="section">
         <div class="container">
             <h2 class="section-title">Advanced Features</h2>
             <div class="features-grid">
@@ -1385,9 +1764,8 @@ npc = Lydia|Lydia Custom Preset|1
             </div>
         </div>
     </section>
-
-        <!-- Seguridad y Confiabilidad -->
-        <section id="security" class="section bg-celeste">
+    <!-- Security and Reliability -->
+    <section id="security" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">Security and Reliability</h2>
             <div class="security-grid">
@@ -1444,8 +1822,8 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        <!-- Reconocimientos -->
-        <section id="acknowledgments" class="section">
+    <!-- Acknowledgments -->
+    <section id="acknowledgments" class="section">
         <div class="container">
             <h2 class="section-title">Acknowledgments</h2>
             <div class="acknowledgments-content">
@@ -1513,7 +1891,7 @@ npc = Lydia|Lydia Custom Preset|1
                         <div class="tester-card">
                             <img src="Beta Testers/Triberzis.png" alt="Triberzis" class="tester-avatar">
                             <div class="tester-info">
-                                <h4 class="tester-name">Edsley</h4>
+                                <h4 class="tester-name">Triberzis</h4>
                                 <p class="tester-contribution">Advice/ideas for system modes and keys</p>
                             </div>
                         </div>
@@ -1564,7 +1942,7 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        <section id="project-schedule-outline" class="section bg-celeste">
+    <section id="project-schedule-outline" class="section bg-celeste">
         <div class="container">
             <h2 class="section-title">Project Schedule Outline</h2>
             <div class="image-frame" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 10px; background: rgba(0, 0, 0, 0.1); margin: 20px 0;">
@@ -1590,8 +1968,6 @@ npc = Lydia|Lydia Custom Preset|1
         </div>
     </section>
 
-        
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -1603,17 +1979,13 @@ npc = Lydia|Lydia Custom Preset|1
                     </div>
                     <p>&copy; 2025 John1995ac. MIT License. Open source project.</p>
                 </div>
-                        <ul class="icons">
-                            <li><a href="https://github.com/John95ac" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-                            <!-- Added custom links -->
-                            <li><a href="#" class="icon brands alt fa-discord"><span class="label">Discord</span></a></li>
-                            <!-- Nexus Mods (fallback icon) -->
-                            <li><a href="https://next.nexusmods.com/profile/John1995ac" class="icon solid alt fa-expand-arrows-alt"><span class="label">Nexus Mods</span></a></li>
-                            <!-- Patreon brand icon -->
-                            <li><a href="https://www.patreon.com/John95ac" class="icon brands alt fa-patreon"><span class="label">Patreon</span></a></li>
-                            <!-- Ko-fi using mug-hot as representative icon -->
-                            <li><a href="https://ko-fi.com/john95ac" class="icon solid alt fa-mug-hot"><span class="label">Ko-fi</span></a></li>
-                        </ul>
+                <ul class="icons">
+                    <li><a href="https://github.com/John95ac" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+                    <li><a href="#" class="icon brands alt fa-discord"><span class="label">Discord</span></a></li>
+                    <li><a href="https://next.nexusmods.com/profile/John1995ac" class="icon solid alt fa-expand-arrows-alt"><span class="label">Nexus Mods</span></a></li>
+                    <li><a href="https://www.patreon.com/John95ac" class="icon brands alt fa-patreon"><span class="label">Patreon</span></a></li>
+                    <li><a href="https://ko-fi.com/john95ac" class="icon solid alt fa-mug-hot"><span class="label">Ko-fi</span></a></li>
+                </ul>
                 <div class="footer-right">
                     <p>Developed with ❤️ for the Skyrim modding community</p>
                 </div>
@@ -1624,5 +1996,180 @@ npc = Lydia|Lydia Custom Preset|1
     <script src="audio-ball.js"></script>
     <script src="app.js"></script>
     <script src="particles.js"></script>
+    
+    <script>
+      // Modal functions
+      function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+        
+        // Apply syntax highlighting to INI and JSON in the opened modal
+        const modal = document.getElementById(modalId);
+        
+        // Format INI code
+        const iniElements = modal.querySelectorAll('.ini-code');
+        iniElements.forEach(el => {
+          if (!el.getAttribute('data-formatted')) {
+            el.innerHTML = formatINI(el.textContent);
+            el.setAttribute('data-formatted', 'true');
+          }
+        });
+        
+        // Format JSON code
+        const jsonElements = modal.querySelectorAll('.json-code');
+        jsonElements.forEach(el => {
+          if (!el.getAttribute('data-formatted')) {
+            el.innerHTML = formatJSON(el.textContent);
+            el.setAttribute('data-formatted', 'true');
+          }
+        });
+      }
+      
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+      
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.style.display = "none";
+        }
+      }
+      
+      // Function to format INI with colors
+      function formatINI(iniText) {
+        let lines = iniText.split('\n');
+        let formatted = [];
+        
+        for (let line of lines) {
+          // Comments (white)
+          if (line.trim().startsWith(';')) {
+            formatted.push('<span class="ini-comment">' + escapeHtml(line) + '</span>');
+          }
+          // Rule lines
+          else if (line.includes('=')) {
+            let parts = line.split('=');
+            if (parts.length >= 2) {
+              let ruleType = parts[0].trim(); // e.g., npcPluginFemale
+              let rest = parts.slice(1).join('=').trim(); // e.g., Male_follower.esp|Male Body Preset 1,Male Body Preset 2|
+              
+              // Split rest by |
+              let ruleParts = rest.split('|');
+              
+              let formattedLine = '<span class="ini-rule-type">' + escapeHtml(ruleType) + '</span>';
+              formattedLine += '<span class="ini-equal"> = </span>';
+              
+              if (ruleParts.length >= 1) {
+                // Plugin/Element (green #10B981)
+                formattedLine += '<span class="ini-plugin">' + escapeHtml(ruleParts[0]) + '</span>';
+              }
+              
+              if (ruleParts.length >= 2) {
+                formattedLine += '<span class="ini-separator">|</span>';
+                // Presets (yellow #FBBF24)
+                formattedLine += '<span class="ini-preset">' + escapeHtml(ruleParts[1]) + '</span>';
+              }
+              
+              if (ruleParts.length >= 3) {
+                formattedLine += '<span class="ini-separator">|</span>';
+                // Mode (white)
+                formattedLine += '<span class="ini-separator">' + escapeHtml(ruleParts[2]) + '</span>';
+              }
+              
+              formatted.push(formattedLine);
+            } else {
+              formatted.push(escapeHtml(line));
+            }
+          }
+          // Empty or other lines
+          else {
+            formatted.push(escapeHtml(line));
+          }
+        }
+        
+        return formatted.join('\n');
+      }
+      
+      // Function to format JSON with colors
+      function formatJSON(json) {
+        let formatted = json
+          // First color all main keys green (#10B981)
+          .replace(/(\s*)(\"[^\"]+\")(?=\s*:)/g, '$1<span class="json-key">$2</span>')
+          // Color string values (presets) yellow (#FBBF24)
+          .replace(/:\s*\"([^\"]+)\"/g, ': <span class="json-preset">"$1"</span>')
+          // Color numbers
+          .replace(/:\s*(\d+)/g, ': <span class="json-number">$1</span>')
+          // Color booleans
+          .replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>')
+          // Color null
+          .replace(/:\s*null/g, ': <span class="json-null">null</span>');
+
+        // Special handling for olcoreConfig block
+        formatted = formatted.replace(
+          /("olcoreConfig"\s*:\s*\{[^}]*\})/g,
+          (match) => {
+            let olcoreBlock = match;
+            // Re-color keys within olcoreConfig to orange
+            olcoreBlock = olcoreBlock.replace(
+              /(\s*)<span class="json-key">(\"[^\"]+\")<\/span>(?=\s*:)/g,
+              (keyMatch, p1, p2) => {
+                if (p2 === '"olcoreConfig"') {
+                  return keyMatch; // Keep green for main key
+                }
+                return `${p1}<span class="olcore-key">${p2}</span>`;
+              }
+            );
+            // Re-color string values within olcoreConfig to green
+            olcoreBlock = olcoreBlock.replace(
+              /:\s*<span class="json-preset">"([^\"]+)"<\/span>/g,
+              (valueMatch, p1) => {
+                // Check if we're inside olcoreConfig (simple heuristic)
+                return `: <span class="olcore-value">"${p1}"</span>`;
+              }
+            );
+            return olcoreBlock;
+          }
+        );
+
+        return formatted;
+      }
+      
+      // Escape HTML helper
+      function escapeHtml(text) {
+        const map = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+      }
+      
+      // Apply formatting on page load to the INI editor
+      document.addEventListener('DOMContentLoaded', function() {
+        const iniEditor = document.getElementById('iniEditor');
+        if (iniEditor) {
+          const originalINI = iniEditor.value;
+          const formattedINI = formatINI(originalINI);
+          
+          // Create a div to display formatted content
+          const displayDiv = document.createElement('pre');
+          displayDiv.className = 'ini-editor';
+          displayDiv.innerHTML = formattedINI;
+          displayDiv.style.fontFamily = "'Source Code Pro', monospace";
+          displayDiv.style.whiteSpace = 'pre-wrap';
+          displayDiv.style.backgroundColor = 'var(--color-background)';
+          displayDiv.style.padding = '15px';
+          displayDiv.style.borderRadius = 'var(--radius-sm)';
+          displayDiv.style.border = '1px solid var(--color-border)';
+          displayDiv.style.fontSize = '0.9em';
+          displayDiv.style.lineHeight = '1.4';
+          displayDiv.style.overflow = 'auto';
+          
+          iniEditor.style.display = 'none';
+          iniEditor.parentNode.insertBefore(displayDiv, iniEditor);
+        }
+      });
+    </script>
 </body>
 </html>

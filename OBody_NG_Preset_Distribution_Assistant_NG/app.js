@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize enhanced features
     setTimeout(initializeEnhancedFeatures, 100);
+
+    // Initialize new modal features
+    initializeInteractiveModals();
 });
 
 // Global variable for permanent rules (shared between functions)
@@ -562,7 +565,7 @@ function initializeINISimulator() {
             '0': 'disabled',
             '-': 'remove preset',
             'x-': 'unlimited remove',
-            '*': 'remove element',
+            '*': 'Only applies these elements',
             'x*': 'unlimited element remove'
         };
         const modeDesc = modeDescriptions[mode] || mode;
@@ -583,8 +586,86 @@ function initializeINISimulator() {
 
         console.log('Preview updated:', rule);
     }
-}
 
+    // ============================================================================
+    // MODE LEVEL FILTER SYSTEM - NEW ADDITION
+    // ============================================================================
+    
+    function setupModeLevelFilter() {
+        const radios = document.querySelectorAll('input[name="modeLevel"]');
+        const modeSelect = document.getElementById('mode');
+        
+        if (!radios.length || !modeSelect) {
+            console.warn('Mode level filter elements not found');
+            return;
+        }
+
+        // Store all options with their metadata
+        const allOptions = Array.from(modeSelect.querySelectorAll('option')).map(opt => {
+            return {
+                value: opt.value,
+                text: opt.textContent,
+                level: opt.getAttribute('data-level') || 'basic',
+                color: opt.style.color || ''
+            };
+        });
+
+        console.log('Mode level filter initialized with', allOptions.length, 'options');
+
+        // Filter options based on selected level
+        function filterOptions(selectedLevel) {
+            // Clear select
+            modeSelect.innerHTML = '';
+            
+            // Filter and add options
+            allOptions.forEach(optData => {
+                let shouldShow = false;
+                
+                // Basic: show only basic options
+                if (selectedLevel === 'basic' && optData.level === 'basic') {
+                    shouldShow = true;
+                }
+                // Medium: show basic + medium options
+                else if (selectedLevel === 'medium' && (optData.level === 'basic' || optData.level === 'medium')) {
+                    shouldShow = true;
+                }
+                // Advanced: show all options
+                else if (selectedLevel === 'advanced') {
+                    shouldShow = true;
+                }
+                
+                if (shouldShow) {
+                    const option = document.createElement('option');
+                    option.value = optData.value;
+                    option.textContent = optData.text;
+                    option.setAttribute('data-level', optData.level);
+                    if (optData.color) {
+                        option.style.color = optData.color;
+                    }
+                    modeSelect.appendChild(option);
+                }
+            });
+            
+            console.log('Filtered to level:', selectedLevel, '- Options shown:', modeSelect.options.length);
+        }
+
+        // Add event listeners to radio buttons
+        radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                filterOptions(this.value);
+                console.log('Mode level changed to:', this.value);
+            });
+        });
+
+        // Initialize with basic level (default)
+        filterOptions('basic');
+    }
+
+    // Initialize the mode level filter
+    setupModeLevelFilter();
+    
+    // End of Mode Level Filter System
+}
 
 /**
  * Debounce function to limit rapid function calls
@@ -988,7 +1069,6 @@ function addSkipToContentLink() {
 /**
  * Add CSS for ripple effect
  */
-
 function addRippleStyles() {
     // Check if styles already exist
     if (document.getElementById('ripple-styles')) {
@@ -1364,4 +1444,589 @@ class LogAnalyzer {
 // Initialize log analyzer when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new LogAnalyzer();
+});
+
+// ============================================================================
+// NEW INTERACTIVE MODAL SYSTEM FOR OBODY NG PDA
+// ============================================================================
+
+/**
+ * Initialize interactive modal system
+ */
+function initializeInteractiveModals() {
+    console.log('Initializing interactive modals...');
+    
+    // Base JSON structure for all examples
+    const baseJSON = `{
+    "npcFormID": {},
+    "npc": {
+        "Valerica": [
+            "XA-E"
+        ]
+    },
+    "factionFemale": {},
+    "factionMale": {},
+    "npcPluginFemale": {
+        "AlelsaJV.esp": [
+            "HEXED"
+        ]
+    },
+    "npcPluginMale": {},
+    "raceFemale": {
+        "NordRace": [
+            "Blue Elf"
+        ],
+        "00UBE_HighElfRace": [
+            "UBE_Casloafy",
+            "UBE_Croco"
+        ]
+    },
+    "raceMale": {
+        "ImperialRace": [
+            "HIMBO Zero for OBody"
+        ]
+    },
+    "blacklistedNpcs": [],
+    "blacklistedNpcsFormID": {},
+    "blacklistedNpcsPluginFemale": [
+        "DarkDesiresCircleOfLust.esp"
+    ],
+    "blacklistedNpcsPluginMale": [
+        "DarkDesiresCircleOfLust.esp"
+    ],
+    "blacklistedRacesFemale": [
+        "ElderRace"
+    ],
+    "blacklistedRacesMale": [
+        "ElderRace"
+    ],
+    "blacklistedOutfitsFromORefitFormID": {},
+    "blacklistedOutfitsFromORefit": [
+        "LS Force Naked",
+        "OBody Nude 32"
+    ],
+    "blacklistedOutfitsFromORefitPlugin": [
+        "NewmChainmail.esp",
+        "NewmillerLeatherBikini.esp",
+        "NewmExtendedDressLong.esl"
+    ],
+    "outfitsForceRefitFormID": {},
+    "outfitsForceRefit": [
+        "Nihon - Jacket",
+        "Nihon - Jacket Neon",
+        "Nihon - Yellow"
+    ],
+    "blacklistedPresetsFromRandomDistribution": [
+        "- Zeroed Sliders -",
+        "-Zeroed Sliders-",
+        "Zeroed Sliders",
+        "GT+++",
+        "UBE_Casloafy",
+        "UBE_Croco",
+        "HIMBO Zero for OBody"
+    ],
+    "blacklistedPresetsShowInOBodyMenu": true
+}`;
+
+    // Initialize all modal interactions
+    initializeSimpleApplicationModal(baseJSON);
+    initializeOnceModal(baseJSON);
+    initializeDisabledModal(baseJSON);
+    initializeCleanPresetModal(baseJSON);
+    initializePriorityPresetModal(baseJSON);
+    initializeKeysModal(baseJSON);
+    initializeAdvancedApplicationModal(baseJSON);
+    initializeInvalidElementModal(baseJSON);
+}
+
+/**
+ * Initialize Simple Application Modal (|)
+ */
+function initializeSimpleApplicationModal(baseJSON) {
+    const modalId = 'modal1';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    // Update modal content
+    updateModalContent(modal, {
+        title: 'Simple Application Mode',
+        description: 'This element is the most common and simply leaving the end empty will apply the rule each time the game starts or is updated from the future MCM, it is the simplest and most reliable way to use.',
+        example: 'raceFemale = NordRace|Preset1,Preset2|',
+        baseJSON: baseJSON,
+        hoverJSON: baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset1",\n            "Preset2"')
+    });
+}
+
+/**
+ * Initialize Once Modal (|1)
+ */
+function initializeOnceModal(baseJSON) {
+    const modalId = 'modal2';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    updateModalContent(modal, {
+        title: 'Once Mode (|1)',
+        description: 'Only applies once, and then automatically changes to |0 within the ini making the application of this preset a single use.',
+        example: 'raceFemale = NordRace|Preset1,Preset2|1',
+        baseJSON: baseJSON,
+        hoverJSON: baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset1",\n            "Preset2"'),
+        afterHoverRule: 'raceFemale = NordRace|Preset1,Preset2|0'
+    });
+}
+
+/**
+ * Initialize Disabled Modal (|0)
+ */
+function initializeDisabledModal(baseJSON) {
+    const modalId = 'modal3';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    updateModalContent(modal, {
+        title: 'Disabled Mode (|0)',
+        description: 'Simply does nothing, it works to disable the rule, it is generally used by the same dll to disable rules that have higher conflicts, or the same users who do not want to use a certain rule but do not want to delete it.',
+        example: 'raceFemale = NordRace|Preset1,Preset2|0',
+        baseJSON: baseJSON,
+        hoverJSON: baseJSON // No change to JSON for disabled mode
+    });
+}
+
+/**
+ * Initialize Clean Preset Modal (|-)
+ */
+function initializeCleanPresetModal(baseJSON) {
+    const modalId = 'modal4';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    const initialJSON = baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset1",\n            "Preset2"');
+    
+    updateModalContent(modal, {
+        title: 'Clean Preset Mode (|-)',
+        description: 'The way to search for a specific preset and remove that preset from the analyzed set, this has the purpose of cleaning presets that I do not want to be added to my sets.',
+        example: 'raceFemale = NordRace|Preset1,Preset2|-',
+        baseJSON: initialJSON,
+        hoverJSON: baseJSON // Removes the presets
+    });
+}
+
+/**
+ * Initialize Priority Preset Modal (|*)
+ */
+function initializePriorityPresetModal(baseJSON) {
+    const modalId = 'modal5';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    const initialJSON = baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset1",\n            "Preset2"');
+    const afterJSON = baseJSON.replace('"Blue Elf"', '"Preset2",\n            "..."');
+
+    updateModalContent(modal, {
+        title: 'Priority Preset Mode (|*)',
+        description: `<div class="priority-preset-warning">
+            <span class="warning-emoji">⚠️</span>
+            This mode is a conditioner, it refers to this mode searching for the presets that have been put in the rule, and removing all the ornaments from the specific zone leaving only those that will apply in the rule.
+            Due to its nature, an extra system has been implemented so that in the case that a moder publishes his * preset set for a race, npc mod, faction whatever, and it turns out that another also occupies the same element,
+            the PDA mod by itself deactivates the oldest and leaves the newest active, it will notify you through the cheat console and give you in the ini log the complete warning, only use it in particular cases.
+        </div>`,
+        example: 'raceFemale = NordRace|Preset2,...|*',
+        baseJSON: initialJSON,
+        hoverJSON: afterJSON
+    });
+}
+
+/**
+ * Initialize Keys Modal (|Keys)
+ */
+function initializeKeysModal(baseJSON) {
+    const modalId = 'modal6';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    // Create enhanced modal structure for Keys mode
+    const modalBody = modal.querySelector('.modal-body');
+    if (!modalBody) return;
+
+    modalBody.innerHTML = `
+        <div class="modal-grid-enhanced">
+            <div class="modal-panel-description">
+                <h3>Preset Plus Modes</h3>
+                <div class="keys-mode-tabs">
+                    <button class="keys-tab active" data-tab="keyword">KeyWord</button>
+                    <button class="keys-tab" data-tab="wordchart">KeyWordChart</button>
+                    <button class="keys-tab" data-tab="author">KeyAuthor</button>
+                    <button class="keys-tab" data-tab="normal">KeyNormal</button>
+                    <button class="keys-tab" data-tab="ube">KeyUBE</button>
+                    <button class="keys-tab" data-tab="himbo">KeyHIMBO</button>
+                </div>
+                <div class="keys-content active" id="keyword-content">
+                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG and add them to the json. THE WORDS ARE ACCUMULATED SO IT IS RECOMMENDED TO ONLY USE ONE PER RULE, IF YOU WANT TO USE A PRESET OR TWO FAMILIES WITH TEXT SEGMENTS JUST MAKE TWO RULES/// do this in lowercase ok</p>
+                </div>
+                <div class="keys-content" id="wordchart-content">
+                    <p>This mode, instead of applying a preset in the preset area, you apply a fraction of the preset name, for example BIG, then the rule will search the list of all your installed presets for names containing BIG but only if they are inside () and add them to the json.</p>
+                </div>
+                <div class="keys-content" id="author-content">
+                    <p>This mode by writing the author's name and if you want followed by name fragments this will do the following: search the names in the preset list, if the author of that preset family appears in the name, it will choose only those that have the fragments you mentioned, you can choose only the author's name or author followed by example BIG.</p>
+                </div>
+                <div class="keys-content" id="normal-content">
+                    <p>This mode allows you to apply presets from a partial family but if for some reason you write a preset that is not from the NORMAL family (CBBE/3BA/BHUNP/etc.) it will not be applied, this mode is rarely used but helps to avoid human errors.</p>
+                </div>
+                <div class="keys-content" id="ube-content">
+                    <p>This mode allows you to apply presets from a partial family but if for some reason you write a preset that is not from the UBE family it will not be applied, this mode is rarely used but helps to avoid human errors.</p>
+                </div>
+                <div class="keys-content" id="himbo-content">
+                    <p>This mode allows you to apply presets from a partial family but if for some reason you write a preset that is not from the HIMBO family it will not be applied, this mode is rarely used but helps to avoid human errors.</p>
+                </div>
+            </div>
+            <div class="modal-panel-examples">
+                <h3>INI Rule Examples</h3>
+                <div class="ini-interactive-example" data-example="keyword">
+                    <code>raceFemale = NordRace|BIG|KeyWord</code>
+                </div>
+                <div class="ini-interactive-example" data-example="wordchart">
+                    <code>raceFemale = NordRace|BIG|KeyWordChart</code>
+                </div>
+                <div class="ini-interactive-example" data-example="author">
+                    <code>raceFemale = NordRace|autor|KeyAuthor</code>
+                </div>
+                <div class="ini-interactive-example" data-example="normal">
+                    <code>raceFemale = NordRace|Preset1CBBE,Preset2UBE,Preset3HIMBO|KeyNormal</code>
+                </div>
+                <div class="ini-interactive-example" data-example="ube">
+                    <code>raceFemale = NordRace|Preset1CBBE,Preset2UBE,Preset3HIMBO|KeyUBE</code>
+                </div>
+                <div class="ini-interactive-example" data-example="himbo">
+                    <code>raceFemale = NordRace|Preset1CBBE,Preset2UBE,Preset3HIMBO|KeyHIMBO</code>
+                </div>
+            </div>
+            <div class="modal-panel-json">
+                <h3>OBody JSON Structure</h3>
+                <div class="json-panel-scroll">
+                    <pre class="json-display">${formatJSON(baseJSON)}</pre>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Initialize tabs functionality
+    initializeKeysTabs(modal, baseJSON);
+}
+
+/**
+ * Initialize Advanced Application Modal (|1*-)
+ */
+function initializeAdvancedApplicationModal(baseJSON) {
+    const modalId = 'modal7';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    const modal7BaseJSON = baseJSON.replace(
+        '"NordRace": [\n            "Blue Elf"\n        ]',
+        '"NordRace": [\n            "Preset1CBBE"\n        ]'
+    );
+
+    const modal7InitialJSON = baseJSON.replace(
+        '"NordRace": [\n            "Blue Elf"\n        ]',
+        '"NordRace": [\n            "Blue Elf",\n            "Preset1CBBE",\n            "...BIG...Preset"\n        ]'
+    );
+
+    const modalBody = modal.querySelector('.modal-body');
+    if (!modalBody) return;
+
+    modalBody.innerHTML = `
+        <div class="modal-grid-enhanced">
+            <div class="modal-panel-description">
+                <h3>One-Time Application</h3>
+                <p>As you can see in the - * 1 modes, they can also be applied in the Key modes, and if they can be applied once: KeyWord, KeyWordChart, KeyAuthor, KeyNormal, KeyUBE, KeyHIMBO</p>
+                <p>You can also combine the 1* or 1- so that they do the action once and then go to 0 all the mode (advanced use)</p>
+                <p>Here are some examples of how the rule and JSON are adapted in the modes:</p>
+            </div>
+            <div class="modal-panel-examples">
+                <h3>INI Rule Examples</h3>
+                <div class="ini-interactive-example" data-example="keyword-minus">
+                    <code>raceFemale = NordRace|BIG|KeyWord-</code>
+                </div>
+                <div class="ini-interactive-example" data-example="normal-minus">
+                    <code>raceFemale = NordRace|Preset1CBBE,Preset2UBE,Preset3HIMBO|KeyNormal-</code>
+                </div>
+                <div class="ini-interactive-example" data-example="keyword-star">
+                    <code>raceFemale = NordRace|BIG|KeyWord*</code>
+                </div>
+                <div class="ini-interactive-example" data-example="normal-star">
+                    <code>raceFemale = NordRace|Preset1CBBE,Preset2UBE,Preset3HIMBO|KeyNormal*</code>
+                </div>
+                <div class="ini-interactive-example" data-example="keyword-once">
+                    <code>raceFemale = NordRace|BIG|KeyWord1-</code>
+                </div>
+            </div>
+            <div class="modal-panel-json">
+                <h3>OBody JSON Structure</h3>
+                <div class="json-panel-scroll">
+                    <pre class="json-display">${formatJSON(modal7InitialJSON)}</pre>
+                </div>
+            </div>
+        </div>
+    `;
+
+    initializeAdvancedExampleHovers(modal, modal7BaseJSON, modal7InitialJSON);
+}
+
+/**
+ * Initialize Invalid Element Modal (|5,%&)
+ */
+function initializeInvalidElementModal(baseJSON) {
+    const modalId = 'modal8';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    updateModalContent(modal, {
+        title: 'Invalid Mode Detection',
+        description: 'If for some reason you write some number that is not 0 or 1, or some of these modes, the mod system automatically changes it to 0 and does nothing in json to avoid errors.',
+        example: 'raceFemale = NordRace|Preset1,Preset2|5helloplzwork',
+        baseJSON: baseJSON,
+        hoverJSON: baseJSON,
+        afterHoverRule: 'raceFemale = NordRace|Preset1,Preset2|0'
+    });
+}
+
+/**
+ * Update modal content with interactive features
+ */
+function updateModalContent(modal, config) {
+    const modalBody = modal.querySelector('.modal-body');
+    if (!modalBody) return;
+
+    modalBody.innerHTML = `
+        <div class="modal-grid-enhanced">
+            <div class="modal-panel-description">
+                <h3>${config.title}</h3>
+                <p>${config.description}</p>
+            </div>
+            <div class="modal-panel-examples">
+                <h3>INI Rule Examples</h3>
+                <div class="ini-interactive-example" data-base-json='${JSON.stringify(config.baseJSON)}' data-hover-json='${JSON.stringify(config.hoverJSON)}' ${config.afterHoverRule ? `data-after-rule="${config.afterHoverRule}"` : ''}>
+                    <code>${config.example}</code>
+                </div>
+            </div>
+            <div class="modal-panel-json">
+                <h3>OBody JSON Structure</h3>
+                <div class="json-panel-scroll">
+                    <pre class="json-display">${formatJSON(config.baseJSON)}</pre>
+                </div>
+            </div>
+        </div>
+    `;
+
+    initializeModalHoverEffects(modal);
+}
+
+/**
+ * Initialize modal hover effects
+ */
+function initializeModalHoverEffects(modal) {
+    const examples = modal.querySelectorAll('.ini-interactive-example');
+    const jsonDisplay = modal.querySelector('.json-display');
+
+    examples.forEach(example => {
+        const baseJson = JSON.parse(example.dataset.baseJson || '{}');
+        const hoverJson = JSON.parse(example.dataset.hoverJson || '{}');
+        const afterRule = example.dataset.afterRule;
+
+        example.addEventListener('mouseenter', () => {
+            jsonDisplay.innerHTML = formatJSON(hoverJson);
+            jsonDisplay.classList.add('json-transition');
+            
+            if (afterRule) {
+                const codeElement = example.querySelector('code');
+                const originalRule = codeElement.textContent;
+                codeElement.setAttribute('data-original', originalRule);
+                setTimeout(() => {
+                    codeElement.textContent = afterRule;
+                }, 150);
+            }
+        });
+
+        example.addEventListener('mouseleave', () => {
+            jsonDisplay.innerHTML = formatJSON(baseJson);
+            jsonDisplay.classList.remove('json-transition');
+            
+            if (afterRule) {
+                const codeElement = example.querySelector('code');
+                const originalRule = codeElement.getAttribute('data-original');
+                if (originalRule) {
+                    codeElement.textContent = originalRule;
+                }
+            }
+        });
+    });
+}
+
+/**
+ * Initialize Keys tabs functionality
+ */
+function initializeKeysTabs(modal, baseJSON) {
+    const tabs = modal.querySelectorAll('.keys-tab');
+    const contents = modal.querySelectorAll('.keys-content');
+    const examples = modal.querySelectorAll('.ini-interactive-example');
+    const jsonDisplay = modal.querySelector('.json-display');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            const targetContent = modal.querySelector(`#${tab.dataset.tab}-content`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+
+    const jsonExamples = {
+        'keyword': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "...BIG...Preset"'),
+        'wordchart': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset (....BIG...) cbbe"'),
+        'author': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "...autor...Preset",\n            "Preset (....autor...) cbbe"'),
+        'normal': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset1CBBE"'),
+        'ube': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset2UBE"'),
+        'himbo': baseJSON.replace('"Blue Elf"', '"Blue Elf",\n            "Preset3HIMBO"')
+    };
+
+    examples.forEach(example => {
+        const exampleType = example.dataset.example;
+        
+        example.addEventListener('mouseenter', () => {
+            const targetJson = jsonExamples[exampleType] || baseJSON;
+            jsonDisplay.innerHTML = formatJSON(targetJson);
+            jsonDisplay.classList.add('json-transition');
+        });
+
+        example.addEventListener('mouseleave', () => {
+            jsonDisplay.innerHTML = formatJSON(baseJSON);
+            jsonDisplay.classList.remove('json-transition');
+        });
+    });
+}
+
+/**
+ * Initialize advanced example hover effects
+ */
+function initializeAdvancedExampleHovers(modal, modal7BaseJSON, modal7InitialJSON) {
+    const examples = modal.querySelectorAll('.ini-interactive-example');
+    const jsonDisplay = modal.querySelector('.json-display');
+
+    const jsonExamples = {
+        'keyword-minus': modal7BaseJSON.replace(
+            '"Preset1CBBE"',
+            '"Blue Elf",\n            "Preset1CBBE"'
+        ),
+        'normal-minus': modal7BaseJSON.replace(
+            '"Preset1CBBE"',
+            '"Blue Elf",\n            "...BIG...Preset"'
+        ),
+        'keyword-star': modal7BaseJSON.replace(
+            '"Preset1CBBE"',
+            '"...BIG...Preset"'
+        ),
+        'normal-star': modal7BaseJSON.replace(
+            '"Preset1CBBE"',
+            '"Preset1CBBE"'
+        ),
+        'keyword-once': modal7BaseJSON.replace(
+            '"Preset1CBBE"',
+            '"Blue Elf",\n            "Preset1CBBE"'
+        )
+    };
+
+    examples.forEach(example => {
+        const exampleType = example.dataset.example;
+        
+        example.addEventListener('mouseenter', () => {
+            let targetJson = jsonExamples[exampleType] || modal7InitialJSON;
+            
+            jsonDisplay.innerHTML = formatJSON(modal7InitialJSON);
+            
+            setTimeout(() => {
+                jsonDisplay.innerHTML = formatJSON(targetJson);
+                jsonDisplay.classList.add('json-transition');
+                
+                if (exampleType === 'keyword-once') {
+                    const codeElement = example.querySelector('code');
+                    const originalRule = codeElement.textContent;
+                    codeElement.setAttribute('data-original', originalRule);
+                    setTimeout(() => {
+                        codeElement.textContent = 'raceFemale = NordRace|BIG|0';
+                    }, 300);
+                }
+            }, 150);
+        });
+
+        example.addEventListener('mouseleave', () => {
+            jsonDisplay.innerHTML = formatJSON(modal7InitialJSON);
+            jsonDisplay.classList.remove('json-transition');
+            
+            const codeElement = example.querySelector('code');
+            const originalRule = codeElement.getAttribute('data-original');
+            if (originalRule) {
+                codeElement.textContent = originalRule;
+            }
+        });
+    });
+}
+
+/**
+ * Enhanced JSON formatting with better syntax highlighting
+ */
+function formatJSON(jsonString) {
+    try {
+        const obj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+        const formatted = JSON.stringify(obj, null, 4);
+        
+        return formatted
+            .replace(/(\s*)("([^"]+)")(?=\s*:)/g, '$1<span class="json-element">$2</span>')
+            .replace(/:\s*"([^"]+)"/g, ': <span class="json-preset-value">"$1"</span>')
+            .replace(/:\s*(\d+)/g, ': <span class="json-number">$1</span>')
+            .replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>')
+            .replace(/:\s*null/g, ': <span class="json-null">null</span>')
+            .replace(/[{}]/g, '<span class="json-bracket">$&</span>')
+            .replace(/,$/gm, '<span class="json-comma">,</span>')
+            .replace(/:/g, '<span class="json-colon">:</span>');
+    } catch (e) {
+        return jsonString;
+    }
+}
+
+// Global modal functions
+window.openModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "block";
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+window.closeModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = '';
+    }
+};
+
+window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = "none";
+        document.body.style.overflow = '';
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal[style*="block"]');
+        openModals.forEach(modal => {
+            modal.style.display = 'none';
+        });
+        document.body.style.overflow = '';
+    }
 });
