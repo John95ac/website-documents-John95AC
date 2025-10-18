@@ -308,7 +308,7 @@ function initializeINISimulator() {
     // Sample data for quick fills
     const sampleData = {
         npcFormID: {
-            values: ['xx0001', '0x12345', '0xABCDE'],
+            values: ['xx0001', 'xx12345', 'xxABCDE'],
             presets: ['PresetA,PresetB,PresetC']
         },
         npc: {
