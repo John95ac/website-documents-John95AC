@@ -731,7 +731,7 @@
                     <textarea id="iniEditor" class="ini-editor" readonly>;OBody_NG_Preset_Distribution_Assistant_NG
 ;INI Rule Examples:
 
-; npcFormID = xx0001|Preset,...|Mode                   ; FormID | Preset, Presets,... | mode
+; npcFormID = xx0001|Preset,...|Mode                   ; Plugin.esp| FormID, Presets,... | mode
 ; npc = EditorID|Preset,...|Mode                       ; EditorID | Preset, Presets,... | mode
 ; factionFemale = Faction|Preset,...|Mode              ; Faction | Preset, Presets,... | mode
 ; factionMale = Faction|Preset,...|Mode                ; Faction | Preset, Presets,... | mode
@@ -740,6 +740,7 @@
 ; raceFemale = Race|Preset,...|Mode                    ; Race | Preset, Presets,... | mode
 ; raceMale = Race|Preset,...|Mode                      ; Race | Preset, Presets,... | mode
 ; blacklisted = Category|Element,Preset,...|Mode       ; Category | Element,Preset,... | mode
+; outfits = Category|Element,Preset,...|Mode           ; Category | Element,Preset,... | mode
 
 ;Basic Modes:
 ; (empty) = Unlimited (Always checks and applies the preset).
@@ -857,7 +858,6 @@ blacklisted = RacesFemale|NordRace,00UBE_BretonRace|
 ;RacesMale blacklisted in mode simple application
 blacklisted = RacesMale|OrcRace,KhajiitRace|
 
-
 ;PresetsFromRandomDistribution blacklisted in mode simple application
 blacklisted = PresetsFromRandomDistribution|HIMBO Zero for OBody,UBE Chonky|
 
@@ -929,7 +929,6 @@ blacklisted = RacesMale|ElderRace|
 
 ;YurianaWench.esp blacklisted in mode simple application
 blacklistedOutfitsFromORefitFormID = YurianaWench.esp|FE000817|
-
 
 ;PresetsFromRandomDistribution blacklisted in mode simple application
 blacklisted = PresetsFromRandomDistribution|GT+++|
@@ -1618,10 +1617,10 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
 
             <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
                 <details>
-                  <summary>🚀 Show/Hide Flowchart v2.4.1</summary>
+                  <summary>🔥 Show/Hide Flowchart v2.4.1</summary>
                   <div class="modes-info">
                       <p class="modes-explanation">
-                          <strong>🚀 Flowchart v2.4.1:</strong> This version introduces comprehensive HIMBO support alongside UBE, bringing the total to 44 UBE races (22 UBE + 22 HIMBO), intelligent conflict resolution system that automatically detects and resolves rule conflicts based on file modification timestamps, 43 different rule modes including KeyWord, KeyWordChart, KeyAuthor with filter, exclusive, and removal variants, INI Analysis Log generation that provides detailed statistics of all INI files, multi-preset extraction from single XML files, and enhanced smart cleaning with independent flags for each JSON section.
+                          <strong>🔥 Flowchart v2.4.1:</strong> This version introduces comprehensive HIMBO support alongside UBE, bringing the total to 44 UBE races (22 UBE + 22 HIMBO), intelligent conflict resolution system that automatically detects and resolves rule conflicts based on file modification timestamps, 43 different rule modes including KeyWord, KeyWordChart, KeyAuthor with filter, exclusive, and removal variants, INI Analysis Log generation that provides detailed statistics of all INI files, multi-preset extraction from single XML files, and enhanced smart cleaning with independent flags for each JSON section.
                       </p>
                   </div>
                   <div class="mermaid">
@@ -1784,6 +1783,180 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
     class DD,R1,SS,X,MM,NN,OO,PP,QQ,F3 logFeature
     class T2,T4,T5,T6 conflictFeature
     class T,U,U1,U2 keyFeature
+                  </div>
+                </details>
+            </div>
+
+            <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+                <details>
+                  <summary>📜 Show/Hide Flowchart v2.4.9</summary>
+                  <div class="modes-info">
+                      <p class="modes-explanation">
+                          <strong>📜 Flowchart v2.4.9:</strong> This version introduces 5-log generation system with new INI Analysis Log for detailed file statistics, dynamic INI auto-update that decrements ONCE mode counters in real-time, Master Preset Map for centralized preset validation, enhanced automatic conflict resolution that modifies older INI files by setting conflicts to 0, comprehensive HIMBO support alongside UBE with 44 body races (22 UBE + 22 HIMBO), 43 rule modes including KeyWord variants with filter and exclusive options, outfit smart cleaning bypass system, multi-preset XML extraction, and independent cleaning flags per JSON section.
+                      </p>
+                  </div>
+                  <div class="mermaid">
+                    flowchart TD
+    A[🚀 SKSE Plugin Load - Version 2.4.9] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+    B --> C[⚙️ Read Config INI<br/>ReadConfigFromIni<br/>Backup, ModeUBE, ModeHIMBO<br/>Smart Cleaning flags<br/>Conflict Resolution flag]
+    C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+
+    D --> E{❓ Master JSON<br/>Valid?}
+    E -->|YES| G{🔄 Backup<br/>Config?}
+    E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt recovery from backup]
+
+    F1 --> F2{✅ Restoration<br/>Successful?}
+    F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+    F2 -->|NO| F[❌ END PROCESS<br/>CRITICAL ERROR<br/>No valid backup available]
+    F3 --> G
+
+    G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy]
+    G -->|Backup=true/2| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Keep INI unchanged]
+    G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse all valid keys]
+
+    H --> J[✏️ Update INI<br/>Backup = 0]
+    H1 --> K[ℹ️ Keep INI<br/>Backup = true unchanged]
+    J --> I
+    K --> I
+
+    I --> L{✅ JSON Read<br/>Success?}
+    L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup]
+    M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Timestamp → Analysis]
+    N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+    O --> P{✅ Read OK<br/>after restore?}
+    P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+    P -->|YES| R[📂 Scan Data Folder<br/>OBodyNG_PDA_*.ini files]
+
+    L -->|YES| R
+    R --> R0[📋 🆕 Generate INI Analysis Log<br/>GenerateINIAnalysisLog<br/>Scan all INI files<br/>Line-by-line rule detection<br/>Statistics per file]
+    R0 --> R1[📋 Generate Doctor Log<br/>GenerateDoctorLog<br/>List all XML files found]
+    R1 --> DD[🏗️ 🆕 Build MASTER Preset Map<br/>BuildPresetNameMap<br/>Phase 1: Master reference<br/>Extract internal names from XML<br/>Multi-preset support + HTML decoding]
+    DD --> SS[📋 Generate Smart Cleaning Log<br/>GenerateSmartCleaningLog<br/>Preset reference list + mapping]
+    SS --> SSS[📋 Generate Helper Log<br/>GenerateHelperLog<br/>Complete preset list + examples]
+
+    SSS --> T[📝 Parse & Prioritize INI Rules<br/>ParseRuleLine + GetRulePriority<br/>Sort by priority: Standard → Filter → Remove → Exclusive]
+    T --> T1{🔍 Detect<br/>Conflicts?}
+    T1 -->|YES| T2[🚨 Track Exclusive Conflicts<br/>RuleConflictTracker<br/>File modification timestamps]
+    T1 -->|NO| U
+    T2 --> T3{⚙️ Smart Resolution<br/>Enabled?}
+    T3 -->|YES| T4[🔧 🆕 Resolve Conflicts Automatically<br/>ResolveConflicts<br/>Newest file wins → Update older count to 0<br/>UpdateIniRuleCount for disabled rules]
+    T3 -->|NO| T5[⚠️ Skip All Conflicting Rules<br/>Log conflicts only]
+    T4 --> T6[📋 🆕 Generate Conflict Report<br/>GenerateConflictReport<br/>Append to INI Analysis Log<br/>Detailed resolution + timestamps]
+    T5 --> T6
+    T6 --> U
+
+    U[🎯 Process INI Rules<br/>Apply by priority order<br/>Add/Remove Presets/Plugins<br/>Support 43 rule modes]
+    U --> U1[🔑 Process KEY Filtering Modes<br/>KeyWord/KeyWordChart/KeyAuthor<br/>KeyNormal/KeyUBE/KeyHIMBO<br/>With asterisk, dash, 1 variants]
+    U1 --> U2[📊 🆕 Update INI Counts Dynamically<br/>UpdateIniRuleCount<br/>Automatic decrement for ONCE modes<br/>Write back to INI files in real-time]
+
+    U2 --> V[🧹 Smart Cleaning Evaluation<br/>Check enabled flags per section<br/>Using Master Preset Map]
+    V --> V1{🛡️ Presets<br/>Smart Cleaning?}
+    V1 -->|YES| V2A[🔍 Clean General Presets<br/>6-level matching algorithm<br/>Protected presets exemption<br/>Master Map validation]
+    V1 -->|NO| V3A
+    V2A --> V3A{🛡️ Blacklisted Presets<br/>FromRandomDistribution?}
+    V3A -->|YES| V4A[🔍 Clean Blacklist Random<br/>PerformSmartCleaning]
+    V3A -->|NO| V5A
+    V4A --> V5A{🛡️ Blacklisted Presets<br/>FromAll?}
+    V5A -->|YES| V6A[🔍 Clean All Blacklists<br/>PerformSmartCleaning]
+    V5A -->|NO| V7A
+    V6A --> V7A{🛡️ OutfitsForceRe<br/>Smart Cleaning?}
+    V7A -->|YES| V8A[🔍 Clean Outfits ForceRefit<br/>PerformSmartCleaning<br/>🆕 BYPASSED: Preserved as-is]
+    V7A -->|NO| W
+    V8A --> W
+
+    W[🎮 UBE/HIMBO XML Processing<br/>ProcessUBEXmlPresets + ProcessHIMBOXmlPresets<br/>Multi-preset extraction]
+    W --> W1{🔍 ModeUBE<br/>Enabled?}
+    W1 -->|YES| W2[📊 Analyze UBE XMLs<br/>AnalyzeXmlGroups<br/>Detect 3BA/3BBB/CBBE conflicts]
+    W1 -->|NO| W9
+    W2 --> W3{⚠️ UBE Conflict<br/>Detected?}
+    W3 -->|YES + UBE in name| W4[✅ Add to Blacklist + UBE Races<br/>Allow in 22 UBE races]
+    W3 -->|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY<br/>Exclude from UBE races]
+    W3 -->|NO Conflict| W6[✅ Add to Blacklist + UBE Races<br/>Pure UBE preset]
+    W4 --> W7
+    W5 --> W7
+    W6 --> W7
+    W7[🎯 Apply UBE to JSON<br/>Blacklist + 22 UBE Races]
+    W7 --> W9
+
+    W9{🔍 ModeHIMBO<br/>Enabled?}
+    W9 -->|YES| W10[📊 Analyze HIMBO XMLs<br/>AnalyzeXmlGroups<br/>Detect conflicts]
+    W9 -->|NO| X
+    W10 --> W11{⚠️ HIMBO Conflict<br/>Detected?}
+    W11 -->|YES + HIMBO in name| W12[✅ Add to Blacklist + HIMBO Races<br/>Allow in 22 HIMBO races]
+    W11 -->|YES + NO HIMBO in name| W13[✅ Add to Blacklist ONLY<br/>Exclude from HIMBO races]
+    W11 -->|NO Conflict| W14[✅ Add to Blacklist + HIMBO Races<br/>Pure HIMBO preset]
+    W12 --> W15
+    W13 --> W15
+    W14 --> W15
+    W15[🎯 Apply HIMBO to JSON<br/>Blacklist + 22 HIMBO races]
+    W15 --> X
+
+    X[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+    X --> ZZ{🔍 VERIFY CHANGES<br/>CheckIfChangesNeeded?}
+
+    ZZ -->|YES| AA[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp + PerformTripleValidation]
+    ZZ -->|NO| BB[ℹ️ Skip Write<br/>No changes detected]
+
+    AA --> CC{✅ Write<br/>Successful?}
+    CC -->|NO| YY[🔄 Restore Backup<br/>Write failure]
+    CC -->|YES| DD1[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>4-space hierarchy + inline empty]
+    BB --> DD1
+
+    DD1 --> EE{📏 Indentation<br/>Correct?}
+    EE -->|YES| FF[✅ JSON Already Perfect<br/>4 spaces verified]
+    EE -->|NO| GG[✏️ FULL REFORMAT<br/>isEmptyBlock Helper<br/>Empty containers inline<br/>With content 4 spaces]
+
+    GG --> HH{✅ Reformat<br/>Complete?}
+    HH -->|NO| II[🔄 Restore Backup<br/>Indentation failure]
+    HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Keys]
+
+    FF --> JJ
+    JJ --> KK{✅ Final JSON<br/>Valid?}
+    KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis]
+    KK -->|YES| MM[📊 🆕 Final Log Summary<br/>Complete statistics<br/>All operations logged<br/>4 logs generated:<br/>- INI Analysis NEW<br/>- Doctor<br/>- Smart Cleaning<br/>- Helper]
+
+    YY --> NN[📊 Log Backup Restore]
+    II --> OO[📊 Log Backup Restore]
+    LL --> PP[📊 Log Critical Error]
+
+    NN --> MM
+    OO --> MM
+    PP --> MM
+
+    MM --> QQ[💬 Console Message<br/>OBody Assistant v2.4.9: Process completed!]
+    QQ --> RR[🏁 END: Success<br/>Perfect 4-space format<br/>🆕 5 logs generated:<br/>- Main Log<br/>- INI Analysis NEW<br/>- Doctor<br/>- Smart Cleaning<br/>- Helper<br/>🆕 INI auto-update for ONCE modes<br/>🆕 Smart Conflict Resolution<br/>UBE + HIMBO distributed<br/>43 rule modes supported]
+
+    F --> SS1[🏁 END: Critical Error]
+    Q --> TT[🏁 END: JSON Read Failed]
+
+    %% Styles
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+    classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+    classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+    classDef smartCleaning fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+    classDef ubeFeature fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#333
+    classDef himboFeature fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px,color:#333
+    classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+    classDef conflictFeature fill:#ffccbc,stroke:#d84315,stroke-width:3px,color:#333
+    classDef keyFeature fill:#b2dfdb,stroke:#00695c,stroke-width:3px,color:#333
+    classDef newv249Feature fill:#fff3e0,stroke:#ff6f00,stroke-width:4px,color:#333,font-weight:bold
+
+    class A,RR,SS1,TT startEnd
+    class B,C,I,R,X,AA process
+    class E,G,L,P,CC,EE,HH,KK,F2,ZZ,V1,V3A,V5A,V7A,W1,W3,W9,W11,T1,T3 decision
+    class F,Q,YY,II,LL error
+    class H,H1,J,K,M,N backup
+    class D,DD1,GG,JJ newFeature
+    class V,V2A,V4A,V6A,V8A smartCleaning
+    class W,W2,W3,W4,W5,W6,W7 ubeFeature
+    class W10,W11,W12,W13,W14,W15 himboFeature
+    class R1,SS,SSS,MM,NN,OO,PP,QQ,F3 logFeature
+    class T2,T5,T6 conflictFeature
+    class T,U,U1 keyFeature
+    class R0,DD,U2,T4,V8A newv249Feature
                   </div>
                 </details>
             </div>
