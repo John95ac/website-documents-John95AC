@@ -292,6 +292,7 @@ function initializeINISimulator() {
     const ruleTypeSelect = document.getElementById('ruleType');
     const elementValueSelect = document.getElementById('elementValue');
     const elementValueInput = document.getElementById('elementValueInput');
+    const outfitsValue = document.getElementById('outfitsValue');
     const presetsInput = document.getElementById('presets');
     const modeSelect = document.getElementById('mode');
     const generatedRuleEl = document.getElementById('generatedRule');
@@ -308,8 +309,20 @@ function initializeINISimulator() {
     // Sample data for quick fills
     const sampleData = {
         npcFormID: {
-            values: ['000001', '00083D', 'FE000817'],
-            presets: ['PresetA,PresetB,PresetC']
+            values: ['Skyrim.esm', 'Dawnguard.esm', 'Dragonborn.esm'],
+            presets: ['IDnpc,PresetA,PresetB,...', '00013BA3,Bardmaid', '00013BA2,Wench Preset,Demonic']
+        },
+        blacklistedNpcsFormID: {
+            values: ['YurianaWench.esp', 'Immersive Wenches.esp', 'DarkDesiresCircleOfLust.esp'],
+            presets: ['0B000817', 'FE000817', '0A000123']
+        },
+        blacklistedOutfitsFromORefitFormID: {
+            values: ['YurianaWench.esp', 'Immersive Wenches.esp', 'DarkDesiresCircleOfLust.esp'],
+            presets: ['FE000817', '0C000456', '0D000789']
+        },
+        outfitsForceRefitFormID: {
+            values: ['YurianaWench.esp', 'Immersive Wenches.esp', 'DarkDesiresCircleOfLust.esp'],
+            presets: ['0C000456', '0D000789', '0E000123']
         },
         npc: {
             values: ['Serana', 'Lydia', 'Aela', 'Mjoll'],
@@ -340,16 +353,13 @@ function initializeINISimulator() {
             presets: ['Nordic Male,Orcish Male']
         },
         blacklisted: {
-            values: ['Npcs', 'NpcsPluginFemale', 'NpcsPluginMale', 'RacesFemale', 'RacesMale', 'OutfitsFromORefit', 'OutfitsFromORefitPlugin', 'outfitsForceRefit', 'PresetsFromRandomDistribution'],
+            values: ['Npcs', 'NpcsPluginFemale', 'NpcsPluginMale', 'RacesFemale', 'RacesMale', 'PresetsFromRandomDistribution'],
             presets: {
                 'Npcs': 'Mjoll,Serana',
                 'NpcsPluginFemale': 'Immersive Wenches.esp,TDD.esp',
                 'NpcsPluginMale': 'Immersive Wenches.esp,TDD.esp',
                 'RacesFemale': 'NordRace,00UBE_BretonRace',
                 'RacesMale': 'NordRace,00UBE_BretonRace',
-                'OutfitsFromORefit': 'LS Force Naked,OBody Nude 32',
-                'OutfitsFromORefitPlugin': 'NewmChainmail.esp,NewmExtendedDressLong.esl',
-                'outfitsForceRefit': 'Nihon - Jacket,TB Cloth [Black]',
                 'PresetsFromRandomDistribution': 'HIMBO Zero for OBody,UBE Chonky'
             }
         }
@@ -362,10 +372,24 @@ function initializeINISimulator() {
         // Show/hide appropriate input based on rule type
         if (selectedType === 'raceFemale' || selectedType === 'raceMale' || selectedType === 'blacklisted') {
             elementValueSelect.style.display = 'block';
+            outfitsValue.style.display = 'none';
             elementValueInput.style.display = 'none';
             elementValueSelect.value = '';
+        } else if (selectedType === 'outfits') {
+            elementValueSelect.style.display = 'none';
+            outfitsValue.style.display = 'block';
+            elementValueInput.style.display = 'none';
+            outfitsValue.value = '';
+        } else if (selectedType === 'blacklistedNpcsFormID' || selectedType === 'blacklistedOutfitsFromORefitFormID' || selectedType === 'outfitsForceRefitFormID') {
+            // These types use text input for plugin names
+            elementValueSelect.style.display = 'none';
+            outfitsValue.style.display = 'none';
+            elementValueInput.style.display = 'block';
+            elementValueInput.value = '';
+            elementValueInput.placeholder = 'E.g.: YurianaWench.esp';
         } else {
             elementValueSelect.style.display = 'none';
+            outfitsValue.style.display = 'none';
             elementValueInput.style.display = 'block';
             elementValueInput.value = '';
         }
@@ -383,9 +407,6 @@ function initializeINISimulator() {
                     '<option value="NpcsPluginMale">NpcsPluginMale</option>' +
                     '<option value="RacesFemale">RacesFemale</option>' +
                     '<option value="RacesMale">RacesMale</option>' +
-                    '<option value="OutfitsFromORefit">OutfitsFromORefit</option>' +
-                    '<option value="OutfitsFromORefitPlugin">OutfitsFromORefitPlugin</option>' +
-                    '<option value="outfitsForceRefit">outfitsForceRefit</option>' +
                     '<option value="PresetsFromRandomDistribution">PresetsFromRandomDistribution</option>';
                 
                 // For blacklisted, use the selected element value to get specific presets
@@ -454,8 +475,16 @@ function initializeINISimulator() {
             presetsInput.value = randomPresets;
 
             if (selectedType !== 'raceFemale' && selectedType !== 'raceMale' && selectedType !== 'blacklisted') {
-                const randomValue = data.values[Math.floor(Math.random() * data.values.length)];
-                elementValueInput.value = randomValue;
+                if (selectedType === 'npcFormID') {
+                    // For npcFormID, use the first value as default (Skyrim.esm)
+                    elementValueInput.value = data.values[0];
+                } else if (selectedType === 'blacklistedNpcsFormID' || selectedType === 'blacklistedOutfitsFromORefitFormID' || selectedType === 'outfitsForceRefitFormID') {
+                    // For these types, use the first plugin as default
+                    elementValueInput.value = data.values[0];
+                } else {
+                    const randomValue = data.values[Math.floor(Math.random() * data.values.length)];
+                    elementValueInput.value = randomValue;
+                }
             }
         }
 
@@ -482,13 +511,35 @@ function initializeINISimulator() {
         }
     });
 
+    // Handle outfits dropdown changes
+    outfitsValue.addEventListener('change', function() {
+        if (ruleTypeSelect.value === 'outfits') {
+            // Update presets based on selected outfit type
+            const selectedOutfitType = this.value;
+            if (selectedOutfitType === 'outfitsForceRefit') {
+                presetsInput.value = 'Nihon - Jacket,Nihon - Jacket Neon,Nihon - Yellow';
+            } else if (selectedOutfitType === 'blacklistedOutfitsFromORefit') {
+                presetsInput.value = 'LS Force Naked,OBody Nude 32';
+            } else if (selectedOutfitType === 'blacklistedOutfitsFromORefitPlugin') {
+                presetsInput.value = 'NewmChainmail.esp,NewmillerLeatherBikini.esp,NewmExtendedDressLong.esl';
+            }
+        }
+    });
+
     // New rule button functionality
     newRuleBtn.addEventListener('click', function(e) {
         e.preventDefault();
         const ruleType = ruleTypeSelect.value;
-        const elementValue = (elementValueSelect.style.display !== 'none' && elementValueSelect.value !== 'custom')
-            ? elementValueSelect.value
-            : elementValueInput.value.trim();
+        let elementValue = '';
+
+        if (ruleType === 'outfits') {
+            elementValue = outfitsValue.value;
+        } else if (elementValueSelect.style.display !== 'none' && elementValueSelect.value !== 'custom') {
+            elementValue = elementValueSelect.value;
+        } else {
+            elementValue = elementValueInput.value.trim();
+        }
+
         const presets = presetsInput.value.trim();
         const mode = modeSelect.value;
 
@@ -505,15 +556,70 @@ function initializeINISimulator() {
             '0': 'disabled',
             '-': 'remove preset',
             'x-': 'unlimited remove',
-            '*': 'remove element',
-            'x*': 'unlimited element remove'
+            '*': 'priority preset',
+            'x*': 'unlimited priority preset',
+            '1-': 'once remove',
+            '1*': 'once priority',
+
+            // Key modes
+            'KeyWord': 'keyword search',
+            'KeyWord-': 'keyword remove',
+            'KeyWord*': 'keyword priority',
+            'KeyWord1': 'keyword once',
+            'KeyWord1-': 'keyword once remove',
+            'KeyWord1*': 'keyword once priority',
+
+            'KeyWordChart': 'chart keyword search',
+            'KeyWordChart-': 'chart keyword remove',
+            'KeyWordChart*': 'chart keyword priority',
+            'KeyWordChart1': 'chart keyword once',
+            'KeyWordChart1-': 'chart keyword once remove',
+            'KeyWordChart1*': 'chart keyword once priority',
+
+            'KeyAuthor': 'author search',
+            'KeyAuthor-': 'author remove',
+            'KeyAuthor*': 'author priority',
+            'KeyAuthor1': 'author once',
+            'KeyAuthor1-': 'author once remove',
+            'KeyAuthor1*': 'author once priority',
+
+            'KeyNormal': 'normal family filter',
+            'KeyNormal-': 'normal family remove',
+            'KeyNormal*': 'normal family priority',
+            'KeyNormal1': 'normal family once',
+            'KeyNormal1-': 'normal family once remove',
+            'KeyNormal1*': 'normal family once priority',
+
+            'KeyUBE': 'UBE family filter',
+            'KeyUBE-': 'UBE family remove',
+            'KeyUBE*': 'UBE family priority',
+            'KeyUBE1': 'UBE family once',
+            'KeyUBE1-': 'UBE family once remove',
+            'KeyUBE1*': 'UBE family once priority',
+
+            'KeyHIMBO': 'HIMBO family filter',
+            'KeyHIMBO-': 'HIMBO family remove',
+            'KeyHIMBO*': 'HIMBO family priority',
+            'KeyHIMBO1': 'HIMBO family once',
+            'KeyHIMBO1-': 'HIMBO family once remove',
+            'KeyHIMBO1*': 'HIMBO family once priority'
         };
         const modeDesc = modeDescriptions[mode] || mode;
         
-        // Special comment for blacklisted rules
+        // Special comment for rules - ALL dynamic now
         let comment = '';
         if (ruleType === 'blacklisted') {
-            comment = `;${elementValue} blacklisted in mode simple application`;
+            comment = `;${elementValue} blacklisted in mode ${modeDesc}`;
+        } else if (ruleType === 'outfits') {
+            comment = `;${elementValue} outfits in mode ${modeDesc}`;
+        } else if (ruleType === 'npcFormID') {
+            comment = `;${elementValue} npcFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'blacklistedNpcsFormID') {
+            comment = `;${elementValue} blacklistedNpcsFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'blacklistedOutfitsFromORefitFormID') {
+            comment = `;${elementValue} blacklistedOutfitsFromORefitFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'outfitsForceRefitFormID') {
+            comment = `;${elementValue} outfitsForceRefitFormID in mode ${modeDesc}`;
         } else {
             comment = `;${elementValue} presets in mode ${modeDesc}`;
         }
@@ -534,26 +640,48 @@ function initializeINISimulator() {
 
         presetsInput.value = '';
         modeSelect.value = '';
+
+        // Clear preview after adding rule
+        generatedRuleEl.innerHTML = highlightRule(permanentRules);
         console.log('New permanent rule added:', rule);
     });
 
     // Live preview when inputs change
-    [ruleTypeSelect, elementValueSelect, elementValueInput, presetsInput, modeSelect].forEach(element => {
+    [ruleTypeSelect, elementValueSelect, elementValueInput, outfitsValue, presetsInput, modeSelect].forEach(element => {
         element.addEventListener('input', updatePreview);
         element.addEventListener('change', updatePreview);
     });
 
     function updatePreview() {
         const ruleType = ruleTypeSelect.value;
-        const elementValue = (elementValueSelect.style.display !== 'none' && elementValueSelect.value !== 'custom')
-            ? elementValueSelect.value
-            : elementValueInput.value.trim();
+        let elementValue = '';
+
+        if (ruleType === 'outfits') {
+            elementValue = outfitsValue.value;
+        } else if (elementValueSelect.style.display !== 'none' && elementValueSelect.value !== 'custom') {
+            elementValue = elementValueSelect.value;
+        } else {
+            elementValue = elementValueInput.value.trim();
+        }
+
         const presets = presetsInput.value.trim();
         const mode = modeSelect.value;
 
-        // Solo mostrar preview si hay datos suficientes
-        if (!ruleType || !elementValue || !presets) {
-            generatedRuleEl.innerHTML = highlightRule(permanentRules || '; Complete all fields to generate the INI rule');
+        // Si no hay reglas permanentes y no hay datos suficientes, mostrar mensaje inicial
+        if (!permanentRules && (!ruleType || !elementValue || !presets)) {
+            generatedRuleEl.innerHTML = highlightRule('; Complete all fields to generate the INI rule');
+            return;
+        }
+
+        // Si hay reglas permanentes pero no hay datos completos para preview, mostrar solo las permanentes
+        if (permanentRules && (!ruleType || !elementValue || !presets)) {
+            generatedRuleEl.innerHTML = highlightRule(permanentRules);
+            return;
+        }
+
+        // Si no hay reglas permanentes y no hay datos completos, mostrar mensaje inicial
+        if (!permanentRules && (!ruleType || !elementValue || !presets)) {
+            generatedRuleEl.innerHTML = highlightRule('; Complete all fields to generate the INI rule');
             return;
         }
 
@@ -565,19 +693,74 @@ function initializeINISimulator() {
             '0': 'disabled',
             '-': 'remove preset',
             'x-': 'unlimited remove',
-            '*': 'Only applies these elements',
-            'x*': 'unlimited element remove'
+            '*': 'priority preset',
+            'x*': 'unlimited priority preset',
+            '1-': 'once remove',
+            '1*': 'once priority',
+
+            // Key modes
+            'KeyWord': 'keyword search',
+            'KeyWord-': 'keyword remove',
+            'KeyWord*': 'keyword priority',
+            'KeyWord1': 'keyword once',
+            'KeyWord1-': 'keyword once remove',
+            'KeyWord1*': 'keyword once priority',
+
+            'KeyWordChart': 'chart keyword search',
+            'KeyWordChart-': 'chart keyword remove',
+            'KeyWordChart*': 'chart keyword priority',
+            'KeyWordChart1': 'chart keyword once',
+            'KeyWordChart1-': 'chart keyword once remove',
+            'KeyWordChart1*': 'chart keyword once priority',
+
+            'KeyAuthor': 'author search',
+            'KeyAuthor-': 'author remove',
+            'KeyAuthor*': 'author priority',
+            'KeyAuthor1': 'author once',
+            'KeyAuthor1-': 'author once remove',
+            'KeyAuthor1*': 'author once priority',
+
+            'KeyNormal': 'normal family filter',
+            'KeyNormal-': 'normal family remove',
+            'KeyNormal*': 'normal family priority',
+            'KeyNormal1': 'normal family once',
+            'KeyNormal1-': 'normal family once remove',
+            'KeyNormal1*': 'normal family once priority',
+
+            'KeyUBE': 'UBE family filter',
+            'KeyUBE-': 'UBE family remove',
+            'KeyUBE*': 'UBE family priority',
+            'KeyUBE1': 'UBE family once',
+            'KeyUBE1-': 'UBE family once remove',
+            'KeyUBE1*': 'UBE family once priority',
+
+            'KeyHIMBO': 'HIMBO family filter',
+            'KeyHIMBO-': 'HIMBO family remove',
+            'KeyHIMBO*': 'HIMBO family priority',
+            'KeyHIMBO1': 'HIMBO family once',
+            'KeyHIMBO1-': 'HIMBO family once remove',
+            'KeyHIMBO1*': 'HIMBO family once priority'
         };
         const modeDesc = modeDescriptions[mode] || mode;
-        
-        // Special comment for blacklisted rules
+
+        // Special comment for rules - ALL dynamic now
         let comment = '';
         if (ruleType === 'blacklisted') {
-            comment = `;${elementValue} blacklisted in mode simple application`;
+            comment = `;${elementValue} blacklisted in mode ${modeDesc}`;
+        } else if (ruleType === 'outfits') {
+            comment = `;${elementValue} outfits in mode ${modeDesc}`;
+        } else if (ruleType === 'npcFormID') {
+            comment = `;${elementValue} npcFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'blacklistedNpcsFormID') {
+            comment = `;${elementValue} blacklistedNpcsFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'blacklistedOutfitsFromORefitFormID') {
+            comment = `;${elementValue} blacklistedOutfitsFromORefitFormID in mode ${modeDesc}`;
+        } else if (ruleType === 'outfitsForceRefitFormID') {
+            comment = `;${elementValue} outfitsForceRefitFormID in mode ${modeDesc}`;
         } else {
             comment = `;${elementValue} presets in mode ${modeDesc}`;
         }
-        
+
         const rule = `${ruleType} = ${elementValue}|${presets}|${mode}`;
         const previewText = `${comment}\n${rule}`;
 

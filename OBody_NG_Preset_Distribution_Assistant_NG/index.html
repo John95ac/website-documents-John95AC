@@ -480,6 +480,10 @@
                                 <option value="raceFemale">raceFemale</option>
                                 <option value="raceMale">raceMale</option>
                                 <option value="blacklisted">blacklisted</option>
+                                <option value="blacklistedNpcsFormID">blacklistedNpcsFormID</option>
+                                <option value="blacklistedOutfitsFromORefitFormID">blacklistedOutfitsFromORefitFormID</option>
+                                <option value="outfitsForceRefitFormID">outfitsForceRefitFormID</option>
+                                <option value="outfits">outfits</option>
                             </select>
                         </div>
 
@@ -532,6 +536,12 @@
                                 <option value="00UBE_KhajiitRaceVampire">00UBE_KhajiitRaceVampire</option>
                                 <option value="00UBE_ArgonianRaceVampire">00UBE_ArgonianRaceVampire</option>
                                 <option value="custom">Custom races</option>
+                            </select>
+                            <select id="outfitsValue" class="form-control" style="display: none;">
+                                <option value="">Select outfit type...</option>
+                                <option value="outfitsForceRefit">outfitsForceRefit</option>
+                                <option value="blacklistedOutfitsFromORefit">blacklistedOutfitsFromORefit</option>
+                                <option value="blacklistedOutfitsFromORefitPlugin">blacklistedOutfitsFromORefitPlugin</option>
                             </select>
                             <input type="text" id="elementValueInput" class="form-control" placeholder="E.g.: Serana, GuardFaction, xx0001...">
                         </div>
@@ -847,14 +857,6 @@ blacklisted = RacesFemale|NordRace,00UBE_BretonRace|
 ;RacesMale blacklisted in mode simple application
 blacklisted = RacesMale|OrcRace,KhajiitRace|
 
-;OutfitsFromORefit blacklisted in mode simple application
-blacklisted = OutfitsFromORefit|LS Force Naked,OBody Nude 32|
-
-;OutfitsFromORefitPlugin blacklisted in mode simple application
-blacklisted = OutfitsFromORefitPlugin|NewmChainmail.esp,NewmExtendedDressLong.esl|
-
-;outfitsForceRefit blacklisted in mode simple application
-blacklisted = outfitsForceRefit|Nihon - Jacket,TB Cloth [Black]|
 
 ;PresetsFromRandomDistribution blacklisted in mode simple application
 blacklisted = PresetsFromRandomDistribution|HIMBO Zero for OBody,UBE Chonky|
@@ -928,17 +930,6 @@ blacklisted = RacesMale|ElderRace|
 ;YurianaWench.esp blacklisted in mode simple application
 blacklistedOutfitsFromORefitFormID = YurianaWench.esp|FE000817|
 
-;blacklistedOutfitsFromORefit outfits in mode simple application
-outfits = blacklistedOutfitsFromORefit|Demon Hunter's Lingerie Light|
-
-; blacklistedOutfitsFromORefitPlugin outfits in mode simple application
-outfits = blacklistedOutfitsFromORefitPlugin|[COCO] Mysterious Mage.esp|
-
-;YurianaWench.esp outfitsForceRefitFormID in mode simple application
-outfitsForceRefitFormID = YurianaWench.esp|FE000817|
-
-;outfitsForceRefit outfits in mode simple application
-outfits = outfitsForceRefit|Demon Hunter's Lingerie Light|
 
 ;PresetsFromRandomDistribution blacklisted in mode simple application
 blacklisted = PresetsFromRandomDistribution|GT+++|
