@@ -731,16 +731,16 @@
                     <textarea id="iniEditor" class="ini-editor" readonly>;OBody_NG_Preset_Distribution_Assistant_NG
 ;INI Rule Examples:
 
-; npcFormID = xx0001|Preset,...|Mode                   ; Plugin.esp| FormID, Presets,... | mode
-; npc = EditorID|Preset,...|Mode                       ; EditorID | Preset, Presets,... | mode
-; factionFemale = Faction|Preset,...|Mode              ; Faction | Preset, Presets,... | mode
-; factionMale = Faction|Preset,...|Mode                ; Faction | Preset, Presets,... | mode
-; npcPluginFemale = Plugin.esp|Preset,...|Mode         ; Plugin.esp | Preset, Presets,... | mode
-; npcPluginMale = Plugin.esp|Preset,...|Mode           ; Plugin.esp | Preset, Presets,... | mode
-; raceFemale = Race|Preset,...|Mode                    ; Race | Preset, Presets,... | mode
-; raceMale = Race|Preset,...|Mode                      ; Race | Preset, Presets,... | mode
-; blacklisted = Category|Element,Preset,...|Mode       ; Category | Element,Preset,... | mode
-; outfits = Category|Element,Preset,...|Mode           ; Category | Element,Preset,... | mode
+; npcFormID = Plugin.esp|FormID,Presets,...|mode       ; Plugin.esp|FormID,Presets,...|mode
+; npc = EditorID|Preset,...|Mode                       ; EditorID|Preset,Presets,...|mode
+; factionFemale = Faction|Preset,...|Mode              ; Faction|Preset,Presets,...|mode
+; factionMale = Faction|Preset,...|Mode                ; Faction|Preset,Presets,...|mode
+; npcPluginFemale = Plugin.esp|Preset,...|Mode         ; Plugin.esp|Preset,Presets,...|mode
+; npcPluginMale = Plugin.esp|Preset,...|Mode           ; Plugin.esp|Preset,Presets,...|mode
+; raceFemale = Race|Preset,...|Mode                    ; Race|Preset,Presets,...|mode
+; raceMale = Race|Preset,...|Mode                      ; Race|Preset,Presets,...|mode
+; blacklisted = Category|Element,Preset,...|Mode       ; Category|Element,Preset,...|mode
+; outfits = Category|Element,Preset,...|Mode           ; Category|Element,Preset,...|mode
 
 ;Basic Modes:
 ; (empty) = Unlimited (Always checks and applies the preset).
@@ -806,13 +806,13 @@
 npcPluginFemale = YurianaWench.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|
 
 ;Immersive Wenches All Mod
-npcPluginFemale = Immersive Wenches.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|x
+npcPluginFemale = Immersive Wenches.esp|Wench Body 2.0 Naked Body SSE,!CCPoundcakeNaked2|
 
 ;Apply to race once
 raceFemale = NordRace|Nordic Preset 1,Nordic Preset 2|1
 
 ;Apply to faction always
-factionFemale = GuardFaction|Guard Body Preset|x
+factionFemale = GuardFaction|Guard Body Preset|
 
 ;Apply to specific NPC once
 npc = Lydia|Lydia Custom Preset|1
@@ -840,35 +840,6 @@ raceFemale = HighElfRace|AuthorName|KeyAuthor-
 
 ;Add presets with (Slim) in name, once only
 raceFemale = WoodElfRace|Slim|KeyWordChart1
-
-;Blacklisted Categories and Examples:
-
-;Npcs blacklisted in mode simple application
-blacklisted = Npcs|Mjoll,Serana|
-
-;NpcsPluginFemale blacklisted in mode simple application
-blacklisted = NpcsPluginFemale|Immersive Wenches.esp,TDD.esp|
-
-;NpcsPluginMale blacklisted in mode simple application
-blacklisted = NpcsPluginMale|Male Followers.esp,Custom Males.esp|
-
-;RacesFemale blacklisted in mode simple application
-blacklisted = RacesFemale|NordRace,00UBE_BretonRace|
-
-;RacesMale blacklisted in mode simple application
-blacklisted = RacesMale|OrcRace,KhajiitRace|
-
-;PresetsFromRandomDistribution blacklisted in mode simple application
-blacklisted = PresetsFromRandomDistribution|HIMBO Zero for OBody,UBE Chonky|
-
-;Blacklisted with KeyWord mode (adds all presets containing keyword)
-blacklisted = PresetsFromRandomDistribution|Broken|KeyWord
-
-;Blacklisted once mode (applies once, then changes to 0)
-blacklisted = Npcs|TemporaryNPC|1
-
-;Remove from blacklist (use - mode)
-blacklisted = Npcs|Mjoll|-
 
 ;Notes:
 ; - Invalid mode text will automatically be replaced with "0"
