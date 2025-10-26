@@ -7,6 +7,12 @@
   // Tracking and contact links configuration
   const socialLinks = [
     {
+      name: 'Web Doc John95AC',
+      image: 'images/web.png',
+      url: 'https://john95ac.github.io/website-documents-John95AC/index.html',
+      alt: 'Visit Web Doc John95AC'
+    },
+    {
       name: 'YouTube',
       image: 'images/support_me_on_Youtube_badge.png',
       url: 'https://www.youtube.com/@John1995ac',
@@ -51,14 +57,14 @@
     panel.id = 'social-links-panel';
     panel.innerHTML = `
       <div class="social-links-header">
-        <h3>📢 Follow Us and Contact Us</h3>
-        <p>Connect with us for updates and support!</p>
+        <h3>📢 Follow and Contact</h3>
+        <p>Connect to review more projects!</p>
       </div>
       <div class="social-links" id="social-links">
         <!-- Links will be loaded dynamically -->
       </div>
       <div class="social-links-footer">
-        <small>🌟 Stay connected and updated!</small>
+        <small>🌟 Discord will be available soon, I'm just improving security</small>
       </div>
     `;
     document.body.appendChild(panel);
@@ -296,7 +302,7 @@
         <img src="${link.image}" alt="${link.alt}" loading="lazy">
         <div class="social-link-info">
           <h4 class="social-link-title">${link.name}</h4>
-          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : `Click to follow on ${link.name}`}</p>
+          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : link.name === 'Web Doc John95AC' ? 'Web - Work in progress' : `Click to follow on ${link.name}`}</p>
         </div>
         <div class="social-link-icon">→</div>
       `;

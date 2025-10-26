@@ -35,7 +35,7 @@
     panel.innerHTML = `
       <div class="support-header">
         <h3>💖 Support the Developer</h3>
-        <p>Help keep the mod updated and improved!</p>
+        <p>Help keep mods updated and participate in future decisions, plus in the long term be part of a big project 🤖</p>
       </div>
       <div class="support-links" id="support-links">
         <!-- Links will be loaded dynamically -->
