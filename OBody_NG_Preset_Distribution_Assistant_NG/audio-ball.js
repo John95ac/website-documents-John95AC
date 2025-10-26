@@ -138,10 +138,14 @@
       #audio-picker {
         cursor: pointer;
         text-decoration: none;
-        color: white;
+        color: #00ff00;
+        animation: pulse-green 2s infinite;
+        text-shadow: 0 0 5px #00ff00;
       }
       #audio-picker:hover {
         text-decoration: underline;
+        animation: none;
+        text-shadow: 0 0 10px #00ff00;
       }
       #audio-picker-menu ul li a {
         display: block;
@@ -161,6 +165,16 @@
       #audio-toggle {
         font-size: 20px;
         text-decoration: none;
+      }
+      #audio-mute {
+        font-size: 20px;
+        text-decoration: none;
+      }
+      
+      @keyframes pulse-green {
+        0% { opacity: 1; }
+        50% { opacity: 0.6; }
+        100% { opacity: 1; }
       }
     `;
     document.head.appendChild(style);
@@ -188,15 +202,15 @@
 
     function setIcon() {
         if (!player || typeof player.isMuted !== 'function') {
-            $toggle.innerHTML = '🔇';
+            $toggle.innerHTML = '🔊';
             $toggle.title = 'Mute';
             return;
         }
         if (player.isMuted()) {
-            $toggle.innerHTML = '🔊';
+            $toggle.innerHTML = '🔇';
             $toggle.title = 'Unmute';
         } else {
-            $toggle.innerHTML = '🔇';
+            $toggle.innerHTML = '🔊';
             $toggle.title = 'Mute';
         }
     }
@@ -315,25 +329,20 @@
 
     $toggle.onclick = (e) => {
         e.preventDefault();
-        if (!player || typeof player.getPlayerState !== 'function') {
+        if (!player || typeof player.isMuted !== 'function') {
             initPlayer();
             return;
         }
 
-        const state = player.getPlayerState();
-
-        if (state !== YT.PlayerState.PLAYING) {
-            tryPlay();
-            desiredState = 'playing';
-            localStorage.setItem(storageKey, 'playing');
+        // SOLO toggle mute/unmute, sin mezclar con play/pause
+        if (player.isMuted()) {
+            player.unMute();
+            desiredMuteState = 'unmuted';
+            localStorage.setItem(muteKey, 'unmuted');
         } else {
-            if (player.isMuted()) {
-                player.unMute();
-                localStorage.setItem(muteKey, 'unmuted');
-            } else {
-                player.mute();
-                localStorage.setItem(muteKey, 'muted');
-            }
+            player.mute();
+            desiredMuteState = 'muted';
+            localStorage.setItem(muteKey, 'muted');
         }
         setTimeout(setIcon, 200);
     };
