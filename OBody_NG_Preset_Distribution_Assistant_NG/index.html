@@ -463,6 +463,9 @@
             <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
                 If you don't know how to get the IDs or factions, you can use the codes I left on Nexus. They are used in SSEdit and generate a complete list with a lot of information about each NPC. With those, you can do whatever you like, such as SPIDs or these PDAs.
             </p>
+            <p class="simulator-description" style="color: rgba(80, 200, 120, 0.8);">
+                For more information about the OBody master JSON and its internal structure, check the official <a href="https://www.nexusmods.com/skyrimspecialedition/articles/4756" target="_blank" rel="noopener noreferrer">OBody NG JSON Configuration Guide</a>. It is recommended to read only if you want to delve deeper into OBody configurations. If you just want to create rules and not complicate your life too much, it is not necessary to read the guide; the mod already does everything a user might need.
+            </p>
             <div class="simulator-container">
                 <div class="simulator-controls">
                     <h3>Rule Configuration</h3>
@@ -903,6 +906,62 @@ blacklistedOutfitsFromORefitFormID = YurianaWench.esp|FE000817|
 
 ;PresetsFromRandomDistribution blacklisted in mode simple application
 blacklisted = PresetsFromRandomDistribution|GT+++|
+
+;Useful information about available races in Skyrim (Normal and UBE)
+
+Normal Races:
+; NordRace
+; ImperialRace
+; BretonRace
+; RedguardRace
+; DarkElfRace
+; HighElfRace
+; WoodElfRace
+; OrcRace
+; KhajiitRace
+; ArgonianRace
+; ElderRace
+
+Vampire Races:
+; NordRaceVampire
+; ImperialRaceVampire
+; BretonRaceVampire
+; RedguardRaceVampire
+; DarkElfRaceVampire
+; HighElfRaceVampire
+; WoodElfRaceVampire
+; OrcRaceVampire
+; KhajiitRaceVampire
+; ArgonianRaceVampire
+; ElderRaceVampire
+
+;For UBE, beast races like Khajiit or Argonians do not exist, nor do the elder races. None of the vampiric races exist either. But I am leaving this checkbox within the project in case someone wishes to incorporate them in the future.
+
+UBE Races:
+; 00UBE_NordRace
+; 00UBE_ImperialRace
+; 00UBE_BretonRace
+; 00UBE_RedguardRace
+; 00UBE_DarkElfRace
+; 00UBE_HighElfRace
+; 00UBE_WoodElfRace
+; 00UBE_OrcRace
+; 00UBE_KhajiitRace
+; 00UBE_ArgonianRace
+; 00UBE_ElderRace
+
+Vampire UBE Races:
+; 00UBE_OrcRaceVampire
+; 00UBE_HighElfRaceVampire
+; 00UBE_BretonRaceVampire
+; 00UBE_ImperialRaceVampire
+; 00UBE_RedguardRaceVampire
+; 00UBE_DarkElfRaceVampire
+; 00UBE_WoodElfRaceVampire
+; 00UBE_NordRaceVampire
+; 00UBE_ElderRaceVampire
+; 00UBE_KhajiitRaceVampire
+; 00UBE_ArgonianRaceVampire
 
 </textarea>
                 </div>
@@ -1929,10 +1988,193 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
     class T,U,U1 keyFeature
     class R0,DD,U2,T4,V8A newv249Feature
                   </div>
-                </details>
-            </div>
-        </div>
-    </section>
+               </details>
+           </div>
+
+           <div class="flowchart-item" style="margin-bottom: 1.5rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-16); background-color: var(--color-surface);">
+               <details>
+                   <summary>🍵 Show/Hide Flowchart v2.7.3</summary>
+                   <div class="modes-info">
+                       <p class="modes-explanation">
+                           <strong>🍵 Flowchart v2.7.3:</strong> This version introduces MCM-ready activation system with Control INI monitoring via startAct1 boolean flag for external trigger support enabling dynamic reactivation cycles, HIMBO selective cleaning by INI pre-scan that detects male races with explicit INI rules (raceMale = NordRace|...) and performs targeted automatic HIMBO preset removal only from those detected races while preserving all 22 automatic HIMBO distributions intact for races without custom INI rules, and new PHASE 3.3 integration with PreScanMaleRacesInINI and CleanHIMBOFromSpecificMaleRaces functions executing between conflict resolution and rule application phases.
+                       </p>
+                   </div>
+                   <div class="mermaid">
+flowchart TD
+   A[🚀 SKSE Plugin Load - Version 2.7.3] --> B[📁 Secure Initialization<br/>GetDocumentsPath + GetGamePath<br/>CreateDirectoryIfNotExists]
+   B --> C[⚙️ Read Config INI<br/>ReadConfigFromIni<br/>Backup, ModeUBE, ModeHIMBO<br/>Smart Cleaning flags<br/>Conflict Resolution flag]
+   C --> D[🔍 SIMPLE JSON Validation<br/>PerformSimpleJsonIntegrityCheck<br/>Structure, balance, OBody keys]
+
+   D --> E{❓ Master JSON<br/>Valid?}
+   E -->|YES| G{🔄 Backup<br/>Config?}
+   E -->|NO| F1[🔄 AUTOMATIC RESTORE<br/>RestoreJsonFromBackup<br/>Attempt recovery from backup]
+
+   F1 --> F2{✅ Restoration<br/>Successful?}
+   F2 -->|YES| F3[📊 Log: JSON Restored<br/>Continue normal process]
+   F2 -->|NO| F[❌ END PROCESS<br/>CRITICAL ERROR<br/>No valid backup available]
+   F3 --> G
+
+   G -->|Backup=1| H[💾 LITERAL Backup<br/>PerformLiteralJsonBackup<br/>Byte-by-byte copy]
+   G -->|Backup=true/2| H1[💾 LITERAL Backup<br/>Always Active Mode<br/>Keep INI unchanged]
+   G -->|Backup=0/false| I[📖 Read Master JSON<br/>ReadCompleteJson<br/>Parse all valid keys]
+
+   H --> J[✏️ Update INI<br/>Backup = 0]
+   H1 --> K[ℹ️ Keep INI<br/>Backup = true unchanged]
+   J --> I
+   K --> I
+
+   I --> L{✅ JSON Read<br/>Success?}
+   L -->|NO| M[🔄 Restore from Backup<br/>RestoreJsonFromBackup]
+   M --> N[📁 Move Corrupted<br/>MoveCorruptedJsonToAnalysis<br/>Timestamp → Analysis]
+   N --> O[🔄 Retry Read<br/>ReadCompleteJson]
+   O --> P{✅ Read OK<br/>after restore?}
+   P -->|NO| Q[❌ END PROCESS<br/>JSON READ FAILED]
+   P -->|YES| R[📂 Scan Data Folder<br/>OBodyNG_PDA_*.ini files]
+
+   L -->|YES| R
+   R --> R0[📋 🆕 Generate INI Analysis Log<br/>GenerateINIAnalysisLog<br/>Scan all INI files<br/>Line-by-line rule detection<br/>Statistics per file]
+   R0 --> R1[📋 Generate Doctor Log<br/>GenerateDoctorLog<br/>List all XML files found]
+   R1 --> DD[🏗️ 🆕 Build MASTER Preset Map<br/>BuildPresetNameMap<br/>Phase 1: Master reference<br/>Extract internal names from XML<br/>Multi-preset support + HTML decoding]
+   DD --> SS[📋 Generate Smart Cleaning Log<br/>GenerateSmartCleaningLog<br/>Preset reference list + mapping]
+   SS --> SSS[📋 Generate Helper Log<br/>GenerateHelperLog<br/>Complete preset list + examples]
+
+   SSS --> T[📝 Parse & Prioritize INI Rules<br/>ParseRuleLine + GetRulePriority<br/>Sort by priority: Standard → Filter → Remove → Exclusive]
+   T --> T1{🔍 Detect<br/>Conflicts?}
+   T1 -->|YES| T2[🚨 Track Exclusive Conflicts<br/>RuleConflictTracker<br/>File modification timestamps]
+   T1 -->|NO| T7
+   T2 --> T3{⚙️ Smart Resolution<br/>Enabled?}
+   T3 -->|YES| T4[🔧 🆕 Resolve Conflicts Automatically<br/>ResolveConflicts<br/>Newest file wins → Update older count to 0<br/>UpdateIniRuleCount for disabled rules]
+   T3 -->|NO| T5[⚠️ Skip All Conflicting Rules<br/>Log conflicts only]
+   T4 --> T6[📋 🆕 Generate Conflict Report<br/>GenerateConflictReport<br/>Append to INI Analysis Log<br/>Detailed resolution + timestamps]
+   T5 --> T6
+   T6 --> T7
+
+   T7[🔍 🆕 PHASE 3.3: Pre-Scan Male Races<br/>PreScanMaleRacesInINI<br/>Detect raceMale with INI rules]
+   T7 --> T8{❓ Male Races<br/>with INI Rules?}
+   T8 -->|YES| T9[🧹 🆕 Selective HIMBO Cleaning<br/>CleanHIMBOFromSpecificMaleRaces<br/>Remove HIMBO only from detected races<br/>Other races preserve all HIMBO]
+   T8 -->|NO| U
+   T9 --> U
+
+   U[🎯 Process INI Rules<br/>Apply by priority order<br/>Add/Remove Presets/Plugins<br/>Support 43 rule modes]
+   U --> U1[🔑 Process KEY Filtering Modes<br/>KeyWord/KeyWordChart/KeyAuthor<br/>KeyNormal/KeyUBE/KeyHIMBO<br/>With asterisk, dash, 1 variants]
+   U1 --> U2[📊 🆕 Update INI Counts Dynamically<br/>UpdateIniRuleCount<br/>Automatic decrement for ONCE modes<br/>Write back to INI files in real-time]
+
+   U2 --> V[🧹 Smart Cleaning Evaluation<br/>Check enabled flags per section<br/>Using Master Preset Map]
+   V --> V1{🛡️ Presets<br/>Smart Cleaning?}
+   V1 -->|YES| V2A[🔍 Clean General Presets<br/>6-level matching algorithm<br/>Protected presets exemption<br/>Master Map validation]
+   V1 -->|NO| V3A
+   V2A --> V3A{🛡️ Blacklisted Presets<br/>FromRandomDistribution?}
+   V3A -->|YES| V4A[🔍 Clean Blacklist Random<br/>PerformSmartCleaning]
+   V3A -->|NO| V5A
+   V4A --> V5A{🛡️ Blacklisted Presets<br/>FromAll?}
+   V5A -->|YES| V6A[🔍 Clean All Blacklists<br/>PerformSmartCleaning]
+   V5A -->|NO| V7A
+   V6A --> V7A{🛡️ OutfitsForceRe<br/>Smart Cleaning?}
+   V7A -->|YES| V8A[🔍 Clean Outfits ForceRefit<br/>PerformSmartCleaning<br/>🆕 BYPASSED: Preserved as-is]
+   V7A -->|NO| W
+   V8A --> W
+
+   W[🎮 UBE/HIMBO XML Processing<br/>ProcessUBEXmlPresets + ProcessHIMBOXmlPresets<br/>Multi-preset extraction]
+   W --> W1{🔍 ModeUBE<br/>Enabled?}
+   W1 -->|YES| W2[📊 Analyze UBE XMLs<br/>AnalyzeXmlGroups<br/>Detect 3BA/3BBB/CBBE conflicts]
+   W1 -->|NO| W9
+   W2 --> W3{⚠️ UBE Conflict<br/>Detected?}
+   W3 -->|YES + UBE in name| W4[✅ Add to Blacklist + UBE Races<br/>Allow in 22 UBE races]
+   W3 -->|YES + NO UBE in name| W5[✅ Add to Blacklist ONLY<br/>Exclude from UBE races]
+   W3 -->|NO Conflict| W6[✅ Add to Blacklist + UBE Races<br/>Pure UBE preset]
+   W4 --> W7
+   W5 --> W7
+   W6 --> W7
+   W7[🎯 Apply UBE to JSON<br/>Blacklist + 22 UBE Races]
+   W7 --> W9
+
+   W9{🔍 ModeHIMBO<br/>Enabled?}
+   W9 -->|YES| W10[📊 Analyze HIMBO XMLs<br/>AnalyzeXmlGroups<br/>Detect conflicts]
+   W9 -->|NO| X
+   W10 --> W11{⚠️ HIMBO Conflict<br/>Detected?}
+   W11 -->|YES + HIMBO in name| W12[✅ Add to Blacklist + HIMBO Races<br/>Allow in 22 HIMBO races]
+   W11 -->|YES + NO HIMBO in name| W13[✅ Add to Blacklist ONLY<br/>Exclude from HIMBO races]
+   W11 -->|NO Conflict| W14[✅ Add to Blacklist + HIMBO Races<br/>Pure HIMBO preset]
+   W12 --> W15
+   W13 --> W15
+   W14 --> W15
+   W15[🎯 Apply HIMBO to JSON<br/>Blacklist + 22 HIMBO races]
+   W15 --> X
+
+   X[🏗️ Preserve Original<br/>PreserveOriginalSections<br/>Update only modified keys<br/>Exact 4-space format]
+   X --> ZZ{🔍 VERIFY CHANGES<br/>CheckIfChangesNeeded?}
+
+   ZZ -->|YES| AA[💾 ATOMIC Write<br/>WriteJsonAtomically<br/>.tmp + PerformTripleValidation]
+   ZZ -->|NO| BB[ℹ️ Skip Write<br/>No changes detected]
+
+   AA --> CC{✅ Write<br/>Successful?}
+   CC -->|NO| YY[🔄 Restore Backup<br/>Write failure]
+   CC -->|YES| DD1[🔍 INDENTATION CORRECTION<br/>CorrectJsonIndentation<br/>4-space hierarchy + inline empty]
+   BB --> DD1
+
+   DD1 --> EE{📏 Indentation<br/>Correct?}
+   EE -->|YES| FF[✅ JSON Already Perfect<br/>4 spaces verified]
+   EE -->|NO| GG[✏️ FULL REFORMAT<br/>isEmptyBlock Helper<br/>Empty containers inline<br/>With content 4 spaces]
+
+   GG --> HH{✅ Reformat<br/>Complete?}
+   HH -->|NO| II[🔄 Restore Backup<br/>Indentation failure]
+   HH -->|YES| JJ[🔍 Final TRIPLE Validation<br/>PerformTripleValidation<br/>Structure + Keys]
+
+   FF --> JJ
+   JJ --> KK{✅ Final JSON<br/>Valid?}
+   KK -->|NO| LL[🔄 Restore Backup<br/>+ Forensic Analysis]
+   KK -->|YES| MM[📊 🆕 Final Log Summary<br/>Complete statistics<br/>All operations logged<br/>5 logs generated:<br/>- Main Log<br/>- INI Analysis<br/>- Doctor<br/>- Smart Cleaning<br/>- Helper]
+
+   YY --> NN[📊 Log Backup Restore]
+   II --> OO[📊 Log Backup Restore]
+   LL --> PP[📊 Log Critical Error]
+
+   NN --> MM
+   OO --> MM
+   PP --> MM
+
+   MM --> QQ[💬 Console Message<br/>OBody Assistant v2.7.3: Process completed!]
+   QQ --> ZZZ{🔍 🆕 WIP MCM ACTIVATION?<br/>Check Control INI exists}
+   ZZZ -->|YES| ZZZ1[✏️ 🆕 WIP RESET CONTROL INI<br/>WriteControlIniValue<br/>startAct1 = false<br/>Ready for next activation]
+   ZZZ -->|NO| RR
+   ZZZ1 --> RR[🏁 END: Success<br/>Perfect 4-space format<br/>🆕 MCM Activation System WIP<br/>🆕 Selective HIMBO Cleaning<br/>🆕 5 logs generated<br/>🆕 INI auto-update for ONCE modes<br/>🆕 Smart Conflict Resolution<br/>UBE + HIMBO distributed<br/>43 rule modes supported]
+
+   F --> SS1[🏁 END: Critical Error]
+   Q --> TT[🏁 END: JSON Read Failed]
+
+   %% Styles
+   classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#333
+   classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333
+   classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333
+   classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px,color:#333
+   classDef backup fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#333
+   classDef newFeature fill:#e3f2fd,stroke:#0277bd,stroke-width:3px,color:#333
+   classDef smartCleaning fill:#fff9c4,stroke:#f57f17,stroke-width:3px,color:#333
+   classDef ubeFeature fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#333
+   classDef himboFeature fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px,color:#333
+   classDef logFeature fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#333
+   classDef conflictFeature fill:#ffccbc,stroke:#d84315,stroke-width:3px,color:#333
+   classDef keyFeature fill:#b2dfdb,stroke:#00695c,stroke-width:3px,color:#333
+   classDef newv273Feature fill:#ffebee,stroke:#c62828,stroke-width:4px,color:#333,font-weight:bold
+
+   class A,RR,SS1,TT startEnd
+   class B,C,I,R,X,AA process
+   class E,G,L,P,CC,EE,HH,KK,F2,ZZ,V1,V3A,V5A,V7A,W1,W3,W9,W11,T1,T3,T8,ZZZ decision
+   class F,Q,YY,II,LL error
+   class H,H1,J,K,M,N backup
+   class D,DD1,GG,JJ newFeature
+   class V,V2A,V4A,V6A,V8A smartCleaning
+   class W,W2,W3,W4,W5,W6,W7 ubeFeature
+   class W10,W11,W12,W13,W14,W15 himboFeature
+   class R1,SS,SSS,MM,NN,OO,PP,QQ,F3 logFeature
+   class T2,T5,T6 conflictFeature
+   class T,U,U1 keyFeature
+   class R0,DD,U2,T4,V8A,T7,T9,ZZZ,ZZZ1 newv273Feature
+                   </div>
+               </details>
+           </div>
+       </div>
+   </section>
 
     <!-- Advanced Features -->
     <section id="features" class="section">
@@ -1977,54 +2219,78 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
         <div class="container">
             <h2 class="section-title">Security and Reliability</h2>
             <div class="security-grid">
-                <div class="security-card">
-                    <span class="security-icon">🛡️</span>
-                    <h3>Backup System</h3>
-                    <p>Complete automatic backup before any modification:</p>
-                    <ul>
-                        <li>Backup of the original JSON before changes</li>
-                        <li>Support for <code>Backup = true/false</code> </li>
-                        <li><code>Backup = 1</code>: Performs backup once, not recommended</li>
-                        <li><code>Backup = 0</code>: Disables backup, same as false</li>
-                        <li>File integrity verification</li>
-                        <li>Automatic recovery in case of error</li>
-                    </ul>
+                <div class="security-item">
+                    <div class="security-icon">🛡️</div>
+                    <div class="security-content">
+                        <h3>Backup System</h3>
+                        <p>Complete automatic backup before any modification:</p>
+                        <ul>
+                            <li>Backup of the original JSON before changes</li>
+                            <li>Support for <code>Backup = true/false</code> </li>
+                            <li><code>Backup = 1</code>: Performs backup once, not recommended</li>
+                            <li><code>Backup = 0</code>: Disables backup, same as false</li>
+                            <li>File integrity verification</li>
+                            <li>Automatic recovery in case of error</li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="security-card">
-                    <span class="security-icon">🔍</span>
-                    <h3>Robust Validation</h3>
-                    <p>Multiple layers of validation to prevent errors:</p>
-                    <ul>
-                        <li>Robust error handling in file processing</li>
-                        <li>INI rule format validation</li>
-                        <li>JSON structure verification</li>
-                        <li>Early detection of corrupted files</li>
-                    </ul>
+    
+                <div class="security-item">
+                    <div class="security-icon">🔍</div>
+                    <div class="security-content">
+                        <h3>Robust Validation</h3>
+                        <p>Multiple layers of validation to prevent errors:</p>
+                        <ul>
+                            <li>Robust error handling in file processing</li>
+                            <li>INI rule format validation</li>
+                            <li>JSON structure verification</li>
+                            <li>Early detection of corrupted files</li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="security-card">
-                    <span class="security-icon">🌍</span>
-                    <h3>Unicode Compatibility</h3>
-                    <p>Full support for international characters:</p>
-                    <ul>
-                        <li>Unicode-safe handling for all character types</li>
-                        <li>UTF-8 encoding with ANSI fallbacks</li>
-                        <li>Compatibility with non-ASCII paths</li>
-                        <li>Prevention of crashes due to encoding</li>
-                    </ul>
+    
+                <div class="security-item">
+                    <div class="security-icon">🌍</div>
+                    <div class="security-content">
+                        <h3>Unicode Compatibility</h3>
+                        <p>Full support for international characters:</p>
+                        <ul>
+                            <li>Unicode-safe handling for all character types</li>
+                            <li>UTF-8 encoding with ANSI fallbacks</li>
+                            <li>Compatibility with non-ASCII paths</li>
+                            <li>Prevention of crashes due to encoding</li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="security-card">
-                    <span class="security-icon">💾</span>
-                    <h3>Memory Management</h3>
-                    <p>Optimization and security in resource handling:</p>
-                    <ul>
-                        <li>Safe memory management in all operations</li>
-                        <li>Automatic resource release</li>
-                        <li>Memory leak prevention</li>
-                        <li>Safety limits in processing</li>
-                    </ul>
+    
+                <div class="security-item">
+                    <div class="security-icon">💾</div>
+                    <div class="security-content">
+                        <h3>Memory Management</h3>
+                        <p>Optimization and security in resource handling:</p>
+                        <ul>
+                            <li>Safe memory management in all operations</li>
+                            <li>Automatic resource release</li>
+                            <li>Memory leak prevention</li>
+                            <li>Safety limits in processing</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="security-item">
+                    <div class="security-icon">👥</div>
+                    <div class="security-content">
+                        <h3>Multi-Mod Support</h3>
+                        <p>Automatic identification of various preset mods and organization to prevent bugs:</p>
+                        <ul>
+                            <li>CBBE</li>
+                            <li>3BBB</li>
+                            <li>UBE</li>
+                            <li>HIMBO</li>
+                            <li>BHUNP</li>
+                            <li>COTR</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2089,6 +2355,21 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
                         </div>
 
                         <div class="tester-card">
+                            <img src="Beta Testers/iDeadSea.png" alt="iDeadSea" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">iDeadSea</h4>
+                                <p class="tester-contribution">Beta tester for COtR and multi-language analysis</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/AdrienMassenot.png" alt="AdrienMassenot" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">AdrienMassenot</h4>
+                                <p class="tester-contribution">Thanks to his observations on the HIMBO system, which led to improvements in it</p>
+                            </div>
+                        </div>
+                        <div class="tester-card">
                             <img src="Beta Testers/Edsley.png" alt="Edsley" class="tester-avatar">
                             <div class="tester-info">
                                 <h4 class="tester-name">Edsley</h4>
@@ -2129,8 +2410,17 @@ blacklisted = PresetsFromRandomDistribution|GT+++|
                         </div>
 
                         <div class="credit-item">
-                            <h4>Lucas, OpheliaMoonlight, Thalzamar</h4>
+                            <h4>Lucas, OpheliaMoonlight, Thalzamar, iDeadSea, AdrienMassenot</h4>
                             <p>I thank you for testing the betas and giving me your respective observations across your different game versions and mod organizers. Thank you very much.</p>
+                        </div>
+                        <div class="credit-item">
+                            <h4>AdrienMassenot</h4>
+                            <p>Thanks to his cooperation with HIMBO system testing, which led to significant improvements in the male body preset distribution logic.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>iDeadSea</h4>
+                            <p>Thanks to his cooperation with multiple beta tests, he provided information from his Skyrim version in Cyrillic, with which it was decided that different Skyrim versions handle different default names for each NPC depending on the language in which the game is played, so it was decided to correct these and add new functions. Thank you.</p>
                         </div>
 
                         <div class="credit-item">
