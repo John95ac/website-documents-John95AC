@@ -1357,7 +1357,7 @@ function initializeTypewriterAnimation() {
     firstDescription.textContent = '';
     secondDescription.textContent = '';
  
-    const subtitleText = 'Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition, Compatible with CBBE, 3BA, UBE, HIMBO...';
+    const subtitleText = 'Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition, Compatible with CBBE, 3BA, UBE, HIMBO, COtR...';
     const firstDescText = 'Lightweight SKSE DLL that processes distribution rules similar to SPID (called PDA) to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time. Applies presets to NPCs, races, factions, and plugins while maintaining JSON integrity and preventing errors. In-game manual assignments via O menu always take priority. 🐈';
     const secondDescText = 'It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the \'O\' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈';
  
