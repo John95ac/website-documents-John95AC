@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMobileMenu();
 
     // Initialize enhanced features
+    // Hide all sections and show only #news by default
+    const allSections = document.querySelectorAll('.section');
+    allSections.forEach(section => section.style.display = 'none');
+    const newsSection = document.getElementById('news');
+    if (newsSection) {
+        newsSection.style.display = 'block';
+    }
     setTimeout(initializeEnhancedFeatures, 100);
 });
 
@@ -41,36 +48,32 @@ function initializeNavigation() {
             e.preventDefault();
             console.log('Navigation link clicked:', href);
 
-            const targetId = href.substring(1);
-            const targetSection = document.getElementById(targetId);
-            console.log('Target section:', targetId, !!targetSection);
-
-            if (targetSection) {
-                // Close mobile menu if open
-                closeMobileMenu();
-
-                // Calculate scroll position
-                const navbar = document.querySelector('.navbar');
-                const navHeight = navbar ? navbar.offsetHeight : 80;
-                const targetPosition = targetSection.offsetTop - navHeight - 10;
-                console.log('Scrolling to position:', targetPosition);
-
-                // Scroll to target section
-                window.scrollTo({
-                    top: Math.max(0, targetPosition),
-                    behavior: 'smooth'
-                });
-
-                // Update active link immediately
-                updateActiveNavLink(this);
-
-                // Also update after scroll completes
-                setTimeout(() => {
-                    updateActiveNavLink(this);
-                }, 800);
+            if (href === '#') {
+                // Show all sections
+                const allSections = document.querySelectorAll('.section');
+                allSections.forEach(section => section.style.display = 'block');
             } else {
-                console.error('Target section not found:', targetId);
+                // Hide all sections
+                const allSections = document.querySelectorAll('.section');
+                allSections.forEach(section => section.style.display = 'none');
+
+                // Show target section
+                const targetId = href.substring(1);
+                const targetSection = document.getElementById(targetId);
+                console.log('Target section:', targetId, !!targetSection);
+
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                } else {
+                    console.error('Target section not found:', targetId);
+                }
             }
+
+            // Close mobile menu if open
+            closeMobileMenu();
+
+            // Update active link
+            updateActiveNavLink(this);
         });
     });
 }

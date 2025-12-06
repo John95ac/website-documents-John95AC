@@ -153,7 +153,7 @@
         left: 20px;
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #8B5CF6, #6366F1);
+        background: linear-gradient(135deg, #008B8B, #006666);
         border-radius: 50%;
         cursor: pointer;
         z-index: 9999 !important; /* Below social-links-ball (9998) */
@@ -163,14 +163,14 @@
         color: white;
         font-size: 16px;
         transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        box-shadow: 0 4px 20px rgba(0, 139, 139, 0.4);
         border: 2px solid rgba(255, 255, 255, 0.3);
       }
 
       #theme-ball:hover {
-        background: linear-gradient(135deg, #7C3AED, #4F46E5);
+        background: linear-gradient(135deg, #006B6B, #004D4D);
         transform: scale(1.15);
-        box-shadow: 0 8px 35px rgba(139, 92, 246, 0.7);
+        box-shadow: 0 8px 35px rgba(0, 139, 139, 0.7);
       }
 
       #theme-panel {
@@ -195,7 +195,7 @@
       }
 
       .theme-header {
-        background: linear-gradient(135deg, #8B5CF6, #6366F1);
+        background: linear-gradient(135deg, #008B8B, #006666);
         color: white;
         padding: 20px;
         text-align: center;
@@ -278,8 +278,8 @@
       }
 
       .theme-option.selected {
-        background: rgba(139, 92, 246, 0.2);
-        border-color: #8B5CF6;
+        background: rgba(0, 139, 139, 0.2);
+        border-color: #008B8B;
       }
 
       .theme-emoji {
@@ -308,7 +308,7 @@
 
       .theme-check {
         font-size: 18px;
-        color: #8B5CF6;
+        color: #008B8B;
         opacity: 0;
         transition: opacity 0.3s ease;
       }
