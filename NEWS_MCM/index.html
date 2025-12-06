@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 John95ac Projects News</title>
+    <meta name="description" content="SKSE plugin for automated OBody preset distribution in Skyrim Special Edition">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+    <link rel="icon" type="image/x-icon" href="../images/log.ico">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: 'forest' });
+    </script>
+    <script src="Special_days/christmas-effects.js"></script>
+    <script src="Special_days/saint-patrick-effects.js"></script>
+    <script src="Special_days/easter-effects.js"></script>
+    <script src="Special_days/halloween-effects.js"></script>
+    <script src="Special_days/new-year-effects.js"></script>
+    <style>
+      details {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-16);
+        overflow: hidden;
+      }
+      summary {
+        padding: var(--space-16);
+        cursor: pointer;
+        font-weight: var(--font-weight-medium);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::after {
+        content: '▼';
+        transition: transform var(--duration-fast);
+      }
+      details[open] summary::after {
+        transform: rotate(180deg);
+      }
+      .mermaid {
+        padding: var(--space-16);
+      }
+      
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background-color: var(--color-surface);
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        width: 90%;
+        max-width: 1200px;
+        max-height: 85vh;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .close {
+        color: var(--color-gray-400);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+      }
+
+      .close:hover {
+        color: var(--color-error);
+      }
+
+      .modal-body {
+        background-color: transparent;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 0;
+      }
+
+      /* Grid layout for modal content */
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+        height: 100%;
+      }
+
+      .modal-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .modal-panel:first-child {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .modal-panel:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .modal-panel:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+      }
+
+      .modal-panel h3 {
+        color: var(--color-primary);
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        border-bottom: 2px solid var(--color-primary);
+        padding-bottom: 5px;
+      }
+
+      .modal-panel p {
+        line-height: 1.6;
+        color: var(--color-text);
+        margin-bottom: 15px;
+      }
+
+      .modal-panel pre {
+        background-color: var(--color-background);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        padding: 15px;
+        overflow-x: auto;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 0.9em;
+        line-height: 1.4;
+      }
+
+      .modal-panel code {
+        background-color: var(--color-background);
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 0.9em;
+      }
+
+      /* JSON colors - Updated */
+      .json-key { color: #10B981; font-weight: 600; }
+      .json-preset { color: #FBBF24; }
+      .json-string { color: #FBBF24; }
+      .json-number { color: #1a1aa6; }
+      .json-boolean { color: #d94949; }
+      .json-null { color: #d94949; }
+      .json-bracket { color: #ffffff; }
+      .json-comma { color: #ffffff; }
+      .json-colon { color: #ffffff; }
+      
+      /* INI syntax colors */
+      .ini-comment { color: #ffffff; }
+      .ini-rule-type { color: #00bcd4; }
+      .ini-plugin { color: #10B981; }
+      .ini-preset { color: #FBBF24; }
+      .ini-separator { color: #ffffff; }
+      .ini-equal { color: #ffffff; }
+    </style>
+    <style>
+      /* olcoreConfig specific colors */
+      .olcore-key { color: orange; font-weight: 600; }
+      .olcore-value { color: #10B981; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div id="christmas-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+<div id="saint-patrick-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+<div id="easter-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+<div id="halloween-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+<div id="new-year-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+    <!-- Navigation v2 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">📰</span>
+                <span>John95ac Projects News</span>
+                <a href="../index.html" class="nav-link" style="margin-left: 5px; text-decoration: none; color: inherit;" title="Back to Home">🏠 Home</a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
+                <li><a href="#project-schedule-outline" class="nav-link">Projects</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+
+
+
+    <!-- Acknowledgments -->
+    <section id="acknowledgments" class="section">
+        <div class="container">
+            <h2 class="section-title">Acknowledgments</h2>
+            <div class="acknowledgments-content">
+                <div class="beta-testers">
+                    <h3>Beta Testers</h3>
+                    <p>Special thanks to our dedicated beta testers who helped make this project possible:</p>
+
+                    <div class="testers-grid">
+                        <div class="tester-card">
+                            <img src="Beta Testers/Cryshy.png" alt="Cryshy" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Cryshy</h4>
+                                <p class="tester-contribution">Beta review, observation of future applications</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/IAleX.png" alt="IAleX" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">IAleX</h4>
+                                <p class="tester-contribution">Beta review</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Lucas.png" alt="Lucas" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Lucas</h4>
+                                <p class="tester-contribution">JSON analysis and observation of corrections in ini parameters</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/OpheliaMoonlight.png" alt="OpheliaMoonlight" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">OpheliaMoonlight</h4>
+                                <p class="tester-contribution">Testing Unicode support, multiple betas reviewed</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/storm12.png" alt="storm12" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">storm12</h4>
+                                <p class="tester-contribution">Mod betatester in complex mod list</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Thalzamar.png" alt="Thalzamar" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Thalzamar</h4>
+                                <p class="tester-contribution">Beta tester</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/iDeadSea.png" alt="iDeadSea" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">iDeadSea</h4>
+                                <p class="tester-contribution">Beta tester for COtR and multi-language analysis</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/AdrienMassenot.png" alt="AdrienMassenot" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">AdrienMassenot</h4>
+                                <p class="tester-contribution">Thanks to his observations on the HIMBO system, which led to improvements in it</p>
+                            </div>
+                        </div>
+                        <div class="tester-card">
+                            <img src="Beta Testers/Edsley.png" alt="Edsley" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Edsley</h4>
+                                <p class="tester-contribution">Advisor on templates and free web addons</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/Triberzis.png" alt="Triberzis" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">Triberzis</h4>
+                                <p class="tester-contribution">Advice/ideas for system modes and keys</p>
+                            </div>
+                        </div>
+
+                        <div class="tester-card">
+                            <img src="Beta Testers/djdunha.png" alt="djdunha" class="tester-avatar">
+                            <div class="tester-info">
+                                <h4 class="tester-name">djdunha</h4>
+                                <p class="tester-contribution">Beta tester for the GOG platform, communicated through Nexus.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="credits">
+                    <h3>Additional Credits</h3>
+                    <div class="credits-list">
+                        <div class="credit-item">
+                            <h4>Cryshy</h4>
+                            <p>Beta review: UBE users who with their help I managed to better understand the world of this type of bodies. Thanks to their observations and ideas I implemented the automation system for UBE presets in the blacklist, and default application to UBE races. With this, NPCs with UBE will no longer appear skinny by default, but will be able to have UBE presets for them from the start. Thank you very much.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Triberzis</h4>
+                            <p>Thanks to your observation about the use of keys, the system has been modified and implemented with a more comprehensive preset search system based on the presets installed in the player's game. Thank you very much for the idea, which has been implemented in the latest version.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Lucas, OpheliaMoonlight, Thalzamar, iDeadSea, AdrienMassenot</h4>
+                            <p>I thank you for testing the betas and giving me your respective observations across your different game versions and mod organizers. Thank you very much.</p>
+                        </div>
+                        <div class="credit-item">
+                            <h4>AdrienMassenot</h4>
+                            <p>Thanks to his cooperation with HIMBO system testing, which led to significant improvements in the male body preset distribution logic.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>iDeadSea</h4>
+                            <p>Thanks to his cooperation with multiple beta tests, he provided information from his Skyrim version in Cyrillic, with which it was decided that different Skyrim versions handle different default names for each NPC depending on the language in which the game is played, so it was decided to correct these and add new functions. Thank you.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>CommonLibSSE NG</h4>
+                            <p>Fundamental framework for developing modern SKSE plugins.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>SKSE Team</h4>
+                            <p>For the continuous development and support of the Skyrim Script Extender.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>OBody NG Team</h4>
+                            <p>For creating the base that makes this functionality possible.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Modding Community</h4>
+                            <p>For the constant feedback and ideas for improvements.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Music Skyrim</h4>
+                            <p>Thanks to the original authors of Skyrim for the music played directly from YouTube.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>Flowchart, Whiteboard and Graphics</h4>
+                            <p>Thanks to <a href="https://mermaid.js.org/">Mermaid</a>, <a href="https://excalidraw.com/">Excalidraw</a> and <a href="https://time.graphics/">Graphics</a> for being free and very useful tools for drawing and creating diagrams.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="project-schedule-outline" class="section bg-celeste">
+        <div class="container">
+            <h2 class="section-title">Project Schedule Outline</h2>
+            <div class="image-frame" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 10px; background: rgba(0, 0, 0, 0.1); margin: 20px 0;">
+                <img src="../images/0001-Gant.webp" alt="Project Progress" style="width: 100%; height: auto; border-radius: 4px;">
+            </div>
+            <p style="text-align: center; margin: 20px 0;">
+                <span style="font-size: 1em;">This is the progress of several projects I'm working on this year. I'll be uploading them as they are concluded, thanks to everyone who supports me with comments,</span><br>
+                <span style="font-size: 1.2em; font-weight: 600;"></span><br>
+                <span style="font-size: 1.2em; font-weight: 600;">thanks for being so patient 😿</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Final Note -->
+    <section class="section final-note-section bg-celeste">
+        <div class="container">
+            <div class="final-note">
+                <h3>Final Note</h3>
+                <p>
+                    This project is open source MIT and available to the community. Contributions, bug reports, and suggestions are always welcome. Together we can make Skyrim a more welcoming and comfortable place.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <span>📰</span>
+                        <span>John95ac Projects News</span>
+                    </div>
+                    <p>© 2025 John1995ac. MIT License. Open source project Web.</p>
+                </div>
+                <ul class="icons">
+                    <li><a href="https://github.com/John95ac" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+                    <li><a href="#" class="icon brands alt fa-discord"><span class="label">Discord</span></a></li>
+                    <li><a href="https://next.nexusmods.com/profile/John1995ac" class="icon solid alt fa-expand-arrows-alt"><span class="label">Nexus Mods</span></a></li>
+                    <li><a href="https://www.patreon.com/John95ac" class="icon brands alt fa-patreon"><span class="label">Patreon</span></a></li>
+                    <li><a href="https://ko-fi.com/john95ac" class="icon solid alt fa-mug-hot"><span class="label">Ko-fi</span></a></li>
+                </ul>
+                <div class="footer-right">
+                    <p>Developed with ❤️ for the Skyrim modding community</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="theme-ball.js"></script>
+    <script src="particles.js"></script>
+    
+    <script>
+      // Modal functions
+      function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+        
+        // Apply syntax highlighting to INI and JSON in the opened modal
+        const modal = document.getElementById(modalId);
+        
+        // Format INI code
+        const iniElements = modal.querySelectorAll('.ini-code');
+        iniElements.forEach(el => {
+          if (!el.getAttribute('data-formatted')) {
+            el.innerHTML = formatINI(el.textContent);
+            el.setAttribute('data-formatted', 'true');
+          }
+        });
+        
+        // Format JSON code
+        const jsonElements = modal.querySelectorAll('.json-code');
+        jsonElements.forEach(el => {
+          if (!el.getAttribute('data-formatted')) {
+            el.innerHTML = formatJSON(el.textContent);
+            el.setAttribute('data-formatted', 'true');
+          }
+        });
+      }
+      
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+      
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.style.display = "none";
+        }
+      }
+      
+      // Function to format INI with colors
+      function formatINI(iniText) {
+        let lines = iniText.split('\n');
+        let formatted = [];
+        
+        for (let line of lines) {
+          // Comments (white)
+          if (line.trim().startsWith(';')) {
+            formatted.push('<span class="ini-comment">' + escapeHtml(line) + '</span>');
+          }
+          // Rule lines
+          else if (line.includes('=')) {
+            let parts = line.split('=');
+            if (parts.length >= 2) {
+              let ruleType = parts[0].trim(); // e.g., npcPluginFemale
+              let rest = parts.slice(1).join('=').trim(); // e.g., Male_follower.esp|Male Body Preset 1,Male Body Preset 2|
+              
+              // Split rest by |
+              let ruleParts = rest.split('|');
+              
+              let formattedLine = '<span class="ini-rule-type">' + escapeHtml(ruleType) + '</span>';
+              formattedLine += '<span class="ini-equal"> = </span>';
+              
+              if (ruleParts.length >= 1) {
+                // Plugin/Element (green #10B981)
+                formattedLine += '<span class="ini-plugin">' + escapeHtml(ruleParts[0]) + '</span>';
+              }
+              
+              if (ruleParts.length >= 2) {
+                formattedLine += '<span class="ini-separator">|</span>';
+                // Presets (yellow #FBBF24)
+                formattedLine += '<span class="ini-preset">' + escapeHtml(ruleParts[1]) + '</span>';
+              }
+              
+              if (ruleParts.length >= 3) {
+                formattedLine += '<span class="ini-separator">|</span>';
+                // Mode (white)
+                formattedLine += '<span class="ini-separator">' + escapeHtml(ruleParts[2]) + '</span>';
+              }
+              
+              formatted.push(formattedLine);
+            } else {
+              formatted.push(escapeHtml(line));
+            }
+          }
+          // Empty or other lines
+          else {
+            formatted.push(escapeHtml(line));
+          }
+        }
+        
+        return formatted.join('\n');
+      }
+      
+      // Function to format JSON with colors
+      function formatJSON(json) {
+        let formatted = json
+          // First color all main keys green (#10B981)
+          .replace(/(\s*)(\"[^\"]+\")(?=\s*:)/g, '$1<span class="json-key">$2</span>')
+          // Color string values (presets) yellow (#FBBF24)
+          .replace(/:\s*\"([^\"]+)\"/g, ': <span class="json-preset">"$1"</span>')
+          // Color numbers
+          .replace(/:\s*(\d+)/g, ': <span class="json-number">$1</span>')
+          // Color booleans
+          .replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>')
+          // Color null
+          .replace(/:\s*null/g, ': <span class="json-null">null</span>');
+
+        // Special handling for olcoreConfig block
+        formatted = formatted.replace(
+          /("olcoreConfig"\s*:\s*\{[^}]*\})/g,
+          (match) => {
+            let olcoreBlock = match;
+            // Re-color keys within olcoreConfig to orange
+            olcoreBlock = olcoreBlock.replace(
+              /(\s*)<span class="json-key">(\"[^\"]+\")<\/span>(?=\s*:)/g,
+              (keyMatch, p1, p2) => {
+                if (p2 === '"olcoreConfig"') {
+                  return keyMatch; // Keep green for main key
+                }
+                return `${p1}<span class="olcore-key">${p2}</span>`;
+              }
+            );
+            // Re-color string values within olcoreConfig to green
+            olcoreBlock = olcoreBlock.replace(
+              /:\s*<span class="json-preset">"([^\"]+)"<\/span>/g,
+              (valueMatch, p1) => {
+                // Check if we're inside olcoreConfig (simple heuristic)
+                return `: <span class="olcore-value">"${p1}"</span>`;
+              }
+            );
+            return olcoreBlock;
+          }
+        );
+
+        return formatted;
+      }
+      
+      // Escape HTML helper
+      function escapeHtml(text) {
+        const map = {
+          '&': '&',
+          '<': '<',
+          '>': '>',
+          '"': '"',
+          "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+      }
+      
+      // Apply formatting on page load to the INI editor
+      document.addEventListener('DOMContentLoaded', function() {
+        const iniEditor = document.getElementById('iniEditor');
+        if (iniEditor) {
+          const originalINI = iniEditor.value;
+          const formattedINI = formatINI(originalINI);
+          
+          // Create a div to display formatted content
+          const displayDiv = document.createElement('pre');
+          displayDiv.className = 'ini-editor';
+          displayDiv.innerHTML = formattedINI;
+          displayDiv.style.fontFamily = "'Source Code Pro', monospace";
+          displayDiv.style.whiteSpace = 'pre-wrap';
+          displayDiv.style.backgroundColor = 'var(--color-background)';
+          displayDiv.style.padding = '15px';
+          displayDiv.style.borderRadius = 'var(--radius-sm)';
+          displayDiv.style.border = '1px solid var(--color-border)';
+          displayDiv.style.fontSize = '0.9em';
+          displayDiv.style.lineHeight = '1.4';
+          displayDiv.style.overflow = 'auto';
+          
+          iniEditor.style.display = 'none';
+          iniEditor.parentNode.insertBefore(displayDiv, iniEditor);
+        }
+      });
+    </script>
+</body>
+</html>
