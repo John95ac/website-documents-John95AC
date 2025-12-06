@@ -103,8 +103,8 @@
         position: fixed !important;
         bottom: 70px !important;
         left: 20px !important;
-        width: 40px !important;
-        height: 40px !important;
+        width: 32px !important;
+        height: 32px !important;
         z-index: 9999 !important;
         display: flex !important;
         align-items: center !important;
@@ -151,8 +151,8 @@
         position: fixed;
         bottom: 70px; /* Above the audio sphere */
         left: 20px;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         background: linear-gradient(135deg, #008B8B, #006666);
         border-radius: 50%;
         cursor: pointer;
@@ -161,7 +161,7 @@
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 16px;
+        font-size: 14px;
         transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         box-shadow: 0 4px 20px rgba(0, 139, 139, 0.4);
         border: 2px solid rgba(255, 255, 255, 0.3);
@@ -175,7 +175,7 @@
 
       #theme-panel {
         position: fixed;
-        bottom: 120px; /* Above the audio sphere */
+        bottom: 60px; /* Above the audio sphere */
         left: 20px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;
@@ -336,9 +336,9 @@
         }
 
         #theme-ball {
-          width: 45px;
-          height: 45px;
-          font-size: 20px;
+          width: 36px;
+          height: 36px;
+          font-size: 16px;
         }
       }
     `;
