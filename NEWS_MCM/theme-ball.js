@@ -105,7 +105,7 @@
         left: 20px !important;
         width: 32px !important;
         height: 32px !important;
-        z-index: 9999 !important;
+        z-index: 999 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -156,7 +156,7 @@
         background: linear-gradient(135deg, #008B8B, #006666);
         border-radius: 50%;
         cursor: pointer;
-        z-index: 9999 !important; /* Below social-links-ball (9998) */
+        z-index: 999 !important; /* Low z-index to avoid overlapping with tabs or modals */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -179,7 +179,7 @@
         left: 20px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;
-        z-index: 9998; /* Above the audio sphere */
+        z-index: 999; /* Above the audio sphere */
         display: none;
         min-width: 280px;
         max-width: 350px;
@@ -246,7 +246,7 @@
         display: flex;
         align-items: center;
         padding: 15px;
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(0, 0, 0, 1);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         cursor: pointer;
@@ -271,14 +271,14 @@
       }
 
       .theme-option:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 1);
         border-color: rgba(255, 255, 255, 0.3);
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
 
       .theme-option.selected {
-        background: rgba(0, 139, 139, 0.2);
+        background: rgba(0, 0, 0, 1);
         border-color: #008B8B;
       }
 
@@ -329,16 +329,30 @@
       /* Responsive */
       @media (max-width: 768px) {
         #theme-panel {
+          top: 60px;
+          bottom: auto;
           left: 10px;
           right: 10px;
           min-width: auto;
           max-width: none;
+          z-index: 999;
         }
 
         #theme-ball {
           width: 36px;
           height: 36px;
           font-size: 16px;
+          z-index: 999;
+        }
+
+        .theme-option {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .theme-emoji {
+          margin-right: 0;
+          margin-bottom: 10px;
         }
       }
     `;
@@ -358,11 +372,11 @@
       themeElement.style.animationDelay = `${index * 0.1}s`;
 
       themeElement.innerHTML = `
-        <div class="theme-emoji">${theme.emoji}</div>
         <div class="theme-info">
           <h4 class="theme-name">${theme.name}</h4>
           <p class="theme-desc">${key === 'Normal' ? 'Default theme' : `Festive ${theme.name.toLowerCase()} theme`}</p>
         </div>
+        <div class="theme-emoji">${theme.emoji}</div>
         <div class="theme-check">✓</div>
       `;
 

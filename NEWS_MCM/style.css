@@ -480,11 +480,25 @@ pre code {
     font-size: var(--font-size-md);
     line-height: 1.5;
     color: var(--color-text);
-    background-color: var(--color-surface);
+    background-color: transparent;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-base);
     transition: border-color var(--duration-fast) var(--ease-standard),
                 box-shadow var(--duration-fast) var(--ease-standard);
+    position: relative;
+}
+
+.form-control::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.005);
+    filter: blur(25px);
+    z-index: -1;
+    border-radius: inherit;
 }
 
 textarea.form-control {
@@ -1070,8 +1084,10 @@ body {
 }
 
 .mode-code {
-    background-color: var(--color-bg-4); /* Rojo por defecto */
+    background-color: rgba(0, 0, 0, 0.001);
+    filter: blur(50px);
     color: var(--color-text);
+    z-index: -1;
     padding: var(--space-8) var(--space-12);
     border-radius: var(--radius-sm);
     font-family: var(--font-family-mono);

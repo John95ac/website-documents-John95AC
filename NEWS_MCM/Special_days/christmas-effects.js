@@ -30,8 +30,9 @@
             emoji.style.position = 'absolute';
             emoji.style.left = Math.random() * 100 + 'vw';
             emoji.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-            emoji.style.opacity = '0.2';
-            emoji.style.filter = 'blur(1px)';
+            emoji.style.opacity = '0.05';
+            emoji.style.filter = 'blur(0.2px)';
+            emoji.style.zIndex = '-1';
             emoji.style.animation = 'christmas-fall 10s linear forwards';
             container.appendChild(emoji);
 
@@ -45,9 +46,9 @@
         fixedChristmasTree.style.bottom = '-10px';
         fixedChristmasTree.style.right = '20px';
         fixedChristmasTree.style.fontSize = '4rem';
-        fixedChristmasTree.style.opacity = '0.3';
-        fixedChristmasTree.style.filter = 'blur(0.5px)';
-        fixedChristmasTree.style.zIndex = '1';
+        fixedChristmasTree.style.opacity = '0.05';
+        fixedChristmasTree.style.filter = 'blur(0.2px)';
+        fixedChristmasTree.style.zIndex = '-1';
         fixedChristmasTree.style.pointerEvents = 'none';
         container.appendChild(fixedChristmasTree);
 // Agregar segundo emoji fijo de Navidad en esquina inferior izquierda
@@ -57,9 +58,9 @@ fixedChristmasTreeLeft.style.position = 'fixed';
 fixedChristmasTreeLeft.style.bottom = '-25px';
 fixedChristmasTreeLeft.style.left = '10px';
 fixedChristmasTreeLeft.style.fontSize = '8rem';
-fixedChristmasTreeLeft.style.opacity = '0.3';
-fixedChristmasTreeLeft.style.filter = 'blur(0.5px)';
-fixedChristmasTreeLeft.style.zIndex = '1';
+fixedChristmasTreeLeft.style.opacity = '0.05';
+fixedChristmasTreeLeft.style.filter = 'blur(0.2px)';
+fixedChristmasTreeLeft.style.zIndex = '-1';
 fixedChristmasTreeLeft.style.pointerEvents = 'none';
 container.appendChild(fixedChristmasTreeLeft);
 

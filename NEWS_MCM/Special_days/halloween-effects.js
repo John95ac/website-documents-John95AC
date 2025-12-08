@@ -29,8 +29,9 @@
             emoji.style.position = 'absolute';
             emoji.style.left = Math.random() * 100 + 'vw';
             emoji.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-            emoji.style.opacity = '0.2';
-            emoji.style.filter = 'blur(1px)';
+            emoji.style.opacity = '0.05';
+            emoji.style.filter = 'blur(0.2px)';
+            emoji.style.zIndex = '-1';
             emoji.style.animation = 'halloween-fall 10s linear forwards';
             container.appendChild(emoji);
 
@@ -44,23 +45,23 @@
         fixedHalloween.style.bottom = '-10px';
         fixedHalloween.style.right = '20px';
         fixedHalloween.style.fontSize = '4rem';
-        fixedHalloween.style.opacity = '0.3';
-        fixedHalloween.style.filter = 'blur(0.5px)';
-        fixedHalloween.style.zIndex = '1';
+        fixedHalloween.style.opacity = '0.05';
+        fixedHalloween.style.filter = 'blur(0.2px)';
+        fixedHalloween.style.zIndex = '-1';
         fixedHalloween.style.pointerEvents = 'none';
         container.appendChild(fixedHalloween);
         // Agregar segundo emoji fijo de Halloween en esquina inferior izquierda
-        const fixedHalloweenLeft = document.createElement('div');
-        fixedHalloweenLeft.textContent = '👻';
-        fixedHalloweenLeft.style.position = 'fixed';
-        fixedHalloweenLeft.style.bottom = '-25px';
-        fixedHalloweenLeft.style.left = '10px';
-        fixedHalloweenLeft.style.fontSize = '8rem';
-        fixedHalloweenLeft.style.opacity = '0.3';
-        fixedHalloweenLeft.style.filter = 'blur(0.5px)';
-        fixedHalloweenLeft.style.zIndex = '1';
-        fixedHalloweenLeft.style.pointerEvents = 'none';
-        container.appendChild(fixedHalloweenLeft);
+                const fixedHalloweenLeft = document.createElement('div');
+                fixedHalloweenLeft.textContent = '👻';
+                fixedHalloweenLeft.style.position = 'fixed';
+                fixedHalloweenLeft.style.bottom = '-25px';
+                fixedHalloweenLeft.style.left = '10px';
+                fixedHalloweenLeft.style.fontSize = '8rem';
+                fixedHalloweenLeft.style.opacity = '0.05';
+                fixedHalloweenLeft.style.filter = 'blur(0.2px)';
+                fixedHalloweenLeft.style.zIndex = '-1';
+                fixedHalloweenLeft.style.pointerEvents = 'none';
+                container.appendChild(fixedHalloweenLeft);
 
 
         // CSS para animación
