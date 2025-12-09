@@ -2,6 +2,7 @@
   {
     "update_title": "Initial Update",
     "version": "1.0.0",
+    "update_type": "soft",
     "description": "This update includes basic improvements, minor fixes, and preparation for future features.",
     "details": {
       "date": "2025-11-29",
@@ -15,6 +16,7 @@
   {
     "update_title": "Initial Update2",
     "version": "1.2.0",
+    "update_type": "soft",
     "description": "This update includes basic improvements, minor fixes, and preparation for future features.",
     "details": {
       "date": "2025-11-29",
