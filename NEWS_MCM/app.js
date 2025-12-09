@@ -13,13 +13,17 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMobileMenu();
 
     // Initialize enhanced features
-    // Hide all sections and show only #news by default
+    // Hide all sections except news by default
     const allSections = document.querySelectorAll('.section');
-    allSections.forEach(section => section.style.display = 'none');
     const newsSection = document.getElementById('news');
-    if (newsSection) {
-        newsSection.style.display = 'block';
-    }
+    
+    allSections.forEach(section => {
+        if (section.id === 'news') {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
     setTimeout(initializeEnhancedFeatures, 100);
 });
 
@@ -53,27 +57,30 @@ function initializeNavigation() {
                 const allSections = document.querySelectorAll('.section');
                 allSections.forEach(section => section.style.display = 'block');
             } else {
-                // Hide all sections
+                // 1. PRIMERO: Ocultar TODAS las secciones (para que no se amontonen)
                 const allSections = document.querySelectorAll('.section');
                 allSections.forEach(section => section.style.display = 'none');
 
-                // Show target section
+                // 2. SEGUNDO: Mostrar la sección que quieres ver
                 const targetId = href.substring(1);
                 const targetSection = document.getElementById(targetId);
-                console.log('Target section:', targetId, !!targetSection);
 
                 if (targetSection) {
                     targetSection.style.display = 'block';
-                } else {
-                    console.error('Target section not found:', targetId);
+                    
+                    // 3. TRUCO FINAL: Si es la sección del mapa, forzar recarga
+                    if (targetId === 'project-schedule-outline') {
+                        const iframe = targetSection.querySelector('iframe');
+                        if (iframe) {
+                            iframe.src = iframe.src;
+                        }
+                    }
                 }
+                
+                // Cerrar menú móvil
+                closeMobileMenu();
+                updateActiveNavLink(this);
             }
-
-            // Close mobile menu if open
-            closeMobileMenu();
-
-            // Update active link
-            updateActiveNavLink(this);
         });
     });
 }
