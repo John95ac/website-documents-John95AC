@@ -1420,7 +1420,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-20);
-    margin-top: var(--space-16);
+    margin-top: 0;
 }
 
 .tester-card {
@@ -2242,23 +2242,196 @@ body {
     display: none;
 }
 
-/* Theme Selector button positioning */
-#theme-ball {
-    top: calc(100vh - 50px) !important;
-    bottom: auto !important;
+/* Theme Selector button positioning - Removed to let JS control it */
+
+#news {
+    padding-top: 80px;
 }
 
-/* News section styles */
-#news {
-    padding-top: 120px;
-}
-/* News section styles */
 #news .section-title {
     padding-top: 120px;
 }
 
 #news .tester-card {
     margin-bottom: 20px;
+}
+
+.news-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 10px;
+}
+
+.news-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.news-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-teal-300);
+}
+
+.news-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.news-meta .news-label {
+    color: var(--color-primary);
+}
+
+.news-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    margin-bottom: 0;
+}
+
+.news-media {
+    min-width: 0;
+}
+
+.news-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--space-8);
+    overflow-x: auto;
+    padding-bottom: var(--space-4);
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+}
+
+.news-thumb {
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-card-border);
+    background-color: rgba(var(--color-teal-500-rgb), 0.08);
+    flex: 0 0 calc(50% - var(--space-8));
+    max-width: calc(50% - var(--space-8));
+    min-width: 120px;
+    scroll-snap-align: start;
+}
+
+.news-thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
+    transition: transform var(--duration-normal) var(--ease-standard);
+}
+
+.news-thumb:hover img {
+    transform: scale(1.05);
+}
+
+.news-content {
+    min-width: 0;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.news-lead {
+    font-size: var(--font-size-lg);
+    color: var(--color-text);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-8);
+}
+
+.news-list {
+    margin: 0 0 var(--space-8) 0;
+    padding-left: 1.25rem;
+}
+
+.news-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    margin-top: var(--space-16);
+}
+
+/* Custom Scrollbar for Gallery */
+.news-gallery::-webkit-scrollbar {
+    height: 6px;
+}
+
+.news-gallery::-webkit-scrollbar-track {
+    background: rgba(var(--color-teal-500-rgb), 0.1);
+    border-radius: var(--radius-full);
+}
+
+.news-gallery::-webkit-scrollbar-thumb {
+    background: var(--color-teal-500);
+    border-radius: var(--radius-full);
+}
+
+.news-gallery::-webkit-scrollbar-thumb:hover {
+    background: var(--color-teal-600);
+}
+
+.news-btn {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 768px) {
+    .news-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+#newsImageModalImg {
+    max-width: 90vw;
+    max-height: 85vh;
+    display: block;
+    margin: 0 auto;
+    border-radius: var(--radius-md);
+}
+
+/* Modal Animations */
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes modalZoomIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes modalZoomOut {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.95); opacity: 0; }
+}
+
+.modal.show {
+    display: block;
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.modal.hiding {
+    display: block;
+    animation: modalFadeOut 0.3s ease-out forwards;
+}
+
+.modal.show .modal-content {
+    animation: modalZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal.hiding .modal-content {
+    animation: modalZoomOut 0.3s ease-in forwards;
 }
 
 #acknowledgments {
@@ -2294,3 +2467,5 @@ body {
     border-radius: 8px;
     display: block;
 }
+
+

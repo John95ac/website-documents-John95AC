@@ -101,8 +101,8 @@
     fallbackStyle.textContent = `
       #theme-ball {
         position: fixed !important;
-        bottom: 70px !important;
-        left: 20px !important;
+        bottom: 75px !important;
+        left: 15px !important;
         width: 32px !important;
         height: 32px !important;
         z-index: 999 !important;
@@ -149,8 +149,8 @@
     style.textContent = `
       #theme-ball {
         position: fixed;
-        bottom: 70px; /* Above the audio sphere */
-        left: 20px;
+        bottom: 75px; /* Above the audio sphere */
+        left: 15px;
         width: 32px;
         height: 32px;
         background: linear-gradient(135deg, #008B8B, #006666);
@@ -175,8 +175,8 @@
 
       #theme-panel {
         position: fixed;
-        bottom: 60px; /* Above the audio sphere */
-        left: 20px;
+        bottom: 65px; /* Above the audio sphere */
+        left: 15px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;
         z-index: 999; /* Above the audio sphere */
