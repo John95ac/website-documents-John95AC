@@ -1,29 +1,15 @@
 [
   {
-    "update_title": "Initial Update",
-    "version": "1.0.0",
+    "update_title": "OBody NG PDA Assistance official release",
+    "version": "6.0.0",
     "update_type": "hard",
-    "description": "This update includes basic improvements, minor fixes, and preparation for future features.",
+    "description": "First public release of OBody NG PDA Assistance, which was in development for 3 months.",
     "details": {
-      "date": "2025-11-29",
+      "date": "2025-12-19",
       "changes": [
-        "System optimization",
-        "Bug fixes",
-        "Stability improvements"
-      ]
-    }
-  },
-  {
-    "update_title": "Initial Update2",
-    "version": "1.2.0",
-    "update_type": "hard",
-    "description": "This update includes basic improvements, minor fixes, and preparation for future features.",
-    "details": {
-      "date": "2025-11-29",
-      "changes": [
-        "System optimization",
-        "Bug fixes",
-        "Stability improvements"
+        "Base version of the project, with almost all functions included",
+        "Tested by beta testers, in different languages",
+        "Aspects such as it not yet being compatible with Linux will be reviewed; next year it will be compatible"
       ]
     }
   }

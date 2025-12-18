@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // INI Simulator functionality
     initializeINISimulator();
 
+    initializeFactionPicker();
+
     // Scroll spy for navigation
     initializeScrollSpy();
 
@@ -305,6 +307,27 @@ function initializeINISimulator() {
     console.log('INI Simulator initialized');
 
     // Use global permanentRules
+
+    function setRuleTypeOptionTriangleVisible(visible) {
+        const options = Array.from(ruleTypeSelect.options || []);
+        options.forEach(option => {
+            if (!option.dataset.baseText) option.dataset.baseText = option.textContent || '';
+            const baseText = option.dataset.baseText;
+            if (visible && (option.value === 'blacklisted' || option.value === 'outfits')) {
+                option.textContent = `${baseText} ▶`;
+            } else {
+                option.textContent = baseText;
+            }
+        });
+    }
+
+    setRuleTypeOptionTriangleVisible(false);
+    ['pointerdown', 'mousedown', 'focus'].forEach(eventName => {
+        ruleTypeSelect.addEventListener(eventName, () => setRuleTypeOptionTriangleVisible(true));
+    });
+    ['blur', 'change'].forEach(eventName => {
+        ruleTypeSelect.addEventListener(eventName, () => setRuleTypeOptionTriangleVisible(false));
+    });
 
     // Sample data for quick fills
     const sampleData = {
@@ -850,6 +873,207 @@ function initializeINISimulator() {
     // End of Mode Level Filter System
 }
 
+function initializeFactionPicker() {
+    const factionSearch = document.getElementById('factionSearch');
+    const factionList = document.getElementById('factionList');
+    const factionPickerStatus = document.getElementById('factionPickerStatus');
+    const factionPickerTitle = document.getElementById('factionPickerTitle');
+    const factionPickerSummary = document.querySelector('.faction-picker-summary');
+    const factionPickerPopover = document.getElementById('factionPickerPopover');
+    const ruleTypeSelect = document.getElementById('ruleType');
+    const elementValueInput = document.getElementById('elementValueInput');
+
+    if (!factionSearch || !factionList || !factionPickerStatus || !factionPickerTitle || !factionPickerSummary || !factionPickerPopover || !ruleTypeSelect || !elementValueInput) {
+        return;
+    }
+
+    let factions = [];
+    let filtered = [];
+    let selectedEdid = '';
+
+    function normalizeText(value) {
+        return (value || '').toString().toLowerCase();
+    }
+
+    function parseCsvRow(line) {
+        const row = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+
+            if (ch === '"') {
+                const next = line[i + 1];
+                if (inQuotes && next === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (ch === ',' && !inQuotes) {
+                row.push(current);
+                current = '';
+                continue;
+            }
+
+            current += ch;
+        }
+
+        row.push(current);
+        return row;
+    }
+
+    function render(items) {
+        factionList.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+
+        items.forEach(faction => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'faction-item' + (faction.edid === selectedEdid ? ' selected' : '');
+            button.setAttribute('role', 'option');
+
+            const edidSpan = document.createElement('span');
+            edidSpan.className = 'faction-edid';
+            edidSpan.textContent = faction.edid;
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'faction-name';
+            nameSpan.textContent = faction.name || '—';
+
+            button.appendChild(edidSpan);
+            button.appendChild(nameSpan);
+
+            button.addEventListener('click', () => {
+                if (ruleTypeSelect.value === 'raceFemale' || ruleTypeSelect.value === 'raceMale' || ruleTypeSelect.value === 'blacklisted' || ruleTypeSelect.value === 'outfits') {
+                    ruleTypeSelect.value = 'factionFemale';
+                    ruleTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                selectedEdid = faction.edid;
+                elementValueInput.value = faction.edid;
+                elementValueInput.focus();
+                elementValueInput.dispatchEvent(new Event('input', { bubbles: true }));
+                elementValueInput.dispatchEvent(new Event('change', { bubbles: true }));
+                render(filtered);
+            });
+
+            fragment.appendChild(button);
+        });
+
+        factionList.appendChild(fragment);
+        factionPickerStatus.textContent = `${items.length} / ${factions.length}`;
+    }
+
+    function applyFilter() {
+        const q = normalizeText(factionSearch.value).trim();
+        if (!q) {
+            filtered = factions;
+        } else {
+            filtered = factions.filter(f => {
+                return normalizeText(f.edid).includes(q) || normalizeText(f.name).includes(q);
+            });
+        }
+
+        render(filtered);
+    }
+
+    factionSearch.addEventListener('input', applyFilter);
+
+    let isPopoverVisible = false;
+
+    function positionPopover(evt) {
+        const offsetX = 14;
+        const offsetY = 14;
+        const viewportPadding = 12;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const rect = factionPickerPopover.getBoundingClientRect();
+
+        let left = evt.clientX + offsetX;
+        let top = evt.clientY + offsetY;
+
+        if (left + rect.width + viewportPadding > vw) {
+            left = Math.max(viewportPadding, evt.clientX - rect.width - offsetX);
+        }
+        if (top + rect.height + viewportPadding > vh) {
+            top = Math.max(viewportPadding, evt.clientY - rect.height - offsetY);
+        }
+
+        factionPickerPopover.style.left = `${left}px`;
+        factionPickerPopover.style.top = `${top}px`;
+    }
+
+    factionPickerSummary.addEventListener('mouseenter', (evt) => {
+        isPopoverVisible = true;
+        factionPickerPopover.style.display = 'block';
+        positionPopover(evt);
+    });
+
+    factionPickerSummary.addEventListener('mousemove', (evt) => {
+        if (!isPopoverVisible) return;
+        positionPopover(evt);
+    });
+
+    factionPickerSummary.addEventListener('mouseleave', () => {
+        isPopoverVisible = false;
+        factionPickerPopover.style.display = 'none';
+    });
+
+    function loadFromCsvLines(lines) {
+        const safeLines = (lines || []).filter(Boolean);
+        if (safeLines.length <= 1) {
+            factionPickerStatus.textContent = 'Failed to load factions list';
+            return;
+        }
+
+        const factionMap = new Map();
+        for (let i = 1; i < safeLines.length; i++) {
+            const row = parseCsvRow(safeLines[i]);
+            const edid = (row[0] || '').trim();
+            const name = (row[1] || '').trim();
+            if (!edid) continue;
+
+            const existing = factionMap.get(edid);
+            if (!existing) {
+                factionMap.set(edid, { edid, name });
+            } else if (!existing.name && name) {
+                factionMap.set(edid, { edid, name });
+            }
+        }
+
+        factions = Array.from(factionMap.values()).sort((a, b) => {
+            return a.edid.localeCompare(b.edid, undefined, { sensitivity: 'base' });
+        });
+
+        filtered = factions;
+        factionPickerTitle.textContent = `⚔️ Faction From CSV Base Game - ${factions.length} total`;
+        render(filtered);
+    }
+
+    const embeddedLines = Array.isArray(window.OBODY_PDA_FACTIONS_CSV_LINES) ? window.OBODY_PDA_FACTIONS_CSV_LINES : null;
+    if (embeddedLines && embeddedLines.length > 1) {
+        loadFromCsvLines(embeddedLines);
+        return;
+    }
+
+    fetch('AllFactions_EDID_Name.csv', { cache: 'no-store' })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+            return res.text();
+        })
+        .then(text => loadFromCsvLines(text.split(/\r?\n/)))
+        .catch(() => {
+            factionPickerStatus.textContent = 'Failed to load factions list';
+        });
+}
+
 /**
  * Debounce function to limit rapid function calls
  */
@@ -1358,7 +1582,9 @@ function initializeTypewriterAnimation() {
     secondDescription.textContent = '';
  
     const subtitleText = 'Addition to OBody NG for Automated Preset Distribution for UBE and CBBE, distribution manager and many more functions for Skyrim Special Edition, Compatible with CBBE, 3BA, UBE, HIMBO, COtR...';
-    const firstDescText = 'Lightweight SKSE DLL that processes distribution rules similar to SPID (called PDA) to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time. Applies presets to NPCs, races, factions, and plugins while maintaining JSON integrity and preventing errors. In-game manual assignments via O menu always take priority. 🐈';
+    const firstDescLinkUrl = 'https://www.nexusmods.com/skyrimspecialedition/mods/159128';
+    const firstDescLinkText = 'Lightweight SKSE DLL that processes distribution rules similar to SPID (called PDA)';
+    const firstDescText = `${firstDescLinkText} to automatically manage the OBody_presetDistributionConfig.json file without direct intervention, avoiding human errors and reading time. Applies presets to NPCs, races, factions, and plugins while maintaining JSON integrity and preventing errors. In-game manual assignments via O menu always take priority. 🐈`;
     const secondDescText = 'It allows applying predefined presets for NPCs, races, factions, and complete plugins. If you decide to apply a different preset in-game using the \'O\' menu, this will take precedence over the INI modification, so there are no configuration issues. 🐈';
  
     // Typewriter function
@@ -1383,6 +1609,8 @@ function initializeTypewriterAnimation() {
         // Small delay before starting first description
         setTimeout(() => {
             typeWriter(firstDescription, firstDescText, 8, () => {
+                const firstDescRestText = firstDescText.slice(firstDescLinkText.length);
+                firstDescription.innerHTML = `<a href="${firstDescLinkUrl}" target="_blank" rel="noopener noreferrer">${firstDescLinkText}</a>${firstDescRestText}`;
                 // Delay before second description
                 setTimeout(() => {
                     typeWriter(secondDescription, secondDescText, 8);
@@ -1720,6 +1948,32 @@ function initializeInteractiveModals() {
     initializeKeysModal(baseJSON);
     initializeAdvancedApplicationModal(baseJSON);
     initializeInvalidElementModal(baseJSON);
+    initializeJsonCatGuideModal();
+}
+
+function initializeJsonCatGuideModal() {
+    const modalId = 'modal9';
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    const modalBody = modal.querySelector('.modal-body');
+    if (!modalBody) return;
+
+    const guideUrl = 'https://www.nexusmods.com/skyrimspecialedition/articles/4756';
+    const catUrl = 'JSON_cat/cat.html';
+
+    modalBody.innerHTML = `
+        <div class="json-cat-guide-modal-header">
+            <h3>Didactic explanation of JSON Master of OBody NG</h3>
+            <div class="json-cat-guide-modal-actions">
+                <a class="btn btn--secondary" href="${catUrl}" target="_blank" rel="noopener">Open guide</a>
+                <a class="btn btn--outline" href="${guideUrl}" target="_blank" rel="noopener noreferrer">Open full manual</a>
+            </div>
+        </div>
+        <div class="json-cat-guide-modal-frame">
+            <iframe src="${catUrl}" title="Didactic explanation of JSON Master of OBody NG" loading="lazy"></iframe>
+        </div>
+    `;
 }
 
 /**

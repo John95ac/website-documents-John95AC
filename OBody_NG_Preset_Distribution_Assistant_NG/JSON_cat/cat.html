@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Didactic explanation of JSON Master of OBody NG</title>
+    <link rel="stylesheet" href="cat.css" />
+    <script defer src="cat.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <h1 class="page-title">Didactic explanation of JSON Master of OBody NG</h1>
+        <div class="page-subtitle">Explained by a cat</div>
+      </header>
+
+      <section class="card" aria-label="Cat JSON explanation">
+        <div class="cat-intro-text">
+          Throughout all the time I've worked on this project, with the advice of many users, I've gradually learned how to use JSON. Here we'll leave an interesting guide on how to handle the master JSON, what to add, and a summary in a didactic way on how to modify or manually add rules. Remember that all this information is mostly from my usage experience, so I'll add more of my experiences and those of many who have communicated them to me. You can now go to this link and read the complete manual, it's very extensive:
+          <a href="https://www.nexusmods.com/skyrimspecialedition/articles/4756" target="_blank" rel="noopener noreferrer">the complete manual</a>.
+        </div>
+
+        <div class="cat-json-layout">
+          <div class="cat-json-left">
+            <div class="cat-panel-title cat-panel-title-with-pill">
+              <span>OBody_presetDistributionConfig.json example</span>
+              <span id="catSelectedKeyPill" class="cat-selected-key-pill" aria-live="polite"></span>
+            </div>
+            <div id="catJsonSample" class="json-viewer">Loading example JSON...</div>
+          </div>
+          <div class="cat-json-right">
+            <div class="cat-panel-title">Master JSON Keys</div>
+            <div id="catJsonKeysList" class="cat-keys-list"></div>
+            <div class="cat-key-details">
+              <div class="cat-panel-title">Key explanation and JSON section</div>
+              <div id="catKeyExplanation" class="cat-key-explanation">Select a key to see its explanation.</div>
+              <div id="catKeyJsonPreview" class="json-viewer">Select a key to see its JSON part from the example.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="application/json" id="catEmbeddedJson">
+{
+    "npcFormID": {
+        "Skyrim.esm": {
+            "00013BA2": [
+                "Wench Preset",
+                "Demonic"
+            ]
+        }
+    },
+    "npc": {
+        "Serana": [
+            "Kurone Bell"
+        ],
+        "Серана": [
+            "Kurone Bell"
+        ],
+        "瑟拉娜": [
+            "Kurone Bell"
+        ],
+        "Valerica": [
+            "XA-E"
+        ]
+    },
+    "factionFemale": {
+        "ImperialFaction": [
+            "Blue Elf"
+        ],
+        "man_NPGirlsFaction": [
+            "123Hamster Slim-to-Thicc",
+            "1337ez Body"
+        ]
+    },
+    "factionMale": {
+        "ImperialFaction": [
+            "HIMBO Zero for OBody"
+        ]
+    },
+    "npcPluginFemale": {
+        "YurianaWench.esp": [
+            "Wench Body 2.0 Naked Body SSE",
+            "!CheesecakePoundCakeNaked"
+        ],
+        "Immersive Wenches.esp": [
+            "Wench Body 2.0 Naked Body SSE",
+            "!CheesecakePoundCakeNaked"
+        ],
+        "AkaneJV.esp": [
+            "starmilf"
+        ],
+        "GirlsJV.esp": [
+            "Lil Mother's Milk.",
+            "Mother's Milk",
+            "pig"
+        ]
+    },
+    "npcPluginMale": {
+        "HG_ErikTheSlayer.esp": [
+            "Without Preset PDA"
+        ],
+        "HG_MoW.esp": [
+            "Without Preset PDA"
+        ],
+        "HG_MoS.esp": [
+            "Without Preset PDA"
+        ]
+    },
+    "raceFemale": {
+        "00UBE_HighElfRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_BretonRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ImperialRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_RedguardRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_DarkElfRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_WoodElfRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_NordRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_OrcRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ElderRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_KhajiitRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ArgonianRace": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_OrcRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_HighElfRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_BretonRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ImperialRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_RedguardRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_DarkElfRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_WoodElfRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_NordRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ElderRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_KhajiitRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "00UBE_ArgonianRaceVampire": [
+            "(SDZ21) Hot Babe Body 4 - UBE (Nude)",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AlmuAlim_McDs' Mom"
+        ],
+        "NordRace": [
+            "pig",
+            "[DevonixS] - Zenithar's Masterpiece",
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "ImperialRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "BretonRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "RedguardRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "DarkElfRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "HighElfRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "WoodElfRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "OrcRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "KhajiitRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "ArgonianRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ],
+        "ElderRace": [
+            "AGBBBP3",
+            "BONOBODY SE ver.7"
+        ]
+    },
+    "raceMale": {
+        "BretonRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "RedguardRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "DarkElfRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "HighElfRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "WoodElfRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "OrcRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "KhajiitRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "ArgonianRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "ElderRace": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "NordRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "ImperialRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "BretonRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "RedguardRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "DarkElfRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "HighElfRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "WoodElfRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "OrcRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "KhajiitRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "ArgonianRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "ElderRaceVampire": [
+            "HIMBO PAU Birl",
+            "HIMBO PAU Bola"
+        ],
+        "NordRace": [
+            "[DevonixS] - Zenithar's Masterpiece"
+        ],
+        "ImperialRace": [
+            "HIMBO Zero for OBody"
+        ]
+    },
+    "blacklistedNpcs": [
+        "Saffi",
+        "Vilja",
+        "Lydia"
+    ],
+    "blacklistedNpcsFormID": {
+        "YurianaWench.esp": [
+            "0B000817"
+        ]
+    },
+    "blacklistedNpcsPluginFemale": [
+        "DarkDesiresCircleOfLust.esp"
+    ],
+    "blacklistedNpcsPluginMale": [
+        "DarkDesiresCircleOfLust.esp"
+    ],
+    "blacklistedRacesFemale": [
+        "ElderRace",
+        "CATRace"
+    ],
+    "blacklistedRacesMale": [
+        "ElderRace",
+        "CATRace"
+    ],
+    "blacklistedOutfitsFromORefitFormID": {
+        "YurianaWench.esp": [
+            "FE000817"
+        ]
+    },
+    "blacklistedOutfitsFromORefit": [
+        "Mysterious Yuri bra",
+        "Demon Hunter's Lingerie Light"
+    ],
+    "blacklistedOutfitsFromORefitPlugin": [
+        "[COCO] Mysterious Mage.esp"
+    ],
+    "outfitsForceRefitFormID": {
+        "DarkDesiresCircleOfLust.esp": [
+            "FE000817"
+        ]
+    },
+    "outfitsForceRefit": [
+        "Demon Hunter's Lingerie Light"
+    ],
+    "blacklistedPresetsFromRandomDistribution": [
+        "- Zeroed Sliders -",
+        "-Zeroed Sliders-",
+        "Zeroed Sliders",
+        "HIMBO Zero for OBody",
+        "GT+++",
+        "Without Preset PDA"
+    ],
+    "blacklistedPresetsShowInOBodyMenu": true
+}
+    </script>
+  </body>
+</html>

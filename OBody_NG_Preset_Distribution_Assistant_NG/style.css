@@ -504,6 +504,31 @@ select.form-control {
     padding-right: var(--space-32);
 }
 
+#ruleType option[value="npcFormID"],
+#ruleType option[value="npc"],
+#ruleType option[value="factionFemale"],
+#ruleType option[value="factionMale"],
+#ruleType option[value="npcPluginFemale"],
+#ruleType option[value="npcPluginMale"],
+#ruleType option[value="raceFemale"],
+#ruleType option[value="raceMale"] {
+    background-color: rgba(0, 188, 212, 0.18);
+    color: #e0fbff;
+}
+
+#ruleType option[value="blacklisted"],
+#ruleType option[value="blacklistedNpcsFormID"] {
+    background-color: rgba(16, 185, 129, 0.16);
+    color: #e6fff6;
+}
+
+#ruleType option[value="blacklistedOutfitsFromORefitFormID"],
+#ruleType option[value="outfitsForceRefitFormID"],
+#ruleType option[value="outfits"] {
+    background-color: rgba(245, 158, 11, 0.18);
+    color: #fff3d6;
+}
+
 /* Add a dark mode specific caret */
 @media (prefers-color-scheme: dark) {
     select.form-control {
@@ -1073,6 +1098,28 @@ body {
     padding: var(--space-16);
     transition: all var(--duration-normal) var(--ease-standard);
     cursor: pointer;
+    position: relative;
+}
+
+.mode-card::after {
+    content: 'CLICK';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.60);
+    color: #fff3d6;
+    font-weight: 800;
+    font-size: 0.68rem;
+    letter-spacing: 0.7px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
 }
 
 .mode-card:hover {
@@ -1201,6 +1248,270 @@ body {
 
 #elementValueInput {
     display: block;
+}
+
+.faction-picker-body {
+    padding: 10px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    margin-top: 10px;
+}
+
+.faction-search {
+    margin-bottom: var(--space-12);
+}
+
+.faction-picker-summary {
+    position: relative;
+}
+
+.details-summary {
+    cursor: pointer;
+    padding: 10px;
+    padding-right: 128px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    position: relative;
+}
+
+.details-summary--gold {
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.22), rgba(0, 0, 0, 0.15));
+    border-color: rgba(245, 158, 11, 0.65);
+    color: #fff3d6;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(245, 158, 11, 0.18);
+}
+
+.details-summary-cta {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(245, 158, 11, 0.55);
+    color: #fff3d6;
+    font-weight: 800;
+    font-size: 0.72rem;
+    letter-spacing: 0.7px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.details-summary--gold:hover .details-summary-cta {
+    border-color: rgba(245, 158, 11, 0.95);
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.json-cat-guide-trigger {
+    cursor: pointer;
+    padding: 10px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    width: 100%;
+    text-align: left;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+    margin-top: 12px;
+    appearance: none;
+    transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.json-cat-guide-trigger:hover {
+    border-color: var(--color-primary);
+}
+
+.json-cat-guide-trigger:active {
+    transform: translateY(1px);
+}
+
+.json-cat-guide-trigger:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.json-cat-guide-trigger--gold {
+    padding: 14px 16px;
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.22), rgba(0, 0, 0, 0.15));
+    border-color: rgba(245, 158, 11, 0.65);
+    color: #fff3d6;
+    font-size: var(--font-size-base);
+    letter-spacing: 0.2px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(245, 158, 11, 0.18);
+}
+
+.json-cat-guide-trigger--gold:hover {
+    border-color: rgba(245, 158, 11, 0.95);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32), 0 0 26px rgba(245, 158, 11, 0.18);
+    transform: translateY(-1px);
+}
+
+.json-cat-guide-trigger--gold:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(245, 158, 11, 0.18);
+}
+
+.json-cat-guide-trigger--gold:focus-visible {
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.35), 0 14px 28px rgba(0, 0, 0, 0.32), 0 0 26px rgba(245, 158, 11, 0.18);
+}
+
+.json-cat-guide-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(245, 158, 11, 0.55);
+    color: #fff3d6;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.json-cat-guide-trigger--gold:hover .json-cat-guide-cta {
+    border-color: rgba(245, 158, 11, 0.95);
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.json-cat-guide-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+    padding-right: 52px;
+}
+
+.json-cat-guide-modal-header h3 {
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.json-cat-guide-modal-actions {
+    display: flex;
+    gap: var(--space-10);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.json-cat-guide-modal-frame {
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-background);
+}
+
+.json-cat-guide-modal-frame iframe {
+    width: 100%;
+    height: 70vh;
+    border: 0;
+    display: block;
+}
+
+@media (max-width: 560px) {
+    .json-cat-guide-modal-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding-right: 44px;
+    }
+
+    .json-cat-guide-modal-actions {
+        justify-content: flex-start;
+    }
+}
+
+.faction-picker-popover {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: none;
+    width: min(360px, calc(100vw - 32px));
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 10px;
+    z-index: 999;
+    display: none;
+    pointer-events: none;
+}
+
+.faction-picker-popover-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    display: block;
+}
+
+.faction-picker-popover-text {
+    margin-top: var(--space-10);
+    font-size: var(--font-size-xs);
+    line-height: 1.35;
+    color: var(--color-text-secondary);
+}
+
+.faction-picker-status {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-8);
+}
+
+.faction-list {
+    max-height: 320px;
+    overflow: auto;
+    border: 1px solid var(--color-card-border-inner);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+}
+
+.faction-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-12);
+    padding: 10px 12px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-card-border-inner);
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.faction-item:last-child {
+    border-bottom: 0;
+}
+
+.faction-item:hover {
+    background: rgba(var(--color-success-rgb, 33, 128, 141), 0.12);
+}
+
+.faction-item.selected {
+    background: rgba(var(--color-success-rgb, 33, 128, 141), 0.2);
+}
+
+.faction-edid {
+    font-family: 'Source Code Pro', monospace;
+    color: #10B981;
+}
+
+.faction-name {
+    color: var(--color-text-secondary);
 }
 /* Examples Section */
 .examples-container {
@@ -2617,4 +2928,3 @@ body {
     z-index: -1;
     pointer-events: none;
 }
-
