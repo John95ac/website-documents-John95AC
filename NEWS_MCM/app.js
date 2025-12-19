@@ -270,6 +270,71 @@ function initializeEnhancedFeatures() {
 
     // Add ripple styles
     addRippleStyles();
+
+    // Initialize patron tooltips to fix clipping issues
+    initializePatronTooltips();
+}
+
+/**
+ * Initialize patron tooltips to fix clipping issues in scrollable container
+ */
+function initializePatronTooltips() {
+    const tooltipTargets = document.querySelectorAll('.patrons-names span[data-tooltip], .pie-3d-slice[data-tooltip]');
+    
+    // Create a single tooltip element in the body if it doesn't exist
+    let tooltipEl = document.getElementById('patron-floating-tooltip');
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div');
+        tooltipEl.id = 'patron-floating-tooltip';
+        tooltipEl.className = 'patron-floating-tooltip';
+        document.body.appendChild(tooltipEl);
+    }
+
+    tooltipTargets.forEach(target => {
+        // Prevent duplicate listeners
+        if (target.getAttribute('data-tooltip-initialized')) return;
+        target.setAttribute('data-tooltip-initialized', 'true');
+
+        target.addEventListener('mouseenter', () => {
+            const content = target.getAttribute('data-tooltip');
+            if (!content) return;
+
+            tooltipEl.innerHTML = content.replace(/\n/g, '<br>');
+            tooltipEl.classList.add('active');
+            
+            // Position the tooltip
+            const rect = target.getBoundingClientRect();
+            const tooltipRect = tooltipEl.getBoundingClientRect();
+            
+            let top = rect.top - tooltipRect.height - 10;
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            
+            // Boundary checks
+            if (top < 10) {
+                top = rect.bottom + 10;
+                tooltipEl.classList.add('bottom');
+            } else {
+                tooltipEl.classList.remove('bottom');
+            }
+            
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipRect.width - 10;
+            }
+            
+            tooltipEl.style.top = top + 'px';
+            tooltipEl.style.left = left + 'px';
+        });
+
+        target.addEventListener('mouseleave', () => {
+            tooltipEl.classList.remove('active');
+        });
+
+        // Hide on click/mousedown
+        target.addEventListener('mousedown', () => {
+            tooltipEl.classList.remove('active');
+        });
+    });
 }
 
 /**

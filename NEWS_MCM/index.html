@@ -185,6 +185,42 @@
       /* olcoreConfig specific colors */
       .olcore-key { color: orange; font-weight: 600; }
       .olcore-value { color: #10B981; font-weight: 500; }
+
+      /* Sponsorship toggle styles */
+      .sponsorship-toggle {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+
+      .toggle-btn {
+        padding: 8px 16px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        color: var(--color-text);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .toggle-btn:hover {
+        background: var(--color-background);
+      }
+
+      .toggle-btn.active {
+        background: #38bdf8;
+        color: white;
+        border-color: #38bdf8;
+      }
+
+      .sponsorship-content {
+        display: none;
+      }
+
+      .sponsorship-content.active {
+        display: block;
+      }
     </style>
 </head>
 <body>
@@ -676,15 +712,121 @@
     <!-- Acknowledgments -->
     <section id="acknowledgments" class="section">
         <div class="container">
-            <h2 class="section-title" style="color: #38bdf8;">Acknowledgments</h2>
+            <h2 class="section-title">Acknowledgments</h2>
             <div class="acknowledgments-content">
                 <div class="sponsors">
                     <h3 class="sponsors-title" style="color: #38bdf8;">Sponsors and Donations</h3>
-
-
                     <div class="credit-item">
-                        <div style="color: #38bdf8; font-weight: 500;">
+                        <div>
                             <p>Thank you very much to all my patrons and the people who altruistically support me so I can continue with mod projects for Skyrim, manuals for new mods, and robotics. Without you, I wouldn't have all the motivation. That drive gives me the strength to keep going, since I like to keep my word, so even if it takes me time to make the mods, I'll eventually do them, and you believe in me. Thank you very much.</p>
+                        </div>
+                    </div>
+
+                    <div class="sponsorship-toggle">
+                        <button class="toggle-btn active" data-target="patreon-content">Patreon</button>
+                        <button class="toggle-btn" data-target="kofi-content">Ko-fi</button>
+                    </div>
+
+                    <div id="patreon-content" class="sponsorship-content active">
+                        <div class="sponsors-stats-container">
+                        <div class="pie-section">
+                            <div class="pie-3d" id="patreonPie3d" data-free="92" data-former="8" data-active="5">
+                                <svg class="pie-3d-svg" viewBox="0 0 360 260" role="img" aria-label="Patreon distribution"></svg>
+                                <div class="pie-3d-legend" aria-hidden="true">
+                                    <div class="pie-3d-legend-row">
+                                        <span class="pie-3d-swatch pie-3d-swatch-free"></span>
+                                        <span class="pie-3d-label">Free Followers</span>
+                                    </div>
+                                    <div class="pie-3d-legend-row">
+                                        <span class="pie-3d-swatch pie-3d-swatch-former"></span>
+                                        <span class="pie-3d-label">Former Patrons</span>
+                                    </div>
+                                    <div class="pie-3d-legend-row">
+                                        <span class="pie-3d-swatch pie-3d-swatch-active"></span>
+                                        <span class="pie-3d-label">Active Patrons</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="patrons-scroll-section">
+                            <div class="patrons-scroll-box">
+                                <div class="tier-group tier-level-4">
+                                    <h5 class="tier-name">Level 4: Support from a Mad Scientist</h5>
+                                    <div class="patrons-names">
+                                        <span data-tooltip="Monthly Pledge: $20.00&#10;Patron since: Dec 2025">Nobody</span>
+                                    </div>
+                                </div>
+
+                                <div class="tier-group tier-level-2">
+                                    <h5 class="tier-name">Level 2: Wizard of Cats</h5>
+                                    <div class="patrons-names">
+                                        <span data-tooltip="Monthly Pledge: $5.00&#10;Patron since: Nov 2025">Deluded panda</span>
+                                        <span data-tooltip="Monthly Pledge: $5.00&#10;Patron since: Nov 2024">rabat1431</span>
+                                        <span data-tooltip="Monthly Pledge: $5.00&#10;Patron since: Nov 2025">Teri A Davis</span>
+                                    </div>
+                                </div>
+
+                                <div class="tier-group tier-level-1">
+                                    <h5 class="tier-name">Level 1: Cat Companion</h5>
+                                    <div class="patrons-names">
+                                        <span data-tooltip="Monthly Pledge: $2.00&#10;Patron since: Jan 2025">alex farfan</span>
+                                    </div>
+                                </div>
+
+                                <div class="tier-group tier-former">
+                                    <h5 class="tier-name">Former Patrons</h5>
+                                    <div class="patrons-names">
+                                        <span data-tooltip="Patron from: 2024-06-27&#10;to: 2024-07-27">24601</span>
+                                        <span data-tooltip="Patron from: 2024-06-29&#10;to: 2024-07-29">Brandon Carson</span>
+                                        <span data-tooltip="Patron from: 2024-11-17&#10;to: 2024-12-17">martelli</span>
+                                        <span data-tooltip="Patron from: 2024-06-21&#10;to: 2024-10-21">MG</span>
+                                        <span data-tooltip="Patron from: 2024-10-22&#10;to: 2025-03-23">Morde Halcyon</span>
+                                        <span data-tooltip="Patron from: 2024-06-22&#10;to: 2024-08-22">Smexy Grandpa</span>
+                                        <span data-tooltip="Patron from: 2025-02-10&#10;to: 2025-03-11">William CianfraniClark</span>
+                                    </div>
+                                </div>
+
+                                <div class="tier-group tier-free">
+                                    <h5 class="tier-name">Free Members & Followers</h5>
+                                    <div class="patrons-names">
+                                        <span data-tooltip="Follower since: Nov 2024">$@uron</span><span data-tooltip="Follower since: Nov 2024">_ _</span><span data-tooltip="Follower since: Sep 2025">A Green</span><span data-tooltip="Follower since: Dec 2024">Adam Jensen</span><span data-tooltip="Follower since: Jun 2025">Adam Ownby</span><span data-tooltip="Follower since: Nov 2024">aEzedo</span><span data-tooltip="Follower since: Aug 2025">AlaskanFisherman</span><span data-tooltip="Follower since: Sep 2025">Alberto Arellano Rosero</span><span data-tooltip="Follower since: Oct 2025">Alfonso Barrera Rodríguez</span><span data-tooltip="Follower since: Jul 2025">Amon Shinky</span><span data-tooltip="Follower since: Nov 2024">Andy D</span><span data-tooltip="Follower since: Dec 2024">ANGELRQ 2007</span><span data-tooltip="Follower since: Nov 2025">Ank Sious</span><span data-tooltip="Follower since: Nov 2025">Astrid Bishop</span><span data-tooltip="Follower since: Oct 2025">Atharva Thumbare</span><span data-tooltip="Follower since: Nov 2024">B-Zero</span><span data-tooltip="Follower since: Aug 2025">BLOD DS</span><span data-tooltip="Follower since: Nov 2024">Blood West</span><span data-tooltip="Follower since: Feb 2025">Blue Rose June</span><span data-tooltip="Follower since: Nov 2024">bobbo</span><span data-tooltip="Follower since: Nov 2024">Br Da</span><span data-tooltip="Follower since: Dec 2024">Brodiaea</span><span data-tooltip="Follower since: Nov 2024">Calvin Hong</span><span data-tooltip="Follower since: Oct 2025">Chase Plante</span><span data-tooltip="Follower since: Apr 2025">chengfeimio</span><span data-tooltip="Follower since: Oct 2025">chris c mathies</span><span data-tooltip="Follower since: Jul 2024">Christopher Benjamin</span><span data-tooltip="Follower since: Oct 2025">CJ Ragins</span><span data-tooltip="Follower since: Nov 2024">cxxd</span><span data-tooltip="Follower since: Nov 2024">Dark zee</span><span data-tooltip="Follower since: Nov 2025">demicabestan</span><span data-tooltip="Follower since: Nov 2024">Dirk Lück</span><span data-tooltip="Follower since: Apr 2025">Divine Repier</span><span data-tooltip="Follower since: Oct 2025">DJ Dunha</span><span data-tooltip="Follower since: Nov 2024">Dragonbord</span><span data-tooltip="Follower since: Jul 2025">Elias choque</span><span data-tooltip="Follower since: Oct 2025">Eliel Rubio Rmx</span><span data-tooltip="Follower since: Sep 2025">EvilMortyC137B</span><span data-tooltip="Follower since: Nov 2025">Ezekiel Anno</span><span data-tooltip="Follower since: May 2025">Gabriel</span><span data-tooltip="Follower since: Aug 2024">GraufeuerEisaugenofPlebia</span><span data-tooltip="Follower since: Sep 2024">iron213x</span><span data-tooltip="Follower since: Apr 2025">ishi</span><span data-tooltip="Follower since: Nov 2024">Ivan Lopez</span><span data-tooltip="Follower since: Feb 2025">James Fowler</span><span data-tooltip="Follower since: Oct 2025">JOJO SIWA</span><span data-tooltip="Follower since: Jul 2025">kei</span><span data-tooltip="Follower since: Dec 2024">Kevin Anstee</span><span data-tooltip="Follower since: Jul 2025">leon1416</span><span data-tooltip="Follower since: Jan 2025">magnetpoweron</span><span data-tooltip="Follower since: Feb 2025">Matthew Brown</span><span data-tooltip="Follower since: Nov 2025">Maze500</span><span data-tooltip="Follower since: Feb 2025">Mazella</span><span data-tooltip="Follower since: Apr 2025">Mcklander</span><span data-tooltip="Follower since: Dec 2025">meh _04</span><span data-tooltip="Follower since: Jun 2025">Mesa Lab</span><span data-tooltip="Follower since: Nov 2025">Mod-It</span><span data-tooltip="Follower since: Jan 2025">Montayus</span><span data-tooltip="Follower since: Oct 2025">Nacho Shields</span><span data-tooltip="Follower since: Dec 2024">Nate Blackmore</span><span data-tooltip="Follower since: Jun 2025">Nicholas Sparks</span><span data-tooltip="Follower since: Dec 2024">Nick恋愛</span><span data-tooltip="Follower since: Nov 2024">nova slayer</span><span data-tooltip="Follower since: Oct 2025">Pedro Luis</span><span data-tooltip="Follower since: Dec 2024">Peterfall</span><span data-tooltip="Follower since: Nov 2024">Redot</span><span data-tooltip="Follower since: Nov 2024">Rogue Koala</span><span data-tooltip="Follower since: Oct 2024">Rudi Volland</span><span data-tooltip="Follower since: Dec 2025">ryuk</span><span data-tooltip="Follower since: Nov 2024">Sam Woodward</span><span data-tooltip="Follower since: Jul 2025">Samuel Shippenj</span><span data-tooltip="Follower since: Nov 2024">Sankarea</span><span data-tooltip="Follower since: Apr 2025">Shareef</span><span data-tooltip="Follower since: Aug 2024">Some random guy</span><span data-tooltip="Follower since: Jul 2025">StarFighter2KS</span><span data-tooltip="Follower since: Mar 2025">The Darjel</span><span data-tooltip="Follower since: Mar 2025">the.lone.drifter17 The_Lone_Drifter17</span><span data-tooltip="Follower since: Oct 2025">TheBerk</span><span data-tooltip="Follower since: Apr 2025">TheBlackLink</span><span data-tooltip="Follower since: Mar 2025">Thorfinn Bjornstad</span><span data-tooltip="Follower since: Sep 2025">Tommy Theriot</span><span data-tooltip="Follower since: Oct 2025">tugnuts</span><span data-tooltip="Follower since: Dec 2025">User1500</span><span data-tooltip="Follower since: Feb 2025">victor133x</span><span data-tooltip="Follower since: Oct 2025">Will</span><span data-tooltip="Follower since: Nov 2025">Wino Gándara</span><span data-tooltip="Follower since: Dec 2024">Wskeev</span><span data-tooltip="Follower since: Nov 2024">x a n i</span><span data-tooltip="Follower since: Jun 2025">Yesman572</span><span data-tooltip="Follower since: Oct 2025">Zero.TheTechnician</span><span data-tooltip="Follower since: May 2025">zhi cheng fu</span><span data-tooltip="Follower since: Feb 2025">zippytryppy</span><span data-tooltip="Follower since: Apr 2025">周卓杰</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div id="kofi-content" class="sponsorship-content">
+                        <div class="sponsors-stats-container">
+                            <div class="pie-section">
+                                <div class="pie-3d" id="kofiPie3d" data-donors="8">
+                                    <svg class="pie-3d-svg" viewBox="0 0 360 260" role="img" aria-label="Ko-fi distribution"></svg>
+                                    <div class="pie-3d-legend" aria-hidden="true">
+                                        <div class="pie-3d-legend-row">
+                                            <span class="pie-3d-swatch" style="background: #29abe0;"></span>
+                                            <span class="pie-3d-label">Ko-fi Donations Distribution</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="patrons-scroll-section">
+                                <div class="patrons-scroll-box">
+                                    <div class="tier-group tier-level-2">
+                                        <h5 class="tier-name">Ko-fi Supporters</h5>
+                                        <div class="patrons-names">
+                                            <span data-tooltip="Received: $50.00&#10;Date: 08/25/2024 12:48" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); font-weight: bold;">EpicFaylure01</span>
+                                            <span data-tooltip="Received: $15.00&#10;Message: Muchas gracias por tus contribuciones al modding de Skyrim en español...&#10;Date: 09/01/2025 16:07" style="color: #ffcc33; font-weight: bold;">Ibuki_G</span>
+                                            <span data-tooltip="Received: $5.00&#10;Message: Have a coffee for the awesome work.&#10;Date: 05/26/2024 23:19" style="color: #d4e157;">lmbjjj</span>
+                                            <span data-tooltip="Received: $5.00&#10;Message: Nice Work!&#10;Date: 06/04/2024 23:54" style="color: #aed581;">Anteater9</span>
+                                            <span data-tooltip="Received: $5.00&#10;Message: Menuda sacada traduciendo el mod de yuriana&#10;Date: 07/08/2024 15:26" style="color: #81c784;">Diegolin</span>
+                                            <span data-tooltip="Received: $5.00&#10;Date: 01/31/2025 16:47" style="color: #66bb6a;">Kybalion</span>
+                                            <span data-tooltip="Received: $3.00&#10;Message: Love what you're doiung <3&#10;Date: 06/01/2024 13:09" style="color: #4caf50;">n1by2</span>
+                                            <span data-tooltip="Received: $1.00&#10;Date: 10/20/2025 10:37" style="color: #43a047;">Ko-fi Supporter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1062,6 +1204,8 @@
 
     <script src="app.js"></script>
     <script src="theme-ball.js"></script>
+    <script src="support-ball.js"></script>
+    <script src="social-links-ball.js"></script>
     <script src="particles.js"></script>
     
     <script>
@@ -1289,6 +1433,282 @@
             }
           }, { passive: false });
         });
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const root = document.getElementById('patreonPie3d');
+        if (!root) return;
+
+        const svg = root.querySelector('svg');
+        if (!svg) return;
+
+        const free = Number(root.getAttribute('data-free') || '0');
+        const former = Number(root.getAttribute('data-former') || '0');
+        const active = Number(root.getAttribute('data-active') || '0');
+        const total = free + former + active;
+        if (!Number.isFinite(total) || total <= 0) return;
+
+        const ns = 'http://www.w3.org/2000/svg';
+        const cx = 140;
+        const cy = 115;
+        const r = 110;
+        const thickness = 22;
+        const startAt = -90;
+
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+        const defs = document.createElementNS(ns, 'defs');
+        svg.appendChild(defs);
+
+        const makeLinearGradient = (id, stops) => {
+          const g = document.createElementNS(ns, 'linearGradient');
+          g.setAttribute('id', id);
+          g.setAttribute('x1', '0%');
+          g.setAttribute('y1', '0%');
+          g.setAttribute('x2', '100%');
+          g.setAttribute('y2', '100%');
+          for (const s of stops) {
+            const st = document.createElementNS(ns, 'stop');
+            st.setAttribute('offset', s.offset);
+            st.setAttribute('stop-color', s.color);
+            if (s.opacity != null) st.setAttribute('stop-opacity', String(s.opacity));
+            g.appendChild(st);
+          }
+          return g;
+        };
+
+        defs.appendChild(makeLinearGradient('pie3d-grad-free', [
+          { offset: '0%', color: '#9ca3af' },
+          { offset: '55%', color: '#6b7280' },
+          { offset: '100%', color: '#4b5563' }
+        ]));
+        defs.appendChild(makeLinearGradient('pie3d-grad-former', [
+          { offset: '0%', color: '#fff4e3' },
+          { offset: '60%', color: '#e6d5b8' },
+          { offset: '100%', color: '#cbb89a' }
+        ]));
+        defs.appendChild(makeLinearGradient('pie3d-grad-active', [
+          { offset: '0%', color: '#fff3bf' },
+          { offset: '60%', color: '#d4af37' },
+          { offset: '100%', color: '#b88d24' }
+        ]));
+
+        const filter = document.createElementNS(ns, 'filter');
+        filter.setAttribute('id', 'pie3d-shadow');
+        filter.setAttribute('x', '-40%');
+        filter.setAttribute('y', '-40%');
+        filter.setAttribute('width', '180%');
+        filter.setAttribute('height', '180%');
+        const feDrop = document.createElementNS(ns, 'feDropShadow');
+        feDrop.setAttribute('dx', '0');
+        feDrop.setAttribute('dy', '12');
+        feDrop.setAttribute('stdDeviation', '10');
+        feDrop.setAttribute('flood-color', '#000000');
+        feDrop.setAttribute('flood-opacity', '0.35');
+        filter.appendChild(feDrop);
+        defs.appendChild(filter);
+
+        const shadow = document.createElementNS(ns, 'ellipse');
+        shadow.setAttribute('cx', String(cx));
+        shadow.setAttribute('cy', String(cy + thickness + 10));
+        shadow.setAttribute('rx', String(r * 0.98));
+        shadow.setAttribute('ry', String(r * 0.34));
+        shadow.setAttribute('fill', 'rgba(0,0,0,0.35)');
+        shadow.setAttribute('filter', 'url(#pie3d-shadow)');
+        shadow.setAttribute('opacity', '0.55');
+        svg.appendChild(shadow);
+
+        const gBase = document.createElementNS(ns, 'g');
+        const gTop = document.createElementNS(ns, 'g');
+        svg.appendChild(gBase);
+        svg.appendChild(gTop);
+
+        const polar = (centerX, centerY, radius, angleDeg) => {
+          const a = (angleDeg * Math.PI) / 180;
+          return { x: centerX + radius * Math.cos(a), y: centerY + radius * Math.sin(a) };
+        };
+
+        const arcPath = (centerX, centerY, radius, startAngle, endAngle) => {
+          const start = polar(centerX, centerY, radius, endAngle);
+          const end = polar(centerX, centerY, radius, startAngle);
+          const largeArc = endAngle - startAngle <= 180 ? '0' : '1';
+          return `M ${centerX} ${centerY} L ${end.x} ${end.y} A ${radius} ${radius} 0 ${largeArc} 1 ${start.x} ${start.y} Z`;
+        };
+
+        const slices = [
+          { 
+            key: 'free', 
+            label: 'Free Followers', 
+            value: free, 
+            top: 'url(#pie3d-grad-free)', 
+            side: '#4b5563',
+            tooltip: `Thanks guys, at the moment we have ${free} followers on Patreon, which is a lot considering I don't post much here. But from Christmas on, I'll always post project updates so you can stay tuned. I have many projects I don't announce until the foundation is complete, so yes, I have a lot to share in the coming years. Thank you very much for accompanying me on this journey.`
+          },
+          { 
+            key: 'former', 
+            label: 'Former Patrons', 
+            value: former, 
+            top: 'url(#pie3d-grad-former)', 
+            side: '#cbb89a',
+            tooltip: "I thank you from the heart for having followed me, supported me, and considered investing in me. Day after day improving the mods, even though I don't publish too much, I'm always working on compatibility and better techniques, creating animations, and above all, playing Skyrim. Truly, thank you very much."
+          },
+          { 
+            key: 'active', 
+            label: 'Active Patrons', 
+            value: active, 
+            top: 'url(#pie3d-grad-active)', 
+            side: '#b88d24',
+            tooltip: "Thank you very much for sponsoring us. I invest in robotics, batteries for my mouse, sometimes coffee, it helps me. Thank you very much for your cooperation. Next year there will be a video of the robot's progress connecting with Skyrim, memories and more details of the follower in real life, and of course, the requests and mods we'll be planning together."
+          }
+        ].filter(s => s.value > 0);
+
+        let angle = startAt;
+        for (const s of slices) {
+          const sliceAngle = (s.value / total) * 360;
+          const a0 = angle;
+          const a1 = angle + sliceAngle;
+
+          const basePath = document.createElementNS(ns, 'path');
+          basePath.setAttribute('d', arcPath(cx, cy + thickness, r, a0, a1));
+          basePath.setAttribute('fill', s.side);
+          basePath.setAttribute('opacity', '0.95');
+          basePath.setAttribute('class', `pie-3d-slice pie-3d-slice-base pie-3d-slice-${s.key}`);
+          basePath.setAttribute('data-tooltip', s.tooltip);
+          gBase.appendChild(basePath);
+
+          const topPath = document.createElementNS(ns, 'path');
+          topPath.setAttribute('d', arcPath(cx, cy, r, a0, a1));
+          topPath.setAttribute('fill', s.top);
+          topPath.setAttribute('stroke', 'rgba(255,255,255,0.22)');
+          topPath.setAttribute('stroke-width', '1.2');
+          topPath.setAttribute('class', `pie-3d-slice pie-3d-slice-top pie-3d-slice-${s.key}`);
+          topPath.setAttribute('data-tooltip', s.tooltip);
+          gTop.appendChild(topPath);
+
+          angle = a1;
+        }
+
+        // Initialize tooltips for the new SVG elements
+        if (typeof initializePatronTooltips === 'function') {
+          initializePatronTooltips();
+        }
+
+        // Toggle logic
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        const contents = document.querySelectorAll('.sponsorship-content');
+
+        toggleButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+            
+            toggleButtons.forEach(b => b.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(target).classList.add('active');
+
+            // Re-render pie chart if needed
+            if (target === 'kofi-content') {
+                renderKofiPie();
+            }
+          });
+        });
+
+        function renderKofiPie() {
+            const root = document.getElementById('kofiPie3d');
+            if (!root) return;
+            const svg = root.querySelector('svg');
+            if (!svg) return;
+
+            // Individual donor data (Received amount) from Transaction_All.csv
+            // Excludes John95 ($0.00)
+            // Colors: Top 1: Pure Gold with glow, Top 2: Gold, Top 3: Golden-Green, Top 4: Greenish-Gold, Rest: Green
+            const kofiDonors = [
+                { name: 'EpicFaylure01', amount: 50.00, date: '08/25/2024 12:48', color: '#ffd700', side: '#b8860b', glow: true },
+                { name: 'Ibuki_G', amount: 15.00, date: '09/01/2025 16:07', color: '#ffcc33', side: '#cc9900', glow: false },
+                { name: 'lmbjjj', amount: 5.00, date: '05/26/2024 23:19', color: '#d4e157', side: '#9e9d24', glow: false },
+                { name: 'Anteater9', amount: 5.00, date: '06/04/2024 23:54', color: '#aed581', side: '#689f38', glow: false },
+                { name: 'Diegolin', amount: 5.00, date: '07/08/2024 15:26', color: '#81c784', side: '#388e3c', glow: false },
+                { name: 'Kybalion', amount: 5.00, date: '01/31/2025 16:47', color: '#66bb6a', side: '#2e7d32', glow: false },
+                { name: 'n1by2', amount: 3.00, date: '06/01/2024 13:09', color: '#4caf50', side: '#1b5e20', glow: false },
+                { name: 'Ko-fi Supporter', amount: 1.00, date: '10/20/2025 10:37', color: '#43a047', side: '#1b5e20', glow: false }
+            ];
+
+            const totalAmount = kofiDonors.reduce((sum, d) => sum + d.amount, 0);
+            if (totalAmount <= 0) return;
+
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            
+            const defs = document.createElementNS(ns, 'defs');
+            svg.appendChild(defs);
+
+            kofiDonors.forEach((donor, i) => {
+                defs.appendChild(makeLinearGradient(`kofi-grad-${i}`, [
+                    { offset: '0%', color: donor.color },
+                    { offset: '100%', color: donor.side }
+                ]));
+            });
+
+            const filter = document.createElementNS(ns, 'filter');
+            filter.setAttribute('id', 'pie3d-shadow-kofi');
+            filter.setAttribute('x', '-40%');
+            filter.setAttribute('y', '-40%');
+            filter.setAttribute('width', '180%');
+            filter.setAttribute('height', '180%');
+            const feDrop = document.createElementNS(ns, 'feDropShadow');
+            feDrop.setAttribute('dx', '0');
+            feDrop.setAttribute('dy', '12');
+            feDrop.setAttribute('stdDeviation', '10');
+            feDrop.setAttribute('flood-color', '#000000');
+            feDrop.setAttribute('flood-opacity', '0.35');
+            filter.appendChild(feDrop);
+            defs.appendChild(filter);
+
+            const shadow = document.createElementNS(ns, 'ellipse');
+            shadow.setAttribute('cx', String(cx));
+            shadow.setAttribute('cy', String(cy + thickness + 10));
+            shadow.setAttribute('rx', String(r * 0.98));
+            shadow.setAttribute('ry', String(r * 0.34));
+            shadow.setAttribute('fill', 'rgba(0,0,0,0.35)');
+            shadow.setAttribute('filter', 'url(#pie3d-shadow-kofi)');
+            shadow.setAttribute('opacity', '0.55');
+            svg.appendChild(shadow);
+
+            const gBase = document.createElementNS(ns, 'g');
+            const gTop = document.createElementNS(ns, 'g');
+            svg.appendChild(gBase);
+            svg.appendChild(gTop);
+
+            let angle = startAt;
+            kofiDonors.forEach((donor, i) => {
+                const sliceAngle = (donor.amount / totalAmount) * 360;
+                const a0 = angle;
+                const a1 = angle + sliceAngle;
+
+                const basePath = document.createElementNS(ns, 'path');
+                basePath.setAttribute('d', arcPath(cx, cy + thickness, r, a0, a1));
+                basePath.setAttribute('fill', donor.side);
+                basePath.setAttribute('opacity', '0.95');
+                basePath.setAttribute('class', 'pie-3d-slice pie-3d-slice-base');
+                basePath.setAttribute('data-tooltip', `${donor.name}: $${donor.amount.toFixed(2)} Received\nDate: ${donor.date}`);
+                gBase.appendChild(basePath);
+
+                const topPath = document.createElementNS(ns, 'path');
+                topPath.setAttribute('d', arcPath(cx, cy, r, a0, a1));
+                topPath.setAttribute('fill', `url(#kofi-grad-${i})`);
+                topPath.setAttribute('stroke', 'rgba(255,255,255,0.22)');
+                topPath.setAttribute('stroke-width', '1.2');
+                topPath.setAttribute('class', 'pie-3d-slice pie-3d-slice-top');
+                topPath.setAttribute('data-tooltip', `${donor.name}: $${donor.amount.toFixed(2)} Received\nDate: ${donor.date}`);
+                gTop.appendChild(topPath);
+
+                angle = a1;
+            });
+
+            if (typeof initializePatronTooltips === 'function') {
+                initializePatronTooltips();
+            }
+        }
       });
     </script>
 </body>
