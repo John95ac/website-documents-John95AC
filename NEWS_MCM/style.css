@@ -422,10 +422,12 @@ pre code {
 
 .btn--primary:hover {
     background: var(--color-primary-hover);
+    color: var(--color-btn-primary-text);
 }
 
 .btn--primary:active {
     background: var(--color-primary-active);
+    color: var(--color-btn-primary-text);
 }
 
 .btn--secondary {
@@ -435,10 +437,12 @@ pre code {
 
 .btn--secondary:hover {
     background: var(--color-secondary-hover);
+    color: var(--color-text);
 }
 
 .btn--secondary:active {
     background: var(--color-secondary-active);
+    color: var(--color-text);
 }
 
 .btn--outline {
@@ -449,6 +453,7 @@ pre code {
 
 .btn--outline:hover {
     background: var(--color-secondary);
+    color: var(--color-text);
 }
 
 .btn--sm {
