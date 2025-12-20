@@ -273,6 +273,69 @@ function initializeEnhancedFeatures() {
 
     // Initialize patron tooltips to fix clipping issues
     initializePatronTooltips();
+
+    // Initialize video modal functionality
+    initializeVideoModal();
+}
+
+/**
+ * Initialize video modal functionality for news videos
+ */
+function initializeVideoModal() {
+    const videoElements = document.querySelectorAll('.news-video');
+    const modal = document.getElementById('news-video-modal');
+    const iframe = document.getElementById('modal-video-iframe');
+
+    if (!modal || !iframe) return;
+
+    videoElements.forEach(el => {
+        el.addEventListener('click', function() {
+            const videoUrl = this.getAttribute('data-video-url');
+            if (videoUrl) {
+                // For YouTube, ensure autoplay is enabled in modal
+                let finalUrl = videoUrl;
+                if (finalUrl.includes('youtube.com')) {
+                    finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+                } else if (finalUrl.includes('vimeo.com')) {
+                    finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+                }
+                
+                iframe.src = finalUrl;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                
+                // Add show class for animation
+                setTimeout(() => modal.classList.add('show'), 10);
+            }
+        });
+    });
+
+    // Close modal when clicking outside the content
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeVideoModal();
+        }
+    });
+}
+
+/**
+ * Close the video modal and stop the video
+ */
+function closeVideoModal() {
+    const modal = document.getElementById('news-video-modal');
+    const iframe = document.getElementById('modal-video-iframe');
+
+    if (modal && iframe) {
+        modal.classList.remove('show');
+        modal.classList.add('hiding');
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.classList.remove('hiding');
+            iframe.src = ''; // Stop video playback
+            document.body.style.overflow = ''; // Restore scrolling
+        }, 300); // Match CSS animation duration
+    }
 }
 
 /**
