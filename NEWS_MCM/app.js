@@ -279,7 +279,7 @@ function initializeEnhancedFeatures() {
  * Initialize patron tooltips to fix clipping issues in scrollable container
  */
 function initializePatronTooltips() {
-    const tooltipTargets = document.querySelectorAll('.patrons-names span[data-tooltip], .pie-3d-slice[data-tooltip]');
+    const tooltipTargets = document.querySelectorAll('.patrons-names span[data-tooltip], .pie-3d-slice[data-tooltip], .patron-count-badge[data-tooltip]')
     
     // Create a single tooltip element in the body if it doesn't exist
     let tooltipEl = document.getElementById('patron-floating-tooltip');
@@ -332,9 +332,73 @@ function initializePatronTooltips() {
 
         // Hide on click/mousedown
         target.addEventListener('mousedown', () => {
-            tooltipEl.classList.remove('active');
-        });
-    });
+            tooltipEl.classList.remove('active')
+        })
+    })
+
+    // Initialize image tooltips
+    initializeImageTooltips()
+}
+
+/**
+ * Initialize image tooltips for specific triggers
+ */
+function initializeImageTooltips() {
+    const triggers = document.querySelectorAll('.image-tooltip-trigger')
+    
+    let imageTooltipEl = document.getElementById('image-floating-tooltip')
+    if (!imageTooltipEl) {
+        imageTooltipEl = document.createElement('div')
+        imageTooltipEl.id = 'image-floating-tooltip'
+        imageTooltipEl.className = 'image-floating-tooltip'
+        imageTooltipEl.style.position = 'fixed'
+        imageTooltipEl.style.zIndex = '10001'
+        imageTooltipEl.style.pointerEvents = 'none'
+        imageTooltipEl.style.display = 'none'
+        imageTooltipEl.style.backgroundColor = '#1e293b'
+        imageTooltipEl.style.padding = '5px'
+        imageTooltipEl.style.borderRadius = '8px'
+        imageTooltipEl.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)'
+        imageTooltipEl.style.border = '1px solid rgba(255,255,255,0.1)'
+        document.body.appendChild(imageTooltipEl)
+    }
+
+    triggers.forEach(trigger => {
+        const imagePath = trigger.getAttribute('data-tooltip-image')
+        if (!imagePath) return
+
+        trigger.addEventListener('mouseenter', (e) => {
+            imageTooltipEl.innerHTML = `<img src="${imagePath}" style="max-width: 300px; border-radius: 4px; display: block">`
+            imageTooltipEl.style.display = 'block'
+            updateTooltipPosition(e)
+        })
+
+        trigger.addEventListener('mousemove', (e) => {
+            updateTooltipPosition(e)
+        })
+
+        trigger.addEventListener('mouseleave', () => {
+            imageTooltipEl.style.display = 'none'
+        })
+
+        function updateTooltipPosition(e) {
+            const offset = 15
+            let top = e.clientY + offset
+            let left = e.clientX + offset
+            
+            // Boundary check
+            const rect = imageTooltipEl.getBoundingClientRect()
+            if (left + rect.width > window.innerWidth) {
+                left = e.clientX - rect.width - offset
+            }
+            if (top + rect.height > window.innerHeight) {
+                top = e.clientY - rect.height - offset
+            }
+            
+            imageTooltipEl.style.top = top + 'px'
+            imageTooltipEl.style.left = left + 'px'
+        }
+    })
 }
 
 /**

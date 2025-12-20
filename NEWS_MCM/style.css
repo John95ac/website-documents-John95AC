@@ -1446,6 +1446,12 @@ body {
     object-fit: cover;
     border: 2px solid var(--color-primary);
     flex-shrink: 0;
+    cursor: pointer;
+    transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.tester-avatar:hover {
+    transform: scale(1.05);
 }
 
 .tester-info {
@@ -2616,6 +2622,11 @@ body {
     padding-bottom: var(--space-4);
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
+    justify-content: flex-start;
+}
+
+.news-gallery:has(> :only-child) {
+    justify-content: center;
 }
 
 .news-thumb {
