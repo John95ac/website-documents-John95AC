@@ -2269,16 +2269,17 @@ function initializeModalHoverEffects(modal) {
         const baseJson = JSON.parse(example.dataset.baseJson || '{}');
         const hoverJson = JSON.parse(example.dataset.hoverJson || '{}');
         const afterRule = example.dataset.afterRule;
+        let hoverTimeout;
+        const codeElement = example.querySelector('code');
+        const originalRule = codeElement.textContent;
 
         example.addEventListener('mouseenter', () => {
             jsonDisplay.innerHTML = formatJSON(hoverJson);
             jsonDisplay.classList.add('json-transition');
             
             if (afterRule) {
-                const codeElement = example.querySelector('code');
-                const originalRule = codeElement.textContent;
-                codeElement.setAttribute('data-original', originalRule);
-                setTimeout(() => {
+                clearTimeout(hoverTimeout);
+                hoverTimeout = setTimeout(() => {
                     codeElement.textContent = afterRule;
                 }, 150);
             }
@@ -2289,11 +2290,8 @@ function initializeModalHoverEffects(modal) {
             jsonDisplay.classList.remove('json-transition');
             
             if (afterRule) {
-                const codeElement = example.querySelector('code');
-                const originalRule = codeElement.getAttribute('data-original');
-                if (originalRule) {
-                    codeElement.textContent = originalRule;
-                }
+                clearTimeout(hoverTimeout);
+                codeElement.textContent = originalRule;
             }
         });
     });
