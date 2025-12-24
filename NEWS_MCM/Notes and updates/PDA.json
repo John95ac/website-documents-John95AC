@@ -31,5 +31,19 @@
         "- News tab improvement."
       ]
     }
+  },
+  {
+    "update_title": "OBody NG PDA Assistance Beta tester release FIX 2",
+    "version": "2.9.7",
+    "update_type": "hard",
+    "description": "Final migration of internal processes to Python, completely eliminating dependencies on external scripts for core logic.",
+    "details": {
+      "date": "2025-12-24",
+      "changes": [
+        "- Full independence from .ps1 scripts, all internal processes are now handled natively within the Python environment",
+        "- Improved stability and execution speed by removing the overhead of calling external PowerShell processes",
+        "- Optimized internal bridge logic to ensure seamless communication between components without third-party script reliance"
+      ]
+    }
   }
 ]
