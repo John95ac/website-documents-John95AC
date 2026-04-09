@@ -1,10 +1,10 @@
 {
   "date": "2026-04-09",
-  "message": "Daily news",
-  "details": "Daily update v46",
-  "tags": ["news", "daily"],
+  "message": "Hi everyone! Working on general updates for all mods today - upgrading compatibility to Prisma and preparing 3 new mods for release. Stay tuned!",
+  "details": "Daily update v47",
+  "tags": ["mods", "Prisma", "Skyrim", "updates", "compatibility"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-09T06:41:00Z"
+  "updated_at": "2026-04-09T09:08:00Z"
 }
