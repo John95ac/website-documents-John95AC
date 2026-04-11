@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-10",
-  "message": "Hi everyone! Working on OSoundtracks SA Expansion Sounds NG Prisma today - adjusting final details for base button selection and integrating daily message system. Also working on various Prisma-related elements. Expect to upload progress later today!",
-  "details": "Daily update v48",
-  "tags": ["OSoundtracks", "Prisma", "Skyrim", "NG", "integration", "button-selection"],
+  "date": "2026-04-11",
+  "message": "Hi everyone! Working on final details for the sound mod before uploading to Nexus. Also separating other elements, pushing code to GitHub, and integrating the daily news widget into web pages and mods. Expect to release soon!",
+  "details": "Daily update v49",
+  "tags": ["OSoundtracks", "Nexus", "GitHub", "daily-news-widget", "mods", "Skyrim"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-10T11:31:00Z"
+  "updated_at": "2026-04-11T14:02:00Z"
 }
