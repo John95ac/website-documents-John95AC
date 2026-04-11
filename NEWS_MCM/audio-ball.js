@@ -87,19 +87,19 @@
     style.textContent = `
       #audio-ball {
         position: fixed;
-        bottom: 20px;
-        left: 20px;
-        width: 40px; /* Smaller */
-        height: 40px; /* Smaller */
+        bottom: 115px;
+        left: 15px;
+        width: 32px;
+        height: 32px;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 50%;
         cursor: pointer;
-        z-index: 9999;
+        z-index: 998;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 18px; /* Adjusted font size */
+        font-size: 14px;
         transition: all 0.3s ease;
         border: 2px solid rgba(255,255,255,0.3);
       }
@@ -109,8 +109,8 @@
       }
       #audio-controls {
         position: fixed;
-        bottom: 70px; /* Adjusted position */
-        left: 20px;
+        bottom: 155px;
+        left: 15px;
         background: rgba(0, 0, 0, 0.95);
         color: white;
         padding: 15px;
