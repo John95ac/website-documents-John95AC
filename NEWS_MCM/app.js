@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize enhanced features
     // Hide all sections except news by default
     const allSections = document.querySelectorAll('.section');
+    const allHeaders = document.querySelectorAll('.section-header');
     const newsSection = document.getElementById('news');
     
     allSections.forEach(section => {
@@ -24,6 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
             section.style.display = 'none';
         }
     });
+    
+    // Also hide all section-headers except the first one (News)
+    allHeaders.forEach((header, index) => {
+        if (index === 0) {
+            header.style.display = 'block';
+        } else {
+            header.style.display = 'none';
+        }
+    });
+    
     setTimeout(initializeEnhancedFeatures, 100);
 });
 
@@ -55,11 +66,15 @@ function initializeNavigation() {
             if (href === '#') {
                 // Show all sections
                 const allSections = document.querySelectorAll('.section');
+                const allHeaders = document.querySelectorAll('.section-header');
                 allSections.forEach(section => section.style.display = 'block');
+                allHeaders.forEach(header => header.style.display = 'block');
             } else {
                 // 1. PRIMERO: Ocultar TODAS las secciones (para que no se amontonen)
                 const allSections = document.querySelectorAll('.section');
+                const allHeaders = document.querySelectorAll('.section-header');
                 allSections.forEach(section => section.style.display = 'none');
+                allHeaders.forEach(header => header.style.display = 'none');
 
                 // 2. SEGUNDO: Mostrar la sección que quieres ver
                 const targetId = href.substring(1);
@@ -67,6 +82,12 @@ function initializeNavigation() {
 
                 if (targetSection) {
                     targetSection.style.display = 'block';
+                    
+                    // Show corresponding header
+                    const headerIndex = ['news', 'acknowledgments', 'project-schedule-outline'].indexOf(targetId);
+                    if (headerIndex >= 0 && allHeaders[headerIndex]) {
+                        allHeaders[headerIndex].style.display = 'block';
+                    }
                     
                     // 3. TRUCO FINAL: Si es la sección del mapa, forzar recarga
                     if (targetId === 'project-schedule-outline') {

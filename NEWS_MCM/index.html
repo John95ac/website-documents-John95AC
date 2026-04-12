@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-scheme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +23,8 @@
     <script src="Special_days/new-year-effects.js"></script>
     <style>
       details {
-        background-color: var(--color-surface);
-        border: 1px solid var(--color-card-border);
+        background-color: var(--surface);
+        border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         margin-bottom: var(--space-16);
         overflow: hidden;
@@ -224,33 +224,52 @@
     </style>
 </head>
 <body>
-    <div id="christmas-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
-<div id="saint-patrick-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
-<div id="easter-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+<div id="christmas-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+    <div id="saint-patrick-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+    <div id="easter-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
 <div id="halloween-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
 <div id="new-year-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
-    <!-- Navigation v2 -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-icon">📰</span>
-                <span>John95ac Projects News</span>
-                <a href="../index.html" class="nav-link" style="margin-left: 5px; text-decoration: none; color: inherit;" title="Back to Home">🏠 Home</a>
+<canvas id="particles" style="position: fixed; top: 0; left: 280px; width: calc(100% - 280px); height: 100%; pointer-events: none; z-index: 0;"></canvas>
+<script src="particles.js"></script>
+<aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-area">
+                <img src="../Data/013.gif" alt="Cat Running" class="logo-cat">
+                <span class="logo-text">John95ac Projects</span>
             </div>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#news" class="nav-link">News</a></li>
-                <li><a href="#acknowledgments" class="nav-link">Acknowledgments</a></li>
-                <li><a href="#project-schedule-outline" class="nav-link">Projects</a></li>
-            </ul>
-            <button class="nav-toggle" id="navToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
-    </nav>
-
-
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-target="news">
+                <span class="nav-icon">📰</span>
+                <span class="nav-text">News</span>
+            </a>
+            <a href="#" class="nav-item" data-target="acknowledgments">
+                <span class="nav-icon">🙏</span>
+                <span class="nav-text">Acknowledgments</span>
+            </a>
+            <a href="#" class="nav-item" data-target="project-schedule-outline">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Projects</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="footer-text">
+                <p class="footer-copyright">© 2026 John1995ac. MIT License. Open source project</p>
+                <p class="footer-developed">Developed with ❤️ for the Skyrim modding community</p>
+            </div>
+        </div>
+    </aside>
+<main class="main-content">
+<div class="section-header">
+        <div class="header-decoration"></div>
+        <div class="header-content">
+            <h1 class="main-title">📰 News</h1>
+            <p class="main-subtitle">Latest updates and releases from John95ac Projects</p>
+        </div>
+        <a href="../index.html" class="header-home-btn" title="Back to Home">🏠 Home</a>
+    </div>
 
     <section id="news" class="section">
         <div class="container">
@@ -1610,13 +1629,16 @@
             </div>
         </div>
     </div>
-
-    <!-- Acknowledgments -->
-
-    <!-- Acknowledgments -->
-    <section id="acknowledgments" class="section">
+<div class="section-header">
+        <div class="header-decoration"></div>
+        <div class="header-content">
+            <h1 class="main-title">🙏 Acknowledgments</h1>
+            <p class="main-subtitle">Thank you to all my supporters and beta testers</p>
+        </div>
+        <a href="../index.html" class="header-home-btn" title="Back to Home">🏠 Home</a>
+    </div>
+<section id="acknowledgments" class="section">
         <div class="container">
-            <h2 class="section-title">Acknowledgments</h2>
             <div class="acknowledgments-content">
                 <div class="sponsors">
                     <h3 class="sponsors-title" style="color: #38bdf8;">Sponsors and Donations</h3>
@@ -1898,11 +1920,18 @@
             </div>
         </div>
     </section>
+<div class="section-header">
+        <div class="header-decoration"></div>
+        <div class="header-content">
+            <h1 class="main-title">📋 Projects</h1>
+            <p class="main-subtitle">Project Schedule Outline and Roadmap</p>
+        </div>
+        <a href="../index.html" class="header-home-btn" title="Back to Home">🏠 Home</a>
+    </div>
 
     <section id="project-schedule-outline" class="section bg-celeste">
         <div class="container">
-            <h2 class="section-title" style="color: var(--color-teal-300);">Project Schedule Outline</h2>
-            <iframe width="100%" height="400" src="https://time.graphics/es/embed?v=1&id=1001694" frameborder="0" allowfullscreen></iframe>
+            <iframe width="100%" height="400" src="https://time.graphics/embed?v=1&id=1001694" frameborder="0" allowfullscreen></iframe>
             <div><a rel="nofollow" style="font-size: 12px; text-decoration: none;" title="Design timeline" href="https://time.graphics">Design timeline</a></div>
             <div style="background-color: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: 20px; margin: 20px 0; text-align: center;">
                 <p style="margin-bottom: 10px; font-size: 1em; color: var(--color-teal-300); line-height: 1.5;">
@@ -2094,9 +2123,7 @@
 
         </div>
     </section>
-
-    <!-- Final Note -->
-    <section class="section final-note-section bg-celeste">
+<section class="section final-note-section bg-celeste">
         <div class="container">
             <div class="final-note">
                 <h3>Final Note</h3>
@@ -2106,9 +2133,7 @@
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
+<footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-left">
@@ -2131,9 +2156,7 @@
             </div>
         </div>
     </footer>
-
-    <!-- Video Modal -->
-    <div id="news-video-modal" class="modal">
+<div id="news-video-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeVideoModal()">&times;</span>
             <div class="video-modal-container">
@@ -2671,6 +2694,38 @@
             }
         }
       });
+    </script>
+    </main>
+    <script src="particles.js"></script>
+    <script>
+    (function() {
+        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        
+        navItems.forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = this.getAttribute('data-target');
+                
+                navItems.forEach(function(i) {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                var sections = ['news', 'acknowledgments', 'project-schedule-outline'];
+                var headers = document.querySelectorAll('.section-header');
+                
+                sections.forEach(function(sectionId, index) {
+                    var section = document.getElementById(sectionId);
+                    if (section) {
+                        section.style.display = (sectionId === target) ? 'block' : 'none';
+                    }
+                    if (headers[index]) {
+                        headers[index].style.display = (sectionId === target) ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+    })();
     </script>
 </body>
 </html>
