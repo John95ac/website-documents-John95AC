@@ -61,7 +61,7 @@
     style.textContent = `
       #support-ball {
         position: fixed;
-        bottom: 70px;
+        bottom: 15px;
         right: 20px;
         width: 32px;
         height: 32px;
@@ -87,7 +87,7 @@
 
       #support-panel {
         position: fixed;
-        bottom: 110px;
+        bottom: 55px;
         right: 20px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;

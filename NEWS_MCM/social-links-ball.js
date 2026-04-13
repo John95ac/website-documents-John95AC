@@ -84,7 +84,7 @@
     style.textContent = `
       #social-links-ball {
         position: fixed;
-        bottom: 115px; /* Separación clara de la de soporte (70px) */
+        bottom: 55px; /* Separación clara de la de soporte (70px) */
         right: 20px;
         width: 32px;
         height: 32px;
@@ -110,7 +110,7 @@
 
       #social-links-panel {
         position: fixed;
-        bottom: 165px; /* Ajustado a la nueva posición de la esfera */
+        bottom: 105px; /* Ajustado a la nueva posición de la esfera */
         right: 20px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;

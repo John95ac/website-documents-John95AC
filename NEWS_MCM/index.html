@@ -52,7 +52,7 @@
       .modal {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 10001;
         left: 0;
         top: 0;
         width: 100%;
@@ -240,18 +240,81 @@
         </div>
         
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active" data-target="news">
-                <span class="nav-icon">📰</span>
-                <span class="nav-text">News</span>
-            </a>
-            <a href="#" class="nav-item" data-target="acknowledgments">
-                <span class="nav-icon">🙏</span>
-                <span class="nav-text">Acknowledgments</span>
-            </a>
-            <a href="#" class="nav-item" data-target="project-schedule-outline">
-                <span class="nav-icon">📋</span>
-                <span class="nav-text">Projects</span>
-            </a>
+            <div class="nav-group">
+                <a href="#" class="nav-item active" id="newsToggle">
+                    <span class="nav-icon">📰</span>
+                    <span class="nav-text">News</span>
+                    <span class="nav-arrow" id="newsArrow">▾</span>
+                </a>
+                <div class="sub-nav open" id="newsSubNav">
+                    <a href="#" class="sub-nav-item active" data-anchor="year-2026">
+                        <span class="sub-icon">🎆</span> Year 2026
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="year-2025">
+                        <span class="sub-icon">🎆</span> Year 2025
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="year-2024">
+                        <span class="sub-icon">🎆</span> Year 2024
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-group">
+                <a href="#" class="nav-item" id="acknowledgmentsToggle">
+                    <span class="nav-icon">🙏</span>
+                    <span class="nav-text">Acknowledgments</span>
+                    <span class="nav-arrow" id="acknowledgmentsArrow">▾</span>
+                </a>
+                <div class="sub-nav" id="acknowledgmentsSubNav">
+                    <a href="#" class="sub-nav-item" data-anchor="sponsors-donations">
+                        <span class="sub-icon">💎</span> Sponsors and Donations
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="beta-testers">
+                        <span class="sub-icon">🧪</span> Beta Testers
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="additional-credits">
+                        <span class="sub-icon">⭐</span> Additional Credits
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-group">
+                <a href="#" class="nav-item" id="projectsToggle">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Projects</span>
+                    <span class="nav-arrow" id="projectsArrow">▾</span>
+                </a>
+                <div class="sub-nav" id="projectsSubNav">
+                    <a href="#" class="sub-nav-item" data-anchor="timeline">
+                        <span class="sub-icon">🕐</span> Timeline
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="projects-descriptions">
+                        <span class="sub-icon">📄</span> Projects and their descriptions
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="brief-explanation">
+                        <span class="sub-icon">📝</span> Brief Explanation
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-group">
+                <a href="#" class="nav-item" id="aboutmeToggle">
+                    <img src="../Data/003.png" class="nav-icon-img" alt="About Me">
+                    <span class="nav-text">About Me</span>
+                    <span class="nav-arrow" id="aboutmeArrow">▾</span>
+                </a>
+                <div class="sub-nav" id="aboutmeSubNav">
+                    <a href="#" class="sub-nav-item" data-anchor="general-questions">
+                        <span class="sub-icon">💬</span> General Questions
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="technical-questions">
+                        <span class="sub-icon">⚙️</span> Technical Questions
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="content-questions">
+                        <span class="sub-icon">📖</span> Content Questions
+                    </a>
+                </div>
+            </div>
         </nav>
         
         <div class="sidebar-footer">
@@ -330,6 +393,10 @@
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <div id="year-2026" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
+                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🎆 Happy New Year 2026 🎆</span>
             </div>
 
             <div class="tester-card news-card">
@@ -918,6 +985,10 @@
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <div class="year-separator" id="year-2025" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
+                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🎆 Happy New Year 2025 🎆</span>
             </div>
 
             <div class="tester-card news-card">
@@ -1618,6 +1689,11 @@
                     </div>
                 </div>
             </div>
+
+            <div class="year-separator" id="year-2024" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
+                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🎆 Happy New Year 2024 🎆</span>
+            </div>
+
         </div>
     </section>
 
@@ -1640,7 +1716,7 @@
 <section id="acknowledgments" class="section">
         <div class="container">
             <div class="acknowledgments-content">
-                <div class="sponsors">
+                <div id="sponsors-donations" class="sponsors">
                     <h3 class="sponsors-title" style="color: #38bdf8;">Sponsors and Donations</h3>
                     <div class="credit-item">
                         <div>
@@ -1764,7 +1840,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="beta-testers">
+                <div id="beta-testers" class="beta-testers">
                     <h3 style="color: #38bdf8;">Beta Testers</h3>
                     <p>Special thanks to our dedicated beta testers who helped make this project possible:</p>
 
@@ -1859,7 +1935,7 @@
                     </div>
                 </div>
 
-                <div class="credits">
+                <div id="additional-credits" class="credits">
                     <h3 style="color: #38bdf8;">Additional Credits</h3>
                     <div class="credits-list">
                         <div class="credit-item">
@@ -1946,7 +2022,7 @@
             </div>
 
             <div class="acknowledgments-content">
-                <div class="beta-testers" style="margin-top: 0;">
+                <div id="projects-descriptions" class="beta-testers" style="margin-top: 0;">
                     <div class="sponsors-header" style="margin-bottom: 10px;">
                         <h3 class="sponsors-title" style="margin-bottom: 5px; color: #38bdf8;">Projects and their descriptions</h3>
                         <p style="margin-top: 0;">Each project has its image, which serves to identify it, but they are more of a summary of various projects.</p>
@@ -2074,7 +2150,7 @@
                     </div>
                 </div>
 
-                <div class="credits">
+                <div id="brief-explanation" class="credits">
                     <h3 style="color: #38bdf8;">Brief Explanation</h3>
                     <div class="credits-list">
                         <div class="credit-item">
@@ -2121,6 +2197,106 @@
             </div>
 
 
+        </div>
+    </section>
+
+<div class="section-header">
+        <div class="header-decoration"></div>
+        <div class="header-content">
+            <h1 class="main-title"><img src="../Data/003.png" class="aboutme-title-img" alt="About Me"> About Me</h1>
+            <p class="main-subtitle">Questions & Answers</p>
+        </div>
+        <a href="../index.html" class="header-home-btn" title="Back to Home">🏠 Home</a>
+    </div>
+
+<section id="faq" class="section">
+        <div class="container">
+            <div class="acknowledgments-content">
+                
+                <div id="general-questions" class="credits">
+                    <h3 style="color: #38bdf8;">General Questions</h3>
+                    <div class="credits-list">
+                        <div class="credit-item">
+                            <h4>❓ Are your mods compatible with SE, AE, or GOG?</h4>
+                            <p>Yes! All mods that use SKSE are compatible with this system, including mods from other languages and unofficial patches. I'm also working on future support for Linux versions. Currently most functionality works on Windows, but I'm actively making my scripts compatible with Linux (Ubuntu, Steam, and others). The only version that is not supported and likely won't receive support is the Legacy Edition (LE). I played it a lot, but currently there are far more mods available for the newer versions.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>🔧 Do you offer support for your mods?</h4>
+                            <p>Yes, absolutely! You can find me on <strong>Nexus Mods</strong>, <strong>Discord</strong>, <strong>Patreon</strong>, and <strong>LoverLab</strong>. You'll most likely see me on Discord since it opens automatically on my PC and I always have it at hand.</p>
+                            <p style="color: #10B981; font-weight: 500; margin-top: 8px;">⚠️ If you encounter a bug or have an issue, it's much faster to send me a direct message on Nexus or Discord than to open a Bug Discussion. Bug Discussions never reach my email or phone. Nexus doesn't notify me about them at all. Sending me a direct message on Nexus, Discord, or anywhere else ensures I'll personally look into the problem until it's resolved. Everyone wins.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>💰 How do you fund your work?</h4>
+                            <p>Primarily through my day job as an engineer, working Monday through Friday. You can also support me on <strong>Patreon</strong> or <strong>Ko-fi</strong>. Your support directly contributes to more mod development, better documentation, and faster updates. Every contribution is appreciated!</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>📋 Is your mod list published?</h4>
+                            <p>I'd love to, but unfortunately my mod list has already surpassed 5,050 mods. To make it work, I've had to use multiple tricks: direct modification of several official mods to make them lightweight, increasing PC cache capacity, increasing RAM, creating virtual RAM to support the amount of textures, and creating multiple patches. In fact, most are patches, and half of them could have been published directly by me, but I haven't because publishing on Nexus requires writing descriptions, adding images, formatting... it's quite a bit of work. Also, many of the mods in my list have likely been removed from Nexus or other platforms, and I've been maintaining them myself. So they're unofficial versions that would cause problems if published. Maybe I'll publish it someday, but keep in mind it would weigh over 500 GB compressed and you'd need a dedicated NVMe disk...</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>📌 What mods do your projects require?</h4>
+                            <p>That depends on which version you want to install. Currently, most people want the <span style="color: #FBBF24; font-weight: 600;">USSEP</span>. Regardless of the version, it's made to work with almost all game versions except LE. I'm also working on making it functional on console. The full list depends on all the mods I create. Generally, my mods are expansions or unique mods that require <span style="color: #FBBF24; font-weight: 600;">SKSE</span>. Required mods:</p>
+                            <ul style="margin-top: 8px; padding-left: 24px;">
+                                <li><span style="color: #FBBF24; font-weight: 600;">USSEP</span></li>
+                                <li><span style="color: #FBBF24; font-weight: 600;">SKSE</span></li>
+                                <li><span style="color: #FBBF24; font-weight: 600;">PRISMA</span></li>
+                                <li>MCM</li>
+                                <li>...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="technical-questions" class="credits">
+                    <h3 style="color: #38bdf8;">Technical Questions</h3>
+                    <div class="credits-list">
+                        <div class="credit-item">
+                            <h4>⚙️ My mod isn't working, what should I do?</h4>
+                            <p>Check the logs in your Documents folder. Generally, you'll find them at <code>..\My Games\Skyrim Special Edition\SKSE\</code> (the path may vary depending on your system language). Inside that folder, look for a log file with the same name as the mod. If you're using non-official versions, the logs may appear at <code>..\My Games\Skyrim.INI\SKSE\</code>. I write logs to be as readable as possible. If you still can't understand what the log says, send it to me through any of my communication channels. You'll find direct links in the social buttons on this page.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>📁 Where should I install your mods?</h4>
+                            <p>These mods are preferably installed with MO2 (Mod Organizer 2), but over time I've made them compatible with all currently available mod managers on the market: Vortex, Wabbajack, and others. Regardless of which platform you use, simply install with a mod manager and you're good to go. The purpose is for them to be easy to install, easy to use, and easy to uninstall.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>🐱 I hear a cat sound from time to time, is that a bug or intended?</h4>
+                            <p>It depends on which type of mod you're using, but yes. Most of the time I like to use cat sound #003. I have several cat sounds and I love cats, so I tend to put that type of sound in various places. But don't worry. In each mod's configuration, there's always a way to disable it. In my case, my brain just filters the sound out, so I forget it's even there.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>💻 Do your mods work on Linux/Steam Deck?</h4>
+                            <p>Part of my mods work on Linux and Steam Deck, and some also work on consoles, but not all of them yet. I'm actively working on associating these mods directly with those platforms. I've already set up a WSL system on my main PC and have another PC running Linux where I'm doing testing, but full support probably won't come very soon.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-questions" class="credits">
+                    <h3 style="color: #38bdf8;">Content Questions</h3>
+                    <div class="credits-list">
+                        <div class="credit-item">
+                            <h4>🎬 Will you create more animation packs?</h4>
+                            <p>Of course! Giant Animation is one of the things I work on almost daily. Animations. You might even see animators on Nexus who turned out to have been talking with me to learn how to animate, and I love that. I love helping wherever I can. I won't publish an animation pack until I have a solid number of high-quality animations. As for the programs I use: Blender (almost all versions) and Cascadeur, an excellent program. There are also online programs for motion capture, but that list would be too long to include here.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>📖 When will you update your manuals?</h4>
+                            <p>I update my manuals whenever I can, as fast as I can, but they take quite a bit of time. I'm currently working on expanding the AI mod guides and performance optimization manuals. Updates are posted on Nexus and my website.</p>
+                        </div>
+
+                        <div class="credit-item">
+                            <h4>🔓 Are your mods open source? Can I use them in my modpack?</h4>
+                            <p>Yes! All my projects are open source under the MIT license. I like people reading the source code so they can understand how things work under the hood. You can freely use my mods in your modpacks as long as you follow the license terms and provide credit. I encourage learning, modification, and collaboration.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 <section class="section final-note-section bg-celeste">
@@ -2699,30 +2875,117 @@
     <script src="particles.js"></script>
     <script>
     (function() {
-        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        var navToggles = document.querySelectorAll('.nav-item[id$="Toggle"]');
+        var allSubNavs = document.querySelectorAll('.sub-nav');
+        var allSubNavItems = document.querySelectorAll('.sub-nav-item');
         
-        navItems.forEach(function(item) {
+        var sectionMap = {
+            'newsToggle': 'news',
+            'acknowledgmentsToggle': 'acknowledgments',
+            'projectsToggle': 'project-schedule-outline',
+            'aboutmeToggle': 'faq'
+        };
+        
+        var headerMap = {
+            'newsToggle': 0,
+            'acknowledgmentsToggle': 1,
+            'projectsToggle': 2,
+            'aboutmeToggle': 3
+        };
+        
+        var scrollOffsetMap = {
+            'year-2026': 0,
+            'year-2025': -700,
+            'year-2024': -80
+        };
+        
+        function showSection(sectionId) {
+            var allSections = document.querySelectorAll('.section');
+            var allHeaders = document.querySelectorAll('.section-header');
+            
+            allSections.forEach(function(section) {
+                if (section.id === sectionId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+            
+            allHeaders.forEach(function(header, index) {
+                if (index === headerMap[Object.keys(headerMap).find(key => sectionMap[key] === sectionId)]) {
+                    header.style.display = 'block';
+                } else {
+                    header.style.display = 'none';
+                }
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        navToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                var toggleId = this.id;
+                var subNavId = toggleId.replace('Toggle', 'SubNav');
+                var arrowId = toggleId.replace('Toggle', 'Arrow');
+                
+                var subNav = document.getElementById(subNavId);
+                var arrow = document.getElementById(arrowId);
+                
+                if (subNav) {
+                    var isOpen = subNav.classList.contains('open');
+                    
+                    allSubNavs.forEach(function(sn) {
+                        sn.classList.remove('open');
+                    });
+                    
+                    navToggles.forEach(function(t) {
+                        t.classList.remove('active');
+                    });
+                    
+                    document.querySelectorAll('.nav-arrow').forEach(function(a) {
+                        a.classList.add('collapsed');
+                    });
+                    
+                    if (!isOpen) {
+                        subNav.classList.add('open');
+                        this.classList.add('active');
+                        if (arrow) {
+                            arrow.classList.remove('collapsed');
+                        }
+                        
+                        var sectionId = sectionMap[toggleId];
+                        if (sectionId) {
+                            showSection(sectionId);
+                        }
+                    }
+                }
+            });
+        });
+        
+        allSubNavItems.forEach(function(item) {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                var target = this.getAttribute('data-target');
+                var anchor = this.getAttribute('data-anchor');
                 
-                navItems.forEach(function(i) {
+                allSubNavItems.forEach(function(i) {
                     i.classList.remove('active');
                 });
                 this.classList.add('active');
                 
-                var sections = ['news', 'acknowledgments', 'project-schedule-outline'];
-                var headers = document.querySelectorAll('.section-header');
-                
-                sections.forEach(function(sectionId, index) {
-                    var section = document.getElementById(sectionId);
-                    if (section) {
-                        section.style.display = (sectionId === target) ? 'block' : 'none';
+                if (anchor === 'year-2026' || anchor === 'timeline') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (anchor) {
+                    var targetElement = document.getElementById(anchor);
+                    if (targetElement) {
+                        var rect = targetElement.getBoundingClientRect();
+                        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        var offset = scrollOffsetMap[anchor] !== undefined ? scrollOffsetMap[anchor] : -80;
+                        var targetY = rect.top + scrollTop + offset;
+                        if (targetY < 0) targetY = 0;
+                        window.scrollTo({ top: targetY, behavior: 'smooth' });
                     }
-                    if (headers[index]) {
-                        headers[index].style.display = (sectionId === target) ? 'block' : 'none';
-                    }
-                });
+                }
             });
         });
     })();

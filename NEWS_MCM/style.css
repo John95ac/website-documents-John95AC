@@ -2904,6 +2904,13 @@ body {
     font-size: 1.25rem;
 }
 
+.nav-icon-img {
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
 .nav-text {
     font-size: 1.1rem;
     font-weight: 400;
@@ -3009,7 +3016,6 @@ body {
     min-height: 100vh;
     color: var(--text-primary) !important;
     position: relative;
-    z-index: 1;
 }
 
 .main-content * {
@@ -3160,6 +3166,14 @@ body {
     margin: 0 0 10px 0;
     color: var(--text-primary);
     text-transform: uppercase;
+}
+
+.aboutme-title-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 8px;
 }
 
 .main-subtitle {
@@ -3338,6 +3352,18 @@ body {
     border-color: rgba(74, 222, 128, 0.6);
     box-shadow: 0 0 16px rgba(74, 222, 128, 0.3);
     transform: translateY(-1px);
+}
+
+.fslightbox-container {
+    z-index: 9999 !important;
+}
+
+.fslightbox-slide {
+    z-index: 9999 !important;
+}
+
+.fslightbox-source {
+    z-index: 9999 !important;
 }
 
 

@@ -123,7 +123,7 @@
     const style = document.createElement('style');
     style.textContent = `
       #daily-updates-ball {
-        position: fixed; bottom: 160px; right: 20px; width: 40px; height: 40px;
+        position: fixed; bottom: 95px; right: 20px; width: 40px; height: 40px;
         background: linear-gradient(135deg, #10b981, #059669);
         border-radius: 50%; cursor: pointer; z-index: 9997;
         display: flex; align-items: center; justify-content: center;
@@ -152,7 +152,7 @@
         50% { box-shadow: 0 4px 30px rgba(16,185,129,0.8), 0 0 20px rgba(16,185,129,0.6); }
       }
       #daily-updates-panel {
-        position: fixed; bottom: 210px; right: 20px;
+        position: fixed; bottom: 145px; right: 20px;
         background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(30,30,30,0.95));
         border-radius: 15px; z-index: 10000; display: none;
         min-width: 380px; max-width: 440px;

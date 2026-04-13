@@ -84,7 +84,7 @@ function initializeNavigation() {
                     targetSection.style.display = 'block';
                     
                     // Show corresponding header
-                    const headerIndex = ['news', 'acknowledgments', 'project-schedule-outline'].indexOf(targetId);
+                    const headerIndex = ['news', 'acknowledgments', 'project-schedule-outline', 'faq'].indexOf(targetId);
                     if (headerIndex >= 0 && allHeaders[headerIndex]) {
                         allHeaders[headerIndex].style.display = 'block';
                     }
