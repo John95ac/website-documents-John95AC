@@ -1,36 +1,36 @@
-# Sand_Box - Entorno de Prueba
+# Sand_Box - Test Environment
 
-Esta carpeta está destinada a pruebas de entorno y experimentación con los límites de JavaScript y funcionalidades relacionadas.
+This folder is intended for environment testing and experimentation with JavaScript limits and related functionalities.
 
-## Propósito
-- Probar límites de JavaScript en el navegador
-- Experimentar con descarga de archivos en formatos seguros (JSON, ZIP)
-- Validar funcionalidades de generación y manipulación de reglas INI para OBody NG PDA
-- Entorno aislado para pruebas sin afectar el proyecto principal
+## Purpose
+- Test JavaScript limits in the browser
+- Experiment with safe file download formats (JSON, ZIP)
+- Validate functionalities for generating and manipulating INI rules for OBody NG PDA
+- Isolated environment for testing without affecting the main project
 
-## Características actuales
-- Generador interactivo de reglas INI para OBody NG PDA
-- Descarga de reglas en formato JSON
-- Descarga de reglas en formato ZIP (con JSON interno)
-- Descarga de reglas en formato ZIP (con INI interno)
-- Copia de reglas al portapapeles
-- Limpieza de reglas generadas
+## Current Features
+- Interactive INI rule generator for OBody NG PDA
+- Download rules in JSON format
+- Download rules in ZIP format (with JSON inside)
+- Download rules in ZIP format (with INI inside)
+- Copy rules to clipboard
+- Clear generated rules
 
-## Archivos principales
-- `index.html`: Estructura y contenido de la página
-- `style.css`: Estilos y diseño
-- `app.js`: Lógica principal incluyendo generación de reglas y funcionalidades de descarga
+## Main Files
+- `index.html`: Structure and content of the page
+- `style.css`: Styles and design
+- `app.js`: Main logic including generation of rules and download functionalities
 
-## Notas de seguridad
-- Este entorno es solo para pruebas y experimentación
-- Los archivos descargados están diseñados para ser seguros en navegadores modernos
-- No se almacenan datos sensibles ni se realizan operaciones críticas en este entorno
+## Security Notes
+- This environment is for testing and experimentation only
+- Downloaded files are designed to be safe in modern browsers
+- No sensitive data is stored nor critical operations performed in this environment
 
-## Uso
-1. Abrir `index.html` en un navegador compatible
-2. Utilizar el generador de reglas para crear reglas INI
-3. Descargar las reglas en el formato deseado (JSON, ZIP)
-4. Probar los límites y funcionalidades según sea necesario
+## Usage
+1. Open `index.html` in a compatible browser
+2. Use the rule generator to create INI rules
+3. Download rules in desired format (JSON, ZIP)
+4. Test limits and functionalities as needed
 
 ---
-*Entorno de prueba para desarrollo y validación de funcionalidades*
+*Test environment for development and validation of functionalities*

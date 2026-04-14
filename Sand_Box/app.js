@@ -277,7 +277,7 @@ function initializeCopyFunction() {
                      console.error('ZIP generation failed:', err);
                      showCopyError(this, '❌ Error al crear ZIP');
                  });
-         });
+          });
       }
 
       // Download as ZIP with INI inside
@@ -305,14 +305,22 @@ function initializeCopyFunction() {
                  return;
              }
 
+             // Ask user for mod name
+             const modName = prompt("Enter the mod name for OBodyNG_PDA_(MOD NAME).zip:", "MyMod");
+             const finalModName = modName ? modName.trim() : "MyMod";
+             
+             // Create file names
+             const zipFileName = `OBodyNG_PDA_${finalModName}.zip`;
+             const iniFileName = `OBodyNG_PDA_${finalModName}.ini`;
+
              // Create ZIP with INI file inside
              const zip = new JSZip();
-             zip.file("rules.ini", ruleText);
+             zip.file(iniFileName, ruleText);
              
              zip.generateAsync({type:"blob"})
                  .then(function(content) {
                      // Save the ZIP file
-                     downloadFile(content, 'rules.zip', this, 'application/zip');
+                     downloadFile(content, zipFileName, this, 'application/zip');
                  }.bind(this))
                  .catch(function(err) {
                      console.error('ZIP generation failed:', err);
