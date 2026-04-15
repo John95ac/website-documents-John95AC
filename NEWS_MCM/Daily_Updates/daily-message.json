@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-14",
-  "message": "Hi everyone! Still waiting for beta tester feedback on OSoundtracks SA Expansion Sounds Prisma NG. Meanwhile polishing some final details on the sound mod. After upload, moving on to OBody NG Prisma compatibility and integrating dice/educational game elements. Upload coming soon!",
+  "date": "2026-04-15",
+  "message": "Hi everyone! Working on final improvements for the dice mod - removing backgrounds and adding animations. OSoundtracks SA Expansion Sounds Prisma NG is ready! Just waiting for 2 beta testers from other countries to respond. Once I hear back, I'll publish the sound mod and continue with the rest!",
   "details": "Daily update",
-  "tags": ["OSoundtracks", "Prisma", "beta-testing", "OBody-NG", "dice", "educational-games", "Skyrim"],
+  "tags": ["dice-mod", "OSoundtracks", "Prisma", "beta-testing", "animations", "Skyrim"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-14T09:02:00Z"
+  "updated_at": "2026-04-15T09:48:00Z"
 }
