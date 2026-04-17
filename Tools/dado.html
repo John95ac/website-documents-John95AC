@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional 3D Dice - Automated Render Engine</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 50%, #0d1b2a 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: white; overflow: hidden;
+        }
+        h1 { margin-bottom: 10px; text-shadow: 0 0 30px rgba(100,200,255,0.7); font-size: 2.2rem; }
+        .toolbar {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 15px 25px;
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .toolbar-group { display: flex; align-items: center; gap: 8px; }
+        select, .auto-input {
+            background: #1a1a3e; color: white; border: 1px solid #667eea;
+            padding: 8px 10px; border-radius: 8px; font-size: 15px;
+            outline: none; cursor: pointer; transition: all 0.2s;
+        }
+        select:hover { border-color: #ffd700; }
+        .auto-input { width: 50px; text-align: center; cursor: text; }
+        .lock-btn {
+            background: transparent; border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px; color: rgba(255,255,255,0.4); font-size: 16px;
+            padding: 6px 9px; cursor: pointer; transition: all 0.2s; line-height: 1;
+        }
+        .lock-btn:hover { border-color: #ffd700; color: #ffd700; }
+        .lock-btn.locked { background: rgba(255,200,0,0.15); border-color: #ffd700; color: #ffd700; }
+        .record-label {
+            display: flex; align-items: center; gap: 8px; font-weight: bold;
+            background: rgba(255,50,50,0.1); border: 1px solid #ff4444;
+            padding: 8px 10px; border-radius: 8px; font-size: 15px; cursor: pointer; transition: all 0.2s;
+        }
+        .record-label:hover { border-color: #ffd700; }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .auto-btn {
+            background: rgba(243,156,18,0.1); border: 2px solid #f39c12;
+            color: #f39c12; font-weight: bold; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s;
+        }
+        .auto-btn:hover { background: #f39c12; color: #1a1a3e; }
+        .auto-btn.running { background: #ff4444; border-color: #ff4444; color: white; }
+        #canvas-container {
+            width: 500px; height: 500px; margin-bottom: 15px;
+            border-radius: 20px; box-shadow: 0 0 50px rgba(100,200,255,0.2);
+            overflow: hidden; background-color: #0f0f1a; position: relative;
+        }
+        #canvas-container canvas { width: 100% !important; height: 100% !important; outline: none; }
+        #rec-indicator {
+            position: absolute; top: 20px; right: 20px; color: #ff4444; font-weight: bold;
+            font-size: 20px; text-shadow: 0 0 10px rgba(255,0,0,0.8); display: none;
+            z-index: 10; animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
+        .dice-btn {
+            padding: 10px 18px; font-size: 15px; font-weight: bold;
+            background: linear-gradient(145deg,#2a2a5a,#1a1a4a); color: #ffd700;
+            border: 2px solid #ffd700; border-radius: 20px; cursor: pointer; transition: all 0.2s;
+        }
+        .dice-btn:hover, .dice-btn.active { background: #ffd700; color: #0f0f1a; transform: scale(1.05); }
+        .action-container { display: flex; gap: 15px; margin-bottom: 10px; }
+        .roll-btn {
+            padding: 15px 40px; font-size: 18px; font-weight: bold;
+            background: linear-gradient(145deg,#667eea,#764ba2); color: white;
+            border: none; border-radius: 40px; cursor: pointer; transition: all 0.3s;
+        }
+        .roll-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102,126,234,0.5); }
+        .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .photo-btn {
+            padding: 15px 30px; font-size: 18px; font-weight: bold;
+            background: linear-gradient(145deg,#11998e,#38ef7d); color: #0f0f1a;
+            border: none; border-radius: 40px; cursor: pointer; transition: all 0.3s;
+        }
+        .photo-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(56,239,125,0.4); }
+        .result { font-size: 28px; font-weight: bold; min-height: 50px; text-align: center; }
+        .result span { color: #ffd700; font-size: 42px; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .auto-status { color: #38ef7d; font-size: 16px; font-weight: normal; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🎲 Automated 3D Dice Engine 🎲</h1>
+        <div class="toolbar">
+        <!-- BLOQUE 1: MATERIAL DEL DADO Y TEXTURAS -->
+        <div class="toolbar-group">
+            <label>Dice:</label>
+            <select id="material-select" onchange="changeMaterial(this.value)">
+                <option value="wood">🪵 Wood</option>
+                <option value="gold">🥇 Gold</option>
+                <option value="silver">🥈 Silver</option>
+                <option value="stone">🪨 Stone</option>
+                <option value="bone">🦴 Bone</option>
+                <option value="galaxy" selected>🌌 Galaxy</option>
+            </select>
+            <input type="file" id="tex-upload" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleTextureUpload(event)">
+            <button class="lock-btn" id="btn-tex-upload" style="display:inline-block; font-size:12px; padding:0 5px; margin-left: 2px;" onclick="document.getElementById('tex-upload').click()" title="Cargar Textura (PNG/JPG)">📂</button>
+            <button class="lock-btn" id="lock-mat" onclick="toggleLock('mat')" title="Bloquear Material">🔓</button>
+        </div>
+
+        <!-- BLOQUE 2: FONDO DEL RENDER -->
+        <div class="toolbar-group">
+            <label>BG:</label>
+            <select id="bg-select" onchange="changeBackground(this.value)">
+                <option value="transparent" selected>🟩 Transparent</option>
+                <option value="gradient">🌌 Gradient</option>
+                <option value="wood">🪵 Wood Grain</option>
+                <option value="stone">🪨 Stone Solid</option>
+                <option value="dark">⬛ Dark Solid</option>
+            </select>
+            <button class="lock-btn" id="lock-bg" onclick="toggleLock('bg')" title="Bloquear Fondo">🔓</button>
+        </div>
+
+        <!-- BLOQUE 3: CARA OBJETIVO DEL DADO -->
+        <div class="toolbar-group">
+            <label>Face:</label>
+            <select id="face-select"><option value="random">🎲 Random</option></select>
+            <button class="lock-btn" id="lock-face" onclick="toggleLock('face')" title="Bloquear Cara">🔓</button>
+        </div>
+
+        <!-- BLOQUE 4: SELECCIÓN DE MODO DE GRABACIÓN AUTOMÁTICA -->
+        <div class="toolbar-group">
+            <label class="record-label" title="Graba video en formato WebM (HD)">
+                <input type="checkbox" id="record-toggle"> 🔴 REC HD
+            </label>
+            <label class="record-label" style="margin-left:10px; color:#f59e0b;" title="Graba spritesheet en formato WEBP">
+                <input type="checkbox" id="record-sheet-toggle"> 🎞️ REC SHEET
+            </label>
+        </div>
+
+        <!-- BLOQUE 5: CALIDAD DEL SPRITESHEET (WEBP) -->
+        <div class="toolbar-group">
+            <label>Quality:</label>
+            <select id="quality-select">
+                <option value="0.95">95%</option>
+                <option value="0.90" selected>90%</option>
+                <option value="0.85">85%</option>
+                <option value="0.80">80%</option>
+                <option value="0.75">75%</option>
+                <option value="0.70">70%</option>
+            </select>
+        </div>
+
+        <!-- BLOQUE 6: SELECCIÓN DE MATERIALES PARA AUTOMATIZACIÓN (NUEVO) -->
+        <div class="toolbar-group" style="border-left:2px solid rgba(255,255,255,0.2); padding-left:15px;">
+            <label style="font-size:12px; color:#f59e0b; font-weight:bold;">AUTO MATS:</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Wood"><input type="checkbox" class="auto-mat-chk" value="wood" checked> 🪵</label>
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Gold"><input type="checkbox" class="auto-mat-chk" value="gold" checked> 🥇</label>
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Silver"><input type="checkbox" class="auto-mat-chk" value="silver" checked> 🥈</label>
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Stone"><input type="checkbox" class="auto-mat-chk" value="stone" checked> 🪨</label>
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Bone"><input type="checkbox" class="auto-mat-chk" value="bone" checked> 🦴</label>
+                <label style="font-size:12px; cursor:pointer;" title="Activar/Desactivar Galaxy"><input type="checkbox" class="auto-mat-chk" value="galaxy" checked> 🌌</label>
+            </div>
+        </div>
+
+        <!-- BLOQUE 7: CONTROLES DE EJECUCIÓN AUTOMÁTICA -->
+        <div class="toolbar-group" style="border-left:2px solid rgba(255,255,255,0.2); padding-left:15px;">
+            <label title="Cantidad de veces a repetir">Reps:</label>
+            <input type="number" id="auto-reps" class="auto-input" value="1" min="1" max="5">
+            <label title="Pausa entre cada grabación">Delay(s):</label>
+            <input type="number" id="auto-delay" class="auto-input" value="3" min="0" max="10">
+            <button id="auto-btn" class="auto-btn" onclick="toggleAuto()" title="Iniciar renderizado masivo">🤖 AUTO</button>
+        </div>
+    </div>
+    <div id="canvas-container">
+        <div id="rec-indicator">● REC 1080p 60FPS</div>
+    </div>
+
+    <div class="controls">
+        <button class="dice-btn" onclick="changeDice(4)">D4</button>
+        <button class="dice-btn active" onclick="changeDice(6)">D6</button>
+        <button class="dice-btn" onclick="changeDice(8)">D8</button>
+        <button class="dice-btn" onclick="changeDice(10)">D10</button>
+        <button class="dice-btn" onclick="changeDice(12)">D12</button>
+        <button class="dice-btn" onclick="changeDice(20)">D20</button>
+    </div>
+
+    <div class="action-container">
+        <button class="roll-btn" id="rollBtn" onclick="rollDice()">🎲 ROLL</button>
+        <button class="roll-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);" id="rollSheetBtn" onclick="rollSheet()">🎞️ ROLL SHEET</button>
+        <button class="photo-btn" onclick="takePhoto()">📸 PHOTO</button>
+    </div>
+    <div class="result" id="result">
+        Waiting...
+        <div id="auto-status" class="auto-status"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script>
+        let scene, camera, renderer, controls, diceGroup;
+        let isRolling = false, currentDice = 6, activeFaces = [];
+        let currentMaterialId = 'galaxy', currentBgId = 'transparent';
+        let rollCounters = {}, isAutomating = false, autoQueue = [], totalAutoTasks = 0;
+        let mediaRecorder, recordedChunks = [], generatedTextures = {};
+        const locks = { mat: false, bg: false, face: false };
+
+        const materialsConfig = {
+            wood:   { useWoodMap:  true, roughness: 0.85, metalness: 0.0,  textColor: '#fff8e7', edgeColor: 0x2b1509 },
+            gold:   { color: 0xffd700,   roughness: 0.2,  metalness: 0.65, textColor: '#1a1a1a', edgeColor: 0x8a6000 },
+            silver: { color: 0xe5e5e5,   roughness: 0.15, metalness: 0.75, textColor: '#1a1a1a', edgeColor: 0x555555 },
+            stone:  { useStoneMap: true, roughness: 0.9,  metalness: 0.1,  textColor: '#ffffff', edgeColor: 0x111111 },
+            bone:   { color: 0xe3dac9,   roughness: 0.8,  metalness: 0.0,  textColor: '#2a2a2a', edgeColor: 0x5a4c3f },
+            galaxy: { useGalaxyMap: true, roughness: 0.1,  metalness: 0.4,  textColor: '#ffffff', edgeColor: 0xffffff }
+        };
+
+        // Color rojo para el 1 — levemente distinto según el fondo del dado
+        const RED_FACE1 = '#e8001a';
+
+        function toggleLock(axis) {
+            locks[axis] = !locks[axis];
+            const btn = document.getElementById(`lock-${axis}`);
+            btn.textContent = locks[axis] ? '🔒' : '🔓';
+            btn.classList.toggle('locked', locks[axis]);
+        }
+
+        
+        // Almacén de texturas personalizadas
+        const customTextures = { wood: null, stone: null, bone: null, galaxy: null };
+
+        function handleTextureUpload(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const url = URL.createObjectURL(file);
+            new THREE.TextureLoader().load(url, (tex) => {
+                tex.wrapS = THREE.RepeatWrapping;
+                tex.wrapT = THREE.RepeatWrapping;
+                tex.colorSpace = THREE.SRGBColorSpace;
+                if(customTextures[currentMaterialId]) customTextures[currentMaterialId].dispose();
+                customTextures[currentMaterialId] = tex;
+                createDice(currentDice);
+            });
+            event.target.value = ''; // Limpiar input para permitir recargar la misma imagen
+        }
+
+        function generateProceduralTextures() {
+
+            // --- MADERA MEJORADA ---
+            const wC = document.createElement('canvas'); wC.width=1024; wC.height=1024;
+            const wCtx = wC.getContext('2d');
+            const baseGrad = wCtx.createLinearGradient(0,0,1024,0);
+            baseGrad.addColorStop(0,   '#2e1508');
+            baseGrad.addColorStop(0.3, '#4a2010');
+            baseGrad.addColorStop(0.6, '#5c2e14');
+            baseGrad.addColorStop(1.0, '#3a1a0a');
+            wCtx.fillStyle = baseGrad; wCtx.fillRect(0,0,1024,1024);
+            const grainColors = [
+                'rgba(90,45,15,0.55)','rgba(110,58,20,0.45)','rgba(70,32,10,0.60)',
+                'rgba(140,80,30,0.35)','rgba(55,25,8,0.50)','rgba(160,95,40,0.30)',
+            ];
+            for(let g=0; g<120; g++){
+                const yBase=g/120*1024, freq=0.004+Math.random()*0.008;
+                const amp=18+Math.random()*45, phase=Math.random()*Math.PI*2;
+                const width=1.5+Math.random()*5;
+                wCtx.beginPath();
+                wCtx.strokeStyle=grainColors[Math.floor(Math.random()*grainColors.length)];
+                wCtx.lineWidth=width; wCtx.lineCap='round';
+                let noiseAcc=0;
+                for(let x=0; x<=1024; x+=3){
+                    noiseAcc+=(Math.random()-0.5)*2.5; noiseAcc*=0.92;
+                    const y=yBase+Math.sin(x*freq+phase)*amp+noiseAcc;
+                    x===0?wCtx.moveTo(x,y):wCtx.lineTo(x,y);
+                }
+                wCtx.stroke();
+            }
+            {
+                const kx=280+Math.random()*460, ky=200+Math.random()*624;
+                for(let r=9;r>=1;r--){
+                    const alpha=(0.06+(9-r)*0.025).toFixed(3);
+                    wCtx.beginPath();
+                    wCtx.ellipse(kx,ky,r*28,r*18,0.3,0,Math.PI*2);
+                    wCtx.strokeStyle=`rgba(30,12,3,${alpha})`; wCtx.lineWidth=2.5; wCtx.stroke();
+                }
+                const cg=wCtx.createRadialGradient(kx,ky,0,kx,ky,22);
+                cg.addColorStop(0,'rgba(20,8,2,0.55)'); cg.addColorStop(1,'rgba(20,8,2,0)');
+                wCtx.fillStyle=cg; wCtx.beginPath(); wCtx.arc(kx,ky,22,0,Math.PI*2); wCtx.fill();
+            }
+            wCtx.fillStyle='rgba(200,130,40,0.07)'; wCtx.fillRect(0,0,1024,1024);
+            generatedTextures.wood = new THREE.CanvasTexture(wC);
+
+            // --- PIEDRA MEJORADA ---
+            const sC = document.createElement('canvas'); sC.width=1024; sC.height=1024;
+            const sCtx = sC.getContext('2d');
+            sCtx.fillStyle='#808080'; sCtx.fillRect(0,0,1024,1024);
+            for(let i=0;i<180;i++){
+                const x=Math.random()*1024,y=Math.random()*1024,r=Math.random()*80+15;
+                const shade=Math.floor(Math.random()*50+85);
+                const grad=sCtx.createRadialGradient(x,y,0,x,y,r);
+                grad.addColorStop(0,`rgba(${shade},${shade},${shade},0.45)`);
+                grad.addColorStop(1,'rgba(128,128,128,0)');
+                sCtx.fillStyle=grad; sCtx.beginPath(); sCtx.arc(x,y,r,0,Math.PI*2); sCtx.fill();
+            }
+            for(let i=0;i<18000;i++){
+                sCtx.fillStyle=Math.random()>0.5?'#686868':'#969696';
+                sCtx.fillRect(Math.random()*1024,Math.random()*1024,2,2);
+            }
+            for(let i=0;i<10;i++){
+                const op=(Math.random()*0.25+0.15).toFixed(2);
+                sCtx.strokeStyle=`rgba(40,40,40,${op})`;
+                sCtx.lineWidth=Math.random()*1.5+0.5; sCtx.lineCap='round'; sCtx.lineJoin='round';
+                sCtx.beginPath();
+                let x=Math.random()*1024, y=Math.random()*1024; sCtx.moveTo(x,y);
+                for(let j=0;j<Math.floor(Math.random()*4+2);j++){
+                    const cpx=x+(Math.random()-.5)*160, cpy=y+(Math.random()-.5)*160;
+                    x+=(Math.random()-.5)*220; y+=(Math.random()-.5)*220;
+                    sCtx.quadraticCurveTo(cpx,cpy,x,y);
+                }
+                sCtx.stroke();
+            }
+            generatedTextures.stone = new THREE.CanvasTexture(sC);
+        }
+
+        function getGradientBackground() {
+            const c=document.createElement('canvas'); c.width=1024; c.height=1024;
+            const ctx=c.getContext('2d');
+            const g=ctx.createRadialGradient(512,512,0,512,512,720);
+            g.addColorStop(0,'#2a2a4e'); g.addColorStop(1,'#0f0f1a');
+            ctx.fillStyle=g; ctx.fillRect(0,0,1024,1024);
+            return new THREE.CanvasTexture(c);
+        }
+
+        function changeBackground(type) {
+            currentBgId=type;
+            if(type==='gradient') scene.background=getGradientBackground();
+            else if(type==='wood')  scene.background=generatedTextures.wood;
+            else if(type==='stone') scene.background=generatedTextures.stone;
+            else if(type==='dark')  scene.background=new THREE.Color(0x111116);
+            else if(type==='transparent') scene.background=null;
+        }
+
+        function init() {
+            scene=new THREE.Scene();
+            camera=new THREE.PerspectiveCamera(45,1,0.1,100); camera.position.z=7;
+            renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
+            renderer.setSize(1080,1080,false);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            generateProceduralTextures(); changeBackground('transparent');
+            controls=new THREE.OrbitControls(camera,renderer.domElement);
+            controls.enableDamping=true; controls.enablePan=false;
+            scene.add(new THREE.AmbientLight(0xffffff,0.6));
+            const h=new THREE.HemisphereLight(0xffffff,0x444444,0.5); h.position.set(0,20,0); scene.add(h);
+            const ml=new THREE.DirectionalLight(0xffffff,1.0); ml.position.set(5,10,7); scene.add(ml);
+            const fl=new THREE.DirectionalLight(0xffffff,0.5); fl.position.set(-5,0,-5); scene.add(fl);
+            updateFaceSelect(6); createDice(6); animate();
+        }
+
+        function createD10Geometry(radius) {
+            const geom=new THREE.BufferGeometry(), pos=[], uvs=[];
+            const h=radius*1.15, top=[0,h,0], bot=[0,-h,0];
+            for(let i=0;i<5;i++){
+                const a1=i*Math.PI*2/5, a2=((i+1)%5)*Math.PI*2/5;
+                const p1=[Math.cos(a1)*radius,0,Math.sin(a1)*radius];
+                const p2=[Math.cos(a2)*radius,0,Math.sin(a2)*radius];
+                pos.push(...top,...p2,...p1); uvs.push(0.5,1,(i+1)/5,0.5,i/5,0.5);
+                pos.push(...bot,...p1,...p2); uvs.push(0.5,0,i/5,0.5,(i+1)/5,0.5);
+            }
+            geom.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+            geom.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+            geom.computeVertexNormals(); return geom;
+        }
+
+        // ============================================================
+        // CLAVE: Face 1 → siempre rojo, resto → color del material
+        // ============================================================
+        function createFaceTexture(value, sides, config) {
+            const canvas=document.createElement('canvas'); canvas.width=256; canvas.height=256;
+            const ctx=canvas.getContext('2d');
+            ctx.clearRect(0,0,256,256);
+
+            // Si es la cara 1, el color de dibujo es rojo; si no, el color del material
+            const drawColor = (value === 1) ? RED_FACE1 : config.textColor;
+            ctx.fillStyle = drawColor;
+
+            if(sides===4||sides===6){
+                const dot=(x,y)=>{
+                    ctx.beginPath(); ctx.arc(x,y,32,0,Math.PI*2); ctx.fill();
+                };
+                const c=128, p1=44, p2=212;
+                if(sides===6){
+                    if(value===1) dot(c,c);
+                    else if(value===2){dot(p1,p1);dot(p2,p2);}
+                    else if(value===3){dot(p1,p1);dot(c,c);dot(p2,p2);}
+                    else if(value===4){dot(p1,p1);dot(p2,p1);dot(p1,p2);dot(p2,p2);}
+                    else if(value===5){dot(p1,p1);dot(p2,p1);dot(c,c);dot(p1,p2);dot(p2,p2);}
+                    else if(value===6){dot(p1,p1);dot(p2,p1);dot(p1,c);dot(p2,c);dot(p1,p2);dot(p2,p2);}
+                } else {
+                    // D4
+                    if(value===1) dot(c,c);
+                    else if(value===2){dot(64,160);dot(192,160);}
+                    else if(value===3){dot(128,52);dot(60,188);dot(196,188);}
+                    else if(value===4){dot(128,52);dot(60,188);dot(196,188);dot(128,132);}
+                }
+            } else {
+                // D8, D10, D12, D20 → número
+                ctx.font='bold 116px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
+                ctx.fillText((value===6||value===9)?value+'.':value, 128, 128);
+            }
+
+            const tex=new THREE.CanvasTexture(canvas);
+            tex.anisotropy=renderer.capabilities.getMaxAnisotropy(); return tex;
+        }
+
+        function updateFaceSelect(sides) {
+            const sel=document.getElementById('face-select');
+            sel.innerHTML='<option value="random">🎲 Random</option>';
+            for(let i=1;i<=sides;i++) sel.innerHTML+=`<option value="${i}">Face ${i}</option>`;
+        }
+
+        function createDice(sides) {
+            if(diceGroup) scene.remove(diceGroup);
+            diceGroup=new THREE.Group(); activeFaces=[];
+            let geometry; const radius=1.8;
+            switch(sides){
+                case 4:  geometry=new THREE.TetrahedronGeometry(radius); break;
+                case 6:  geometry=new THREE.BoxGeometry(radius*1.2,radius*1.2,radius*1.2); break;
+                case 8:  geometry=new THREE.OctahedronGeometry(radius); break;
+                case 10: geometry=createD10Geometry(radius); break;
+                case 12: geometry=new THREE.DodecahedronGeometry(radius); break;
+                case 20: geometry=new THREE.IcosahedronGeometry(radius); break;
+            }
+            const origGeom=geometry.clone();
+            if(geometry.index) geometry=geometry.toNonIndexed();
+            const pos=geometry.attributes.position.array;
+            for(let i=0;i<pos.length;i+=9){
+                const a=new THREE.Vector3(pos[i],pos[i+1],pos[i+2]);
+                const b=new THREE.Vector3(pos[i+3],pos[i+4],pos[i+5]);
+                const c=new THREE.Vector3(pos[i+6],pos[i+7],pos[i+8]);
+                const center=new THREE.Vector3().addVectors(a,b).add(c).divideScalar(3);
+                let normal=new THREE.Vector3().subVectors(c,b).cross(new THREE.Vector3().subVectors(a,b)).normalize();
+                if(normal.dot(center)<0) normal.negate();
+                let found=false;
+                for(let f of activeFaces){if(f.normal.dot(normal)>0.85){f.centers.push(center);found=true;break;}}
+                if(!found) activeFaces.push({normal,centers:[center]});
+            }
+            const cfg=materialsConfig[currentMaterialId];
+            const mp={
+                roughness:cfg.roughness, metalness:cfg.metalness, flatShading:true,
+                side:THREE.FrontSide, polygonOffset:true, polygonOffsetFactor:1, polygonOffsetUnits:1,
+                color:new THREE.Color(cfg.color||0xffffff)
+            };
+
+            // Lógica de texturas (Prioridad: 1. Textura subida por usuario, 2. Textura procedural, 3. Color Base)
+            if (customTextures[currentMaterialId]) {
+                mp.map = customTextures[currentMaterialId];
+                mp.color = new THREE.Color(0xffffff); // El blanco puro no ensucia la textura subida
+            } else {
+                if(cfg.useWoodMap)  mp.map=generatedTextures.wood;
+                if(cfg.useStoneMap) mp.map=generatedTextures.stone;
+                if(cfg.useGalaxyMap) {
+                    mp.color = new THREE.Color(0x1a0f2e); // MORADO SÓLIDO (base para Galaxy sin textura)
+                }
+            }
+            diceGroup.add(new THREE.Mesh(geometry,new THREE.MeshStandardMaterial(mp)));
+            diceGroup.add(new THREE.LineSegments(
+                new THREE.EdgesGeometry(origGeom,15),
+                new THREE.LineBasicMaterial({color:cfg.edgeColor,transparent:true,opacity:0.65})
+            ));
+            activeFaces.forEach((face,index)=>{
+                const fc=new THREE.Vector3();
+                face.centers.forEach(c=>fc.add(c)); fc.divideScalar(face.centers.length);
+                const nm=new THREE.Mesh(
+                    new THREE.PlaneGeometry(1.2,1.2),
+                    new THREE.MeshBasicMaterial({map:createFaceTexture(index+1,sides,cfg),transparent:true,depthWrite:false})
+                );
+                nm.position.copy(fc).add(face.normal.clone().multiplyScalar(0.02));
+                nm.lookAt(fc.clone().add(face.normal));
+                diceGroup.add(nm);
+            });
+            diceGroup.rotation.set(0.5,0.7,0.2); scene.add(diceGroup); currentDice=sides;
+        }
+
+        function changeMaterial(matId){ 
+            currentMaterialId=matId; 
+            const btn = document.getElementById('btn-tex-upload');
+            if(btn) btn.style.display = ['wood', 'stone', 'bone', 'galaxy'].includes(matId) ? 'inline-block' : 'none';
+            createDice(currentDice); 
+        }
+        function changeDice(sides){
+            if(isRolling) return;
+            document.querySelectorAll('.dice-btn').forEach(b=>b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateFaceSelect(sides); createDice(sides);
+            document.getElementById('result').innerHTML='Waiting... <div id="auto-status" class="auto-status"></div>';
+        }
+
+        function takePhoto(){
+            renderer.render(scene,camera);
+            const url=renderer.domElement.toDataURL('image/png');
+            const fv=document.getElementById('face-select').value;
+            const a=document.createElement('a'); a.style.display='none'; a.href=url;
+            a.download=`Photo_D${currentDice}_Face${fv==='random'?'Rnd':fv}_${currentMaterialId}_${currentBgId}.png`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        function toggleAuto(){
+            if(isAutomating){
+                isAutomating=false; autoQueue=[];
+                const b=document.getElementById('auto-btn');
+                b.innerHTML='🤖 AUTO'; b.classList.remove('running');
+                document.getElementById('auto-status').innerText='Automation Stopped.';
+            } else { startAuto(); }
+        }
+
+        function startAuto(){
+            isAutomating=true;
+            const btn=document.getElementById('auto-btn');
+            btn.innerHTML='🛑 STOP AUTO'; btn.classList.add('running');
+            autoQueue=[];
+            const reps=parseInt(document.getElementById('auto-reps').value)||1;
+            const facesToRun=locks.face?[parseInt(document.getElementById('face-select').value)||1]:Array.from({length:currentDice},(_,i)=>i+1);
+            const bgToRun=locks.bg?[currentBgId]:['transparent','gradient','wood','stone','dark'];
+            
+            let matToRun=[];
+            if(locks.mat){
+                matToRun=[currentMaterialId];
+            }else{
+                document.querySelectorAll('.auto-mat-chk:checked').forEach(cb=>matToRun.push(cb.value));
+                if(matToRun.length===0)matToRun=[currentMaterialId];
+            }
+
+            for(let f of facesToRun) for(let bg of bgToRun) for(let mat of matToRun) for(let r=0;r<reps;r++) autoQueue.push({face:f,bg,mat,repIndex:r+1});
+            totalAutoTasks=autoQueue.length;
+            const lockedAxes=Object.entries(locks).filter(([,v])=>v).map(([k])=>k).join(', ')||'none';
+            document.getElementById('auto-status').innerText=`Starting ${totalAutoTasks} tasks | Locked: [${lockedAxes}]`;
+            setTimeout(()=>{ processNextAuto(); },300);
+        }
+
+        function processNextAuto(){
+            if(!isAutomating) return;
+            if(autoQueue.length===0){ toggleAuto(); document.getElementById('auto-status').innerText='✅ AUTOMATION COMPLETE!'; return; }
+            const task=autoQueue.shift();
+            document.getElementById('material-select').value=task.mat; changeMaterial(task.mat);
+            document.getElementById('bg-select').value=task.bg; changeBackground(task.bg);
+            document.getElementById('face-select').value=task.face;
+            document.getElementById('auto-status').innerText=`Task ${totalAutoTasks-autoQueue.length} / ${totalAutoTasks} — D${currentDice} | ${task.mat} | ${task.bg} | Face ${task.face} (rep ${task.repIndex})`;
+
+            setTimeout(()=>{
+                if(document.getElementById('record-sheet-toggle').checked) {
+                    rollSheet();
+                } else {
+                    rollDice();
+                }
+            },150);
+        }
+
+        
+        function rollSheet() {
+            if(isRolling) return;
+            isRolling=true; 
+            document.getElementById('rollBtn').disabled=true;
+            document.getElementById('rollSheetBtn').disabled=true;
+
+            const st=document.getElementById('auto-status').innerText;
+            document.getElementById('result').innerHTML=`🎞️ Generating Sprite Sheet... <div id="auto-status" class="auto-status">${st}</div>`;
+
+            const faceVal=document.getElementById('face-select').value;
+            let result=faceVal==='random'?Math.floor(Math.random()*currentDice)+1:parseInt(faceVal);
+
+            const winFace=activeFaces[result-1];
+            const tQ=new THREE.Quaternion().setFromUnitVectors(winFace.normal.clone().normalize(),new THREE.Vector3(0,0,1));
+            tQ.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),(Math.random()-.5)));
+
+            const dur=2000, sQ=diceGroup.quaternion.clone();
+            const ax=new THREE.Vector3(Math.random(),Math.random(),Math.random()).normalize();
+
+            const totalFrames = 64;
+            let currentFrame = 0;
+            const sheetSize = 8; // 8x8 grid
+
+            // Create the canvas for the sprite sheet
+            const frameSize = 1080; // Size of each frame
+            const finalWidth = 2880; // Target width (divided by 8 = 360px per frame)
+            const scaledFrameSize = finalWidth / sheetSize; // 360px
+
+            const sheetCanvas = document.createElement('canvas');
+            sheetCanvas.width = finalWidth;
+            sheetCanvas.height = finalWidth; // 2880x2880
+            const sheetCtx = sheetCanvas.getContext('2d');
+            sheetCtx.clearRect(0, 0, finalWidth, finalWidth);
+
+            // Render one frame and capture it
+            function captureNextFrame() {
+                // Calculate animation progress based on frame number
+                // This ensures exactly 64 evenly spaced frames over the animation curve
+                const p = currentFrame / (totalFrames - 1); // 0 to 1
+                const e = 1 - Math.pow(1 - p, 4); // Ease out quartic
+
+                // Update rotation
+                diceGroup.quaternion.copy(sQ.clone().slerp(tQ,e)).multiply(new THREE.Quaternion().setFromAxisAngle(ax,Math.PI*15*(1-e)));
+
+                // Force a render
+                renderer.render(scene, camera);
+
+                // Draw to the sprite sheet
+                const x = (currentFrame % sheetSize) * scaledFrameSize;
+                const y = Math.floor(currentFrame / sheetSize) * scaledFrameSize;
+
+                // Draw the renderer canvas onto the sheet canvas, scaling it down
+                sheetCtx.drawImage(renderer.domElement, x, y, scaledFrameSize, scaledFrameSize);
+
+                currentFrame++;
+
+                if (currentFrame < totalFrames) {
+                    // Capture next frame immediately without waiting for actual display refresh
+                    // This makes generation much faster
+                    setTimeout(captureNextFrame, 0);
+                } else {
+                    // Animation complete, final frame is exactly the target face
+                    diceGroup.quaternion.copy(tQ);
+                    renderer.render(scene, camera); // Final render for the display
+
+                    // Create and download the sprite sheet image
+                    const sig=`D${currentDice}_Face${result}_${currentMaterialId}_${currentBgId}`;
+                    if(!rollCounters[sig])rollCounters[sig]=1; else rollCounters[sig]++;
+
+                    // Convert to WEBP
+                    const q = parseFloat(document.getElementById('quality-select').value) || 0.9;
+                    const url = sheetCanvas.toDataURL('image/webp', q);
+                    const a = document.createElement('a');
+                    a.style.display='none'; 
+                    a.href=url;
+                    a.download=`${sig}_${rollCounters[sig]}_sheet.webp`;
+                    document.body.appendChild(a); 
+                    a.click(); 
+                    URL.revokeObjectURL(url);
+
+                    // Finish up
+                    const st2=document.getElementById('auto-status').innerText;
+                    document.getElementById('result').innerHTML=`Result: <span>${result}</span> / ${currentDice}<br><small style="font-size:16px;opacity:0.7">(${faceVal==='random'?'Random':'Forced'})</small><div id="auto-status" class="auto-status">${st2}</div>`;
+
+                    isRolling = false;
+                    document.getElementById('rollBtn').disabled = false;
+                    document.getElementById('rollSheetBtn').disabled = false;
+
+                    const delayMs=(parseFloat(document.getElementById('auto-delay').value)||0)*1000;
+                    if(isAutomating) setTimeout(processNextAuto, delayMs);
+                }
+            }
+
+            // Start capturing frames
+            captureNextFrame();
+        }
+
+        function rollDice(){
+            if(isRolling) return;
+            isRolling=true; document.getElementById('rollBtn').disabled=true;
+            const st=document.getElementById('auto-status').innerText;
+            document.getElementById('result').innerHTML=`🎲 Rolling... <div id="auto-status" class="auto-status">${st}</div>`;
+            const faceVal=document.getElementById('face-select').value;
+            let result=faceVal==='random'?Math.floor(Math.random()*currentDice)+1:parseInt(faceVal);
+            const winFace=activeFaces[result-1];
+            const tQ=new THREE.Quaternion().setFromUnitVectors(winFace.normal.clone().normalize(),new THREE.Vector3(0,0,1));
+            tQ.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),(Math.random()-.5)));
+            
+            const isRec=document.getElementById('record-toggle').checked;
+            if(isRec){
+                const stream=renderer.domElement.captureStream(60);
+                const opts=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?{mimeType:'video/webm;codecs=vp9',videoBitsPerSecond:8000000}:{mimeType:'video/webm',videoBitsPerSecond:8000000};
+                mediaRecorder=new MediaRecorder(stream,opts);
+                recordedChunks=[];
+                mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data);};
+                mediaRecorder.onstop=()=>{
+                    const blob=new Blob(recordedChunks,{type:'video/webm'});
+                    const url=URL.createObjectURL(blob);
+                    const sig=`D${currentDice}_Face${result}_${currentMaterialId}_${currentBgId}`;
+                    if(!rollCounters[sig])rollCounters[sig]=1; else rollCounters[sig]++;
+                    const a=document.createElement('a'); a.style.display='none'; a.href=url;
+                    a.download=`${sig}_${rollCounters[sig]}_HD.webm`;
+                    document.body.appendChild(a); a.click(); URL.revokeObjectURL(url);
+                };
+                mediaRecorder.start();
+                document.getElementById('rec-indicator').style.display='block';
+            }
+            const t0=Date.now(), dur=2000, sQ=diceGroup.quaternion.clone();
+            const ax=new THREE.Vector3(Math.random(),Math.random(),Math.random()).normalize();
+            function animateRoll(){
+                const p=Math.min((Date.now()-t0)/dur,1), e=1-Math.pow(1-p,4);
+                diceGroup.quaternion.copy(sQ.clone().slerp(tQ,e)).multiply(new THREE.Quaternion().setFromAxisAngle(ax,Math.PI*15*(1-e)));
+                if(p<1){requestAnimationFrame(animateRoll);return;}
+                diceGroup.quaternion.copy(tQ);
+                
+                const st2=document.getElementById('auto-status').innerText;
+                document.getElementById('result').innerHTML=`Result: <span>${result}</span> / ${currentDice}<br><small style="font-size:16px;opacity:0.7">(${faceVal==='random'?'Random':'Forced'})</small><div id="auto-status" class="auto-status">${st2}</div>`;
+                const delayMs=(parseFloat(document.getElementById('auto-delay').value)||0)*1000;
+                if(isRec&&mediaRecorder?.state!=='inactive'){
+                    setTimeout(()=>{
+                        mediaRecorder.stop();
+                        document.getElementById('rec-indicator').style.display='none';
+                        if(isAutomating) setTimeout(processNextAuto,delayMs);
+                    },500);
+                } else {
+                    if(isAutomating) setTimeout(processNextAuto,delayMs);
+                }
+                isRolling=false; document.getElementById('rollBtn').disabled=false;
+            }
+            animateRoll();
+        }
+
+        function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+        window.addEventListener('load',init);
+    </script>
+</body>
+</html>

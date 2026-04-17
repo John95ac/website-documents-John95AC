@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to Sprite Sheet (Grim) Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #f59e0b;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        #drop-zone {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #181818;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #drop-zone:hover, #drop-zone.dragover {
+            border-color: #f59e0b;
+            background-color: #222;
+        }
+        #video-container {
+            display: none;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        video {
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #000;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            background-color: #181818;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        select, input[type="number"] {
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        select:focus, input:focus {
+            border-color: #f59e0b;
+        }
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .audio-toggle {
+            font-size: 14px;
+            color: #00e5ff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .audio-toggle input {
+            cursor: pointer;
+        }
+        .btn-record {
+            background-color: #f59e0b;
+            color: #111;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn-record:hover {
+            background-color: #ffb02e;
+        }
+        .btn-record:active {
+            transform: scale(0.98);
+        }
+        .btn-record:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #progress-container {
+            display: none;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        #progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #111;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+        }
+        #progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #00e5ff;
+            transition: width 0.1s;
+        }
+        #progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #00e5ff;
+        }
+        .explanation-box {
+            background-color: #181818;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+        .explanation-box h3 {
+            margin-top: 0;
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .explanation-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation-box li {
+            margin-bottom: 8px;
+        }
+        .explanation-box li b {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎞️ Grim (Sprite Sheet) Generator</h1>
+
+    <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+        📁 Drag & Drop a video here or click to select (MP4, AVI, WEBM...)
+    </div>
+    <input type="file" id="file-input" accept="video/*" style="display: none;">
+
+        <div id="video-container">
+        <video id="video-preview" controls></video>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+            <div id="video-info" style="font-size: 12px; color: #888; align-self: center;"></div>
+            <button id="btn-snapshot" style="background-color: #00e5ff; color: #111; border: none; padding: 5px 15px; font-weight: bold; border-radius: 4px; cursor: pointer;">📸 Snapshot (PNG)</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Grim Size (Grid)</label>
+            <select id="grid-select">
+                <option value="3">3x3 (9 frames)</option>
+                <option value="4">4x4 (16 frames)</option>
+                <option value="5">5x5 (25 frames)</option>
+                <option value="6">6x6 (36 frames)</option>
+                <option value="7">7x7 (49 frames)</option>
+                <option value="8" selected>8x8 (64 frames)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Frames Per Second (FPS)</label>
+            <input type="number" id="fps-input" value="24" min="1" max="60" style="width: 80px;">
+        </div>
+
+        <div class="control-group">
+            <label>Format & Compression</label>
+            <select id="quality-select">
+                <option value="0.95">WebP - 0.95 (High)</option>
+                <option value="0.90" selected>WebP - 0.90 (Default)</option>
+                <option value="0.80">WebP - 0.80</option>
+                <option value="0.70">WebP - 0.70 (Light)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="action-group">
+        <label class="audio-toggle">
+            <input type="checkbox" id="extract-audio" checked> 🎵 Extract Audio (WAV)
+        </label>
+        <button id="btn-convert" class="btn-record" disabled>📸 Generate ZIP Archive</button>
+    </div>
+
+    <div id="progress-container">
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+        <div id="progress-text">Processing: 0%</div>
+    </div>
+
+    <div class="explanation-box">
+        <h3>📖 How it works</h3>
+        <ul>
+            <li><b>Grim Size (Grid):</b> Sets the maximum layout size for each sprite sheet image. For example, 8x8 will fit 64 frames in a single image before creating a new one.</li>
+            <li><b>Frames Per Second (FPS):</b> Determines how many still frames to capture per second of video. Higher FPS means smoother animation but more output files.</li>
+            <li><b>Format & Compression:</b> Adjusts the WebP image quality. Lower values reduce the final file size but may lower visual clarity.</li>
+            <li><b>Extract Audio:</b> Automatically extracts the original audio track from the video and includes it as a high-quality WAV file inside your ZIP.</li>
+            <li><b>Generate ZIP:</b> All processing is done locally in your browser. The final ZIP contains all the generated sprite sheets, the extracted audio, and a config.ini file.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const videoContainer = document.getElementById('video-container');
+    const video = document.getElementById('video-preview');
+    const videoInfo = document.getElementById('video-info');
+    const btnConvert = document.getElementById('btn-convert');
+    const progressContainer = document.getElementById('progress-container');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+
+    let currentFile = null;
+    let isProcessing = false;
+
+    // --- SNAPSHOT FEATURE ---
+    const btnSnapshot = document.getElementById('btn-snapshot');
+    btnSnapshot.addEventListener('click', () => {
+        if (!currentFile || !video.videoWidth) return;
+        const snapCanvas = document.createElement('canvas');
+        snapCanvas.width = video.videoWidth;
+        snapCanvas.height = video.videoHeight;
+        const ctx = snapCanvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
+
+        const url = snapCanvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+
+        // Calculate current frame number roughly based on time (assuming 24fps base or the one selected)
+        const fps = parseFloat(document.getElementById('fps-input').value) || 24;
+        const currentFrame = Math.floor(video.currentTime * fps);
+
+        a.download = `Snapshot_${currentFile.name.replace(/\.[^/.]+$/, "")}_Frame${currentFrame}.png`;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    });
+
+
+    dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', e => {
+        if (e.target.files.length > 0) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        if (!file.type.startsWith('video/')) {
+            alert('Please select a valid video file.');
+            return;
+        }
+        currentFile = file;
+        const url = URL.createObjectURL(file);
+        video.src = url;
+        videoContainer.style.display = 'block';
+
+        video.onloadedmetadata = () => {
+            videoInfo.innerText = `Resolution: ${video.videoWidth}x${video.videoHeight} | Duration: ${video.duration.toFixed(2)}s`;
+            btnConvert.disabled = false;
+        };
+    }
+
+    function audioBufferToWav(buffer) {
+        let numOfChan = buffer.numberOfChannels,
+            length = buffer.length * numOfChan * 2 + 44,
+            bufferArray = new ArrayBuffer(length),
+            view = new DataView(bufferArray),
+            channels = [], i, sample,
+            offset = 0,
+            pos = 0;
+
+        function setUint16(data) { view.setUint16(offset, data, true); offset += 2; }
+        function setUint32(data) { view.setUint32(offset, data, true); offset += 4; }
+
+        setUint32(0x46464952); 
+        setUint32(length - 8); 
+        setUint32(0x45564157); 
+        setUint32(0x20746d66); 
+        setUint32(16);         
+        setUint16(1);          
+        setUint16(numOfChan);
+        setUint32(buffer.sampleRate);
+        setUint32(buffer.sampleRate * 2 * numOfChan);
+        setUint16(numOfChan * 2);
+        setUint16(16);         
+        setUint32(0x61746164); 
+        setUint32(length - pos - 4);
+
+        for(i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
+
+        while(pos < buffer.length) {
+            for(i = 0; i < numOfChan; i++) {
+                sample = Math.max(-1, Math.min(1, channels[i][pos])); 
+                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; 
+                view.setInt16(offset, sample, true);
+                offset += 2;
+            }
+            pos++;
+        }
+        return new Blob([bufferArray], {type: "audio/wav"});
+    }
+
+    btnConvert.addEventListener('click', async () => {
+        if (isProcessing || !currentFile) return;
+        isProcessing = true;
+        btnConvert.disabled = true;
+        btnConvert.innerText = "⏳ Processing... Please wait";
+        progressContainer.style.display = 'block';
+
+        const gridSize = parseInt(document.getElementById('grid-select').value);
+        const fps = parseFloat(document.getElementById('fps-input').value);
+        const quality = parseFloat(document.getElementById('quality-select').value);
+
+        const framesPerSheet = gridSize * gridSize;
+        const dt = 1.0 / fps; 
+        const totalEstimatedFrames = Math.floor(video.duration / dt) + 1;
+
+        const videoW = video.videoWidth;
+        const videoH = video.videoHeight;
+
+        const sheetCanvas = document.createElement('canvas');
+        sheetCanvas.width = videoW * gridSize;
+        sheetCanvas.height = videoH * gridSize;
+        const sheetCtx = sheetCanvas.getContext('2d', { willReadFrequently: true });
+        sheetCtx.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+
+        const zip = new JSZip();
+
+        let currentTime = 0;
+        let globalFrameCount = 0;
+        let currentSheetCount = 0;
+
+        video.pause();
+        video.muted = true; 
+
+        while (currentTime <= video.duration) {
+            video.currentTime = currentTime;
+
+            await new Promise((resolve) => {
+                video.onseeked = resolve;
+            });
+
+            const posInSheet = globalFrameCount % framesPerSheet;
+            const x = (posInSheet % gridSize) * videoW;
+            const y = Math.floor(posInSheet / gridSize) * videoH;
+
+            sheetCtx.drawImage(video, x, y, videoW, videoH);
+            globalFrameCount++;
+
+            const percent = Math.min(100, Math.round((currentTime / video.duration) * 100));
+            progressFill.style.width = `${percent}%`;
+            progressText.innerText = `Extracting frames: ${percent}% (${globalFrameCount} frames)`;
+
+            let nextTime = currentTime + dt;
+            let isLastFrame = nextTime > video.duration;
+
+            if (globalFrameCount % framesPerSheet === 0 || isLastFrame) {
+                const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/webp', quality));
+                const baseNameFile = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
+                const filenameStr = `${baseNameFile}_sheet_${String(currentSheetCount).padStart(4, '0')}.webp`;
+                zip.file(filenameStr, blob);
+
+                currentSheetCount++;
+                sheetCtx.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+            }
+
+            currentTime = nextTime;
+        }
+
+        let audioStatus = "Not requested";
+        if (document.getElementById('extract-audio').checked) {
+            progressText.innerText = "🎵 Extracting and decoding audio...";
+            try {
+                const arrayBuffer = await currentFile.arrayBuffer();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                const wavBlob = audioBufferToWav(audioBuffer);
+                zip.file("extracted_audio.wav", wavBlob);
+                audioStatus = "Success (extracted_audio.wav)";
+                audioCtx.close(); 
+            } catch (err) {
+                console.error(err);
+                audioStatus = "Failed / No compatible audio track";
+            }
+        }
+
+        progressText.innerText = "Packaging ZIP archive...";
+
+        const iniContent = `[Configuration]
+OriginalFile=${currentFile.name}
+VideoDurationSeconds=${video.duration.toFixed(2)}
+VideoResolution=${videoW}x${videoH}
+TargetFPS=${fps}
+GridSize=${gridSize}x${gridSize}
+WebPQuality=${quality}
+
+[Statistics]
+TotalFramesExtracted=${globalFrameCount}
+TotalFilesGenerated=${currentSheetCount}
+AudioExtracted=${audioStatus}
+`;
+        zip.file("config.ini", iniContent);
+
+        
+        // 3. Generate .js configuration file (like corto-v1_config.js)
+        const baseName = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
+        const configObjName = `${baseName.toUpperCase()}_CONFIG`;
+
+        let spritesheetsArrayStr = "    spritesheets: [\n";
+        for (let i = 0; i < currentSheetCount; i++) {
+            const startF = i * framesPerSheet;
+            // Last sheet might not be fully populated
+            const endF = (i === currentSheetCount - 1) ? (globalFrameCount - 1) : (startF + framesPerSheet - 1);
+            const fileName = `${baseName}_sheet_${String(i).padStart(4, '0')}.webp`;
+            spritesheetsArrayStr += `        { file: "${fileName}", startFrame: ${startF}, endFrame: ${endF} }`;
+            if (i < currentSheetCount - 1) spritesheetsArrayStr += ",";
+            spritesheetsArrayStr += "\n";
+        }
+        spritesheetsArrayStr += "    ]";
+
+        const jsContent = `// Video config - generated from ZIP export
+const ${configObjName} = {
+    format: "webp",
+    totalFrames: ${globalFrameCount},
+    frameWidth: ${videoW},
+    frameHeight: ${videoH},
+    fps: ${fps},
+    grid: "${gridSize}x${gridSize}",
+    columns: ${gridSize},
+    rows: ${gridSize},
+${spritesheetsArrayStr}
+};`;
+
+        zip.file(`${baseName}_config.js`, jsContent);
+
+        const zipBlob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+        const zipUrl = URL.createObjectURL(zipBlob);
+
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = zipUrl;
+        a.download = `Grim_Output_${currentFile.name.replace(/\.[^/.]+$/, "")}.zip`;
+        document.body.appendChild(a);
+        a.click();
+
+        setTimeout(() => {
+            URL.revokeObjectURL(zipUrl);
+        }, 500);
+
+        progressText.innerText = "Process Completed Successfully!";
+        progressFill.style.backgroundColor = "#00e5ff";
+        btnConvert.innerText = "📸 Generate ZIP Archive";
+        btnConvert.disabled = false;
+        isProcessing = false;
+    });
+</script>
+</body>
+</html>

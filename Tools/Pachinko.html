@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's go gambling - TRIPLE Batch Renderer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2b0000 0%, #1a0000 50%, #000000 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: white; overflow: hidden;
+        }
+        h1 { margin-bottom: 5px; color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.5); font-size: 2rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        .toolbar {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 5px; background: rgba(0,0,0,0.6); padding: 8px 15px;
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .toolbar-group { display: flex; align-items: center; gap: 8px; }
+        .toolbar-divider { border-left: 2px solid rgba(255,255,255,0.2); padding-left: 10px; }
+
+        .record-label {
+            display: flex; align-items: center; gap: 5px; font-weight: bold;
+            background: rgba(255,50,50,0.1); border: 1px solid #ff4444;
+            padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer;
+        }
+        .record-label:hover { background: rgba(255,50,50,0.3); }
+
+        select {
+            background: #1a1a3e; color: #00e5ff; border: 1px solid #00e5ff;
+            padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; outline: none;
+        }
+        select:hover { background: #00e5ff; color: #000; }
+
+        .mode-btn, .auto-btn, .triple-btn, .stop-btn {
+            font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s;
+        }
+        .mode-btn { background: rgba(156,39,176,0.1); border: 2px solid #9c27b0; color: #e1bee7; }
+        .mode-btn.sequential { background: #9c27b0; color: #fff; border-color: #e1bee7; }
+
+        .auto-btn { background: rgba(243,156,18,0.1); border: 2px solid #f39c12; color: #f39c12; }
+        .auto-btn:hover { background: #f39c12; color: #1a1a3e; }
+
+        .triple-btn { background: rgba(0,255,128,0.1); border: 2px solid #00ff80; color: #00ff80; }
+        .triple-btn:hover { background: #00ff80; color: #1a1a3e; }
+
+        .running { background: #ff4444 !important; border-color: #ff4444 !important; color: white !important; }
+        .stop-btn { background: rgba(255,0,0,0.1); border: 2px solid #ff0000; color: #ff0000; }
+        .stop-btn:hover { background: #ff0000; color: #fff; }
+
+        #canvas-wrapper { position: relative; display: inline-block; margin-bottom: 10px; }
+        #canvas-container {
+            width: 900px; height: 500px;
+            border-radius: 20px; box-shadow: 0 0 60px rgba(255,215,0,0.15);
+            border: 4px solid #ffd700;
+            overflow: hidden; background-color: #0a0a0a; position: relative;
+        }
+        #canvas-container canvas { width: 100% !important; height: 100% !important; outline: none; display: block; }
+
+        #rec-indicator {
+            position: absolute; top: 20px; right: 20px; color: #ff4444; font-weight: bold;
+            font-size: 20px; text-shadow: 0 0 10px rgba(255,0,0,0.8); display: none;
+            z-index: 10; animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        #grid-master {
+            position: absolute; display: none;
+            border: 2px solid rgba(0, 229, 255, 0.5); z-index: 100; pointer-events: none;
+            left: 224px; top: 141px; width: 453px; height: 220px; 
+        }
+        .grid-sector {
+            height: 100%; width: 151px;
+            border-right: 1px dashed rgba(0, 229, 255, 0.5);
+            background: rgba(0, 229, 255, 0.05);
+        }
+        .grid-sector:last-child { border-right: none; }
+
+        .action-container { display: flex; gap: 15px; margin-top: 5px; }
+        .roll-btn {
+            padding: 10px 40px; font-size: 18px; font-weight: bold;
+            background: linear-gradient(145deg,#ff2a2a,#8b0000); color: white;
+            border: 3px solid #ffd700; border-radius: 40px; cursor: pointer;
+        }
+        .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result { font-size: 20px; font-weight: bold; min-height: 30px; text-align: center; color: #00e5ff; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🎰 Let's go gambling 🎰</h1>
+
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <label class="record-label"><input type="checkbox" id="record-toggle" checked> 🔴 REC</label>
+        </div>
+        <div class="toolbar-group toolbar-divider">
+            <button id="mode-btn" class="mode-btn sequential" onclick="toggleBatchMode()">Mode: SEQ (3 Speeds)</button>
+        </div>
+        <div class="toolbar-group toolbar-divider">
+            <button id="auto-btn" class="auto-btn" onclick="startBatchRender(false)">🤖 1x1 (90)</button>
+            <button id="triple-btn" class="triple-btn" onclick="startBatchRender(true)">🚀 TRIPLE (90 Vids)</button>
+            <button class="stop-btn" onclick="stopBatchRender()">🛑 CANCEL</button>
+        </div>
+        <div class="toolbar-group toolbar-divider">
+            <button class="auto-btn" style="border-color:#00e5ff; color:#00e5ff;" onclick="toggleGrid()">🔲 GRID</button>
+        </div>
+    </div>
+
+    <div class="toolbar" style="margin-bottom: 15px;">
+        <div class="toolbar-group">
+            <span style="color:#ffd700; font-weight:bold; font-size:14px;">🎨 DESIGN:</span>
+            <select id="bg-color-select" onchange="changeMachineBackground()">
+                <option value="0x111111" selected>Body: Dark Gray (Default)</option>
+                <option value="0x8b0000">Body: Casino Red</option>
+                <option value="0x000033">Body: Deep Blue</option>
+                <option value="0x1a0033">Body: Purple Velvet</option>
+                <option value="0x003300">Body: Emerald Green</option>
+                <option value="dice_celeste">Body: Dice Celeste Gradient</option>
+            </select>
+            <select id="reel-color-select" onchange="changeReelBackground()">
+                <option value="white" selected>Reel: White (Default)</option>
+                <option value="soft_gold">Reel: Soft Gold (Glow)</option>
+                <option value="silver">Reel: Silver Metal</option>
+                <option value="black">Reel: Pitch Black</option>
+                <option value="cream">Reel: Vintage Cream</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="canvas-wrapper">
+        <div id="canvas-container">
+            <div id="rec-indicator">● REC TRIPLE HD</div>
+        </div>
+        <div id="grid-master">
+            <div class="grid-sector"></div>
+            <div class="grid-sector"></div>
+            <div class="grid-sector"></div>
+        </div>
+    </div>
+
+    <div class="action-container">
+        <button class="roll-btn" id="rollBtn" onclick="pullHandleManual()">⏬ TEST LEVER ⏬</button>
+    </div>
+    <div class="result" id="result">Ready to render...</div>
+
+    <canvas id="crop-canvas-1" width="302" height="440" style="display:none;"></canvas>
+    <canvas id="crop-canvas-2" width="302" height="440" style="display:none;"></canvas>
+    <canvas id="crop-canvas-3" width="302" height="440" style="display:none;"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const SCALE = 2; 
+        const BASE_CROP_Y = 141;
+        const BASE_CROP_W = 151;
+        const BASE_CROP_H = 220;
+        const BASE_CROP_X_OFFSETS = [224, 224 + 151, 224 + (151*2)];
+
+        const CROP_Y = BASE_CROP_Y * SCALE;
+        const CROP_W = BASE_CROP_W * SCALE;
+        const CROP_H = BASE_CROP_H * SCALE;
+        const CROP_X_OFFSETS = BASE_CROP_X_OFFSETS.map(x => x * SCALE);
+
+        let gridVisible = false;
+        function toggleGrid() {
+            gridVisible = !gridVisible;
+            document.getElementById('grid-master').style.display = gridVisible ? 'flex' : 'none';
+        }
+
+        let isSequentialMode = true;
+        function toggleBatchMode() {
+            isSequentialMode = !isSequentialMode;
+            const btn = document.getElementById('mode-btn');
+            if (isSequentialMode) {
+                btn.className = "mode-btn sequential";
+                btn.innerText = "Mode: SEQ (3 Speeds)";
+            } else {
+                btn.className = "mode-btn";
+                btn.innerText = "Mode: RANDOM BATCH";
+            }
+        }
+
+        let scene, camera, renderer, reels = [], handleGroup;
+        let machineFrame; 
+        let reelMaterialBase; 
+        let pointLight; 
+
+        let isSpinning = false, isBatching = false, isLeverPulling = false, isCancelling = false, isTripleMode = false;
+        let targetIndexes = [0, 0, 0];
+        let reelSpeeds = [0, 0, 0];
+        let reelStops = [false, false, false];
+        const symbols = ['Cherry', 'Lemon', 'Watermelon', 'Grape', 'Bell', 'Diamond', 'Clover', 'Strawberry', 'Star', 'Seven'];
+        const emojis = ['🍒', '🍋', '🍉', '🍇', '🔔', '💎', '🍀', '🍓', '⭐', '7️⃣'];
+        const speedModes = ['fast', 'medium', 'slow'];
+
+        let mediaRecorders = [null, null, null];
+        let recordedChunksArr = [[], [], []];
+        let cropCanvasArr = [];
+        let cropCtxArr = [];
+
+        let renderQueue = [];
+        let currentTask = null; 
+        let currentTripleTask = null; 
+        let animationFrameId;
+
+        function init() {
+            cropCanvasArr = [
+                document.getElementById('crop-canvas-1'),
+                document.getElementById('crop-canvas-2'),
+                document.getElementById('crop-canvas-3')
+            ];
+            cropCtxArr = [
+                cropCanvasArr[0].getContext('2d'),
+                cropCanvasArr[1].getContext('2d'),
+                cropCanvasArr[2].getContext('2d')
+            ];
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050000);
+            camera = new THREE.PerspectiveCamera(40, 900/500, 0.1, 100);
+            camera.position.set(0, 0, 16);
+
+            renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+            renderer.setSize(900 * SCALE, 500 * SCALE, false); 
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+
+            const dl = new THREE.DirectionalLight(0xffffff, 1.2);
+            dl.position.set(5, 10, 8);
+            scene.add(dl);
+
+            pointLight = new THREE.PointLight(0xffd700, 1, 20);
+            pointLight.position.set(0, 4, 6);
+            scene.add(pointLight);
+
+            createMachine();
+            animate();
+        }
+
+        function createSymbolTexture(bgColorStr) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048; canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            if (bgColorStr === 'white') ctx.fillStyle = '#f8f9fa';
+            else if (bgColorStr === 'soft_gold') ctx.fillStyle = '#fceabb'; 
+            else if (bgColorStr === 'silver') ctx.fillStyle = '#e0e0e0';
+            else if (bgColorStr === 'black') ctx.fillStyle = '#111111';
+            else if (bgColorStr === 'cream') ctx.fillStyle = '#fffdd0';
+            else ctx.fillStyle = '#f8f9fa';
+
+            ctx.fillRect(0, 0, 2048, 512);
+            ctx.font = '160px Arial'; 
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+            const lineColor = (bgColorStr === 'black') ? '#333333' : '#dddddd';
+
+            for(let i=0; i<10; i++) {
+                const xCenter = (2048/10) * i + (2048/20);
+                const yCenter = 256;
+
+                ctx.save(); 
+                ctx.translate(xCenter, yCenter); 
+                ctx.rotate(Math.PI / 2); 
+
+                if (bgColorStr === 'black') {
+                    ctx.shadowColor = 'rgba(255,255,255,0.5)';
+                    ctx.shadowBlur = 10;
+                }
+
+                ctx.fillText(emojis[i], 0, 0); 
+                ctx.restore();
+
+                ctx.beginPath(); ctx.moveTo((2048/10) * i, 0); ctx.lineTo((2048/10) * i, 512);
+                ctx.strokeStyle = lineColor; ctx.lineWidth = 8; ctx.stroke();
+            }
+            const tex = new THREE.CanvasTexture(canvas); 
+            tex.wrapS = THREE.RepeatWrapping; 
+            tex.anisotropy = renderer.capabilities.getMaxAnisotropy(); 
+            return tex;
+        }
+
+        function changeReelBackground() {
+            const colorType = document.getElementById('reel-color-select').value;
+            const newTexture = createSymbolTexture(colorType);
+
+            let metalVal = 0.1;
+            let roughVal = 0.3;
+            if (colorType === 'soft_gold' || colorType === 'silver') {
+                metalVal = 0.3;
+                roughVal = 0.2;
+            }
+
+            reelMaterialBase.map = newTexture;
+            reelMaterialBase.metalness = metalVal;
+            reelMaterialBase.roughness = roughVal;
+            reelMaterialBase.needsUpdate = true;
+        }
+
+        function changeMachineBackground() {
+            const val = document.getElementById('bg-color-select').value;
+
+            if (val === 'dice_celeste') {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024; canvas.height = 1024;
+                const ctx = canvas.getContext('2d');
+                const grd = ctx.createRadialGradient(512, 512, 100, 512, 512, 800);
+                grd.addColorStop(0, '#00d2ff');
+                grd.addColorStop(1, '#001528');
+                ctx.fillStyle = grd;
+                ctx.fillRect(0, 0, 1024, 1024);
+
+                const tex = new THREE.CanvasTexture(canvas);
+                if (machineFrame.material.map) machineFrame.material.map.dispose();
+                machineFrame.material.map = tex;
+                machineFrame.material.color.setHex(0xffffff);
+                machineFrame.material.metalness = 0.3;
+                machineFrame.material.roughness = 0.4;
+                machineFrame.material.needsUpdate = true;
+            } else {
+                if (machineFrame.material.map) {
+                    machineFrame.material.map.dispose();
+                    machineFrame.material.map = null;
+                }
+                machineFrame.material.color.setHex(parseInt(val));
+                machineFrame.material.metalness = 0.1;
+                machineFrame.material.roughness = 0.5;
+                machineFrame.material.needsUpdate = true;
+            }
+        }
+
+        function createMachine() {
+            const reelGeom = new THREE.CylinderGeometry(2.2, 2.2, 2.6, 100);
+
+            const tex = createSymbolTexture('white'); 
+            reelMaterialBase = new THREE.MeshStandardMaterial({map: tex, roughness: 0.3, metalness: 0.1});
+
+            const goldMat = new THREE.MeshStandardMaterial({color: 0xffd700, metalness: 0.9, roughness: 0.1});
+            const reelMaterials = [reelMaterialBase, goldMat, goldMat];
+
+            for(let i=0; i<3; i++) {
+                const reelGroup = new THREE.Group();
+                reelGroup.position.x = (i - 1) * 3.0;
+                reelGroup.rotation.z = Math.PI / 2; 
+                scene.add(reelGroup);
+                const reel = new THREE.Mesh(reelGeom, reelMaterials);
+                reelGroup.add(reel); reels.push(reel);
+
+                const ringLeft = new THREE.Mesh(new THREE.TorusGeometry(2.21, 0.15, 64, 200), goldMat);
+                ringLeft.rotation.y = Math.PI / 2; ringLeft.position.x = reelGroup.position.x - 1.3;
+                scene.add(ringLeft);
+                const ringRight = new THREE.Mesh(new THREE.TorusGeometry(2.21, 0.15, 64, 200), goldMat);
+                ringRight.rotation.y = Math.PI / 2; ringRight.position.x = reelGroup.position.x + 1.3;
+                scene.add(ringRight);
+            }
+
+            const frameGeom = new THREE.BoxGeometry(11.5, 6.5, 2);
+            machineFrame = new THREE.Mesh(frameGeom, new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            machineFrame.position.z = -1.5; scene.add(machineFrame);
+
+            changeMachineBackground();
+
+            handleGroup = new THREE.Group();
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.5, 32), goldMat);
+            base.rotation.z = Math.PI / 2; base.position.set(0, 0, 0);
+            const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 3, 16), new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.2 }));
+            stick.position.set(0, 1.5, 0);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.1, metalness: 0.3 }));
+            ball.position.set(0, 3, 0);
+
+            handleGroup.add(base); handleGroup.add(stick); handleGroup.add(ball);
+            handleGroup.position.set(6.6, -1.5, 0); scene.add(handleGroup);
+        }
+
+        function stopBatchRender() {
+            if (!isBatching) return;
+            isCancelling = true;
+            renderQueue = [];
+            document.getElementById('result').innerText = "🛑 CANCELLING... Waiting for current spin to finish.";
+        }
+
+        function startBatchRender(tripleMode) {
+            if(isSpinning || isBatching || isLeverPulling) return;
+            isBatching = true;
+            isCancelling = false;
+            isTripleMode = tripleMode;
+
+            const btnId = isTripleMode ? 'triple-btn' : 'auto-btn';
+            document.getElementById(btnId).classList.add('running');
+            document.getElementById(btnId).innerText = "🛑 RUNNING...";
+            document.getElementById('rollBtn').disabled = true;
+
+            document.getElementById('bg-color-select').disabled = true;
+            document.getElementById('reel-color-select').disabled = true;
+
+            renderQueue = [];
+
+            if (!isTripleMode) {
+                for(let reelIdx = 0; reelIdx < 3; reelIdx++) {
+                    let symbolOrder = [0,1,2,3,4,5,6,7,8,9];
+                    if (!isSequentialMode) {
+                        for (let i = symbolOrder.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [symbolOrder[i], symbolOrder[j]] = [symbolOrder[j], symbolOrder[i]];
+                        }
+                    }
+                    for(let symIdx of symbolOrder) {
+                        for(let spd of speedModes) {
+                            renderQueue.push({ reel: reelIdx, symbol: symIdx, speed: spd });
+                        }
+                    }
+                }
+            } else {
+                let symbolOrder = [0,1,2,3,4,5,6,7,8,9];
+                if (!isSequentialMode) {
+                    for (let i = symbolOrder.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [symbolOrder[i], symbolOrder[j]] = [symbolOrder[j], symbolOrder[i]];
+                    }
+                }
+                for(let symIdx of symbolOrder) {
+                    for(let spd of speedModes) {
+                        renderQueue.push({ symbol: symIdx, speed: spd }); 
+                    }
+                }
+            }
+
+            processNextBatch();
+        }
+
+        function processNextBatch() {
+            if(isCancelling || renderQueue.length === 0) {
+                isBatching = false;
+                isCancelling = false;
+                isTripleMode = false;
+                document.getElementById('auto-btn').classList.remove('running');
+                document.getElementById('auto-btn').innerText = "🤖 1x1 (90)";
+                document.getElementById('triple-btn').classList.remove('running');
+                document.getElementById('triple-btn').innerText = "🚀 TRIPLE (90 Vids)";
+                document.getElementById('rollBtn').disabled = false;
+
+                document.getElementById('bg-color-select').disabled = false;
+                document.getElementById('reel-color-select').disabled = false;
+
+                document.getElementById('result').innerText = renderQueue.length === 0 ? "✅ BATCH COMPLETE!" : "🛑 CANCELLED";
+                return;
+            }
+
+            if (!isTripleMode) {
+                currentTask = renderQueue.shift();
+                const remaining = renderQueue.length;
+                const seqNumber = 90 - remaining;
+                const prefix = seqNumber < 10 ? '0' + seqNumber : seqNumber;
+                document.getElementById('result').innerText = 
+                    `Rec: ${prefix}_Sector${currentTask.reel + 1}_${symbols[currentTask.symbol]}_${currentTask.speed} (${seqNumber}/90)`;
+                executePull(currentTask.reel, currentTask.symbol, currentTask.speed);
+            } else {
+                currentTripleTask = renderQueue.shift();
+                const remaining = renderQueue.length;
+                const seqNumber = 30 - remaining;
+                const prefix = seqNumber < 10 ? '0' + seqNumber : seqNumber;
+                document.getElementById('result').innerText = 
+                    `Rec TRIPLE: ${prefix}_ALL-SECTORS_${symbols[currentTripleTask.symbol]}_${currentTripleTask.speed} (${seqNumber}/30)`;
+                executePull(-2, currentTripleTask.symbol, currentTripleTask.speed);
+            }
+        }
+
+        function pullHandleManual() {
+            if(isSpinning || isBatching || isLeverPulling) return;
+            executePull(-1, -1, 'medium'); 
+        }
+
+        function executePull(forceReelIndex, forceSymbolIndex, speedType) {
+            isLeverPulling = true;
+            document.getElementById('rollBtn').disabled = true;
+
+            let pull = 0;
+            const pullInterval = setInterval(() => {
+                pull += 0.15; handleGroup.rotation.x = pull;
+                if(pull >= Math.PI / 2.5) {
+                    clearInterval(pullInterval);
+                    const returnInterval = setInterval(() => {
+                        pull -= 0.1; handleGroup.rotation.x = pull;
+                        if(pull <= 0) {
+                            handleGroup.rotation.x = 0; 
+                            clearInterval(returnInterval); 
+                            startSpinLogic(forceReelIndex, forceSymbolIndex, speedType);
+                        }
+                    }, 20);
+                }
+            }, 20);
+        }
+
+        function startSpinLogic(forceReelIndex, forceSymbolIndex, speedType) {
+            isLeverPulling = false;
+            isSpinning = true; 
+
+            let baseSpeed;
+            if (speedType === 'fast') baseSpeed = 1.05;
+            else if (speedType === 'slow') baseSpeed = 0.65;
+            else baseSpeed = 0.85; 
+
+            reelSpeeds = [baseSpeed, baseSpeed, baseSpeed]; 
+            reelStops = [false, false, false];
+
+            if (forceReelIndex === -2) {
+                for(let i=0; i<3; i++) targetIndexes[i] = forceSymbolIndex;
+            } else {
+                for(let i=0; i<3; i++) {
+                    if(i === forceReelIndex) targetIndexes[i] = forceSymbolIndex;
+                    else targetIndexes[i] = Math.floor(Math.random() * 10);
+                }
+            }
+
+            if(document.getElementById('record-toggle').checked && !isCancelling) {
+                if (forceReelIndex === -2) startTripleRecording();
+                else if (forceReelIndex !== -1) startRecording(forceReelIndex);
+            }
+
+            setTimeout(() => stopReel(0), 2500); 
+            setTimeout(() => stopReel(1), 3500); 
+            setTimeout(() => stopReel(2), 4500);
+        }
+
+        function stopReel(index) { reelStops[index] = true; }
+
+        function startRecording(sectorIndex) {
+            recordedChunksArr[0] = [];
+            const stream = cropCanvasArr[0].captureStream(60);
+            let options = { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 8000000 };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm', videoBitsPerSecond: 8000000 };
+            mediaRecorders[0] = new MediaRecorder(stream, options);
+            mediaRecorders[0].ondataavailable = e => { if(e.data.size > 0) recordedChunksArr[0].push(e.data); };
+            mediaRecorders[0].onstop = () => downloadSingleVideo(sectorIndex);
+            mediaRecorders[0].start();
+            document.getElementById('rec-indicator').style.display = 'block';
+            document.getElementById('rec-indicator').innerText = `● REC SECTOR ${sectorIndex + 1}`;
+        }
+
+        function stopRecording() {
+            if(mediaRecorders[0] && mediaRecorders[0].state !== 'inactive') {
+                mediaRecorders[0].stop();
+                document.getElementById('rec-indicator').style.display = 'none';
+            }
+        }
+
+        function downloadSingleVideo(sectorIndex) {
+            if (isCancelling) { processNextBatch(); return; }
+            const blob = new Blob(recordedChunksArr[0], { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.style.display = 'none'; a.href = url;
+            const currentNumber = 90 - renderQueue.length;
+            const prefix = currentNumber < 10 ? '0' + currentNumber : currentNumber;
+            a.download = `${prefix}_Sector${sectorIndex + 1}_${symbols[currentTask.symbol]}_${currentTask.speed}.webm`;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(url); if(isBatching) setTimeout(processNextBatch, 1000); }, 100);
+        }
+
+        function startTripleRecording() {
+            let options = { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 8000000 };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm', videoBitsPerSecond: 8000000 };
+            document.getElementById('rec-indicator').style.display = 'block';
+            document.getElementById('rec-indicator').innerText = `● REC TRIPLE`;
+            for(let i=0; i<3; i++) {
+                recordedChunksArr[i] = [];
+                const stream = cropCanvasArr[i].captureStream(60);
+                mediaRecorders[i] = new MediaRecorder(stream, options);
+                mediaRecorders[i].ondataavailable = e => { if(e.data.size > 0) recordedChunksArr[i].push(e.data); };
+                mediaRecorders[i].onstop = () => downloadTripleVideo(i, i === 2); 
+                mediaRecorders[i].start();
+            }
+        }
+
+        function stopTripleRecording() {
+            document.getElementById('rec-indicator').style.display = 'none';
+            for(let i=0; i<3; i++) {
+                if(mediaRecorders[i] && mediaRecorders[i].state !== 'inactive') mediaRecorders[i].stop();
+            }
+        }
+
+        function downloadTripleVideo(sectorIndex, isLastOfBatch) {
+            if (isCancelling && isLastOfBatch) { processNextBatch(); return; }
+            if (isCancelling) return;
+            const blob = new Blob(recordedChunksArr[sectorIndex], { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.style.display = 'none'; a.href = url;
+            const seqNumber = 30 - renderQueue.length;
+            const prefix = seqNumber < 10 ? '0' + seqNumber : seqNumber;
+            a.download = `${prefix}_Sector${sectorIndex + 1}_${symbols[currentTripleTask.symbol]}_${currentTripleTask.speed}.webm`;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { 
+                URL.revokeObjectURL(url); 
+                if(isBatching && isLastOfBatch) setTimeout(processNextBatch, 1000); 
+            }, 100);
+        }
+
+        function animate() {
+            animationFrameId = requestAnimationFrame(animate);
+            if(isSpinning) {
+                let allStopped = true;
+                for(let i=0; i<3; i++) {
+                    if(!reelStops[i]) {
+                        reels[i].rotation.y -= reelSpeeds[i]; 
+                        allStopped = false;
+                    } else {
+                        const segmentAngle = (Math.PI * 2) / 10;
+                        const targetRotation = -((targetIndexes[i] + 0.5) * segmentAngle);
+                        let currentRot = reels[i].rotation.y % (Math.PI * 2);
+                        if (currentRot > 0) currentRot -= Math.PI * 2;
+                        let diff = targetRotation - currentRot;
+                        if (diff > Math.PI) diff -= Math.PI * 2; if (diff < -Math.PI) diff += Math.PI * 2;
+                        if (Math.abs(diff) > 0.005) { 
+                            reels[i].rotation.y += diff * 0.04; 
+                            allStopped = false; 
+                        } else { 
+                            reels[i].rotation.y = targetRotation; 
+                        }
+                    }
+                }
+                if(allStopped && reelStops[2]) {
+                    isSpinning = false; 
+                    if(!isBatching) document.getElementById('rollBtn').disabled = false;
+                    if(document.getElementById('record-toggle').checked) {
+                        if (isTripleMode && currentTripleTask !== null) setTimeout(stopTripleRecording, 500);
+                        else if (!isTripleMode && currentTask !== null) setTimeout(stopRecording, 500);
+                    }
+                }
+            }
+
+            renderer.render(scene, camera);
+
+            if (isTripleMode && currentTripleTask !== null && (isSpinning || (mediaRecorders[2] && mediaRecorders[2].state === 'recording'))) {
+                const sourceCanvas = renderer.domElement;
+                for(let i=0; i<3; i++) {
+                    const cropX = CROP_X_OFFSETS[i];
+                    cropCtxArr[i].clearRect(0, 0, CROP_W, CROP_H);
+                    cropCtxArr[i].drawImage(sourceCanvas, cropX, CROP_Y, CROP_W, CROP_H, 0, 0, CROP_W, CROP_H);
+                }
+            } 
+            else if (!isTripleMode && currentTask !== null && (isSpinning || (mediaRecorders[0] && mediaRecorders[0].state === 'recording'))) {
+                const sourceCanvas = renderer.domElement;
+                const cropX = CROP_X_OFFSETS[currentTask.reel];
+                cropCtxArr[0].clearRect(0, 0, CROP_W, CROP_H);
+                cropCtxArr[0].drawImage(sourceCanvas, cropX, CROP_Y, CROP_W, CROP_H, 0, 0, CROP_W, CROP_H);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
