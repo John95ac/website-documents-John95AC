@@ -669,6 +669,96 @@ document.addEventListener('DOMContentLoaded', initializeThemeHandling);
     }
 })();
 
+function catMeow() {
+    var audio = new Audio('../sound/miau-PDA.wav');
+    audio.play();
+    showToast('Meau!');
+}
+
+function showToast(message) {
+    var container = document.getElementById('toast-container');
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = '<span class="toast-icon">🐱</span><span>' + message + '</span>';
+    
+    container.appendChild(toast);
+    
+    setTimeout(function() {
+        toast.classList.add('toast-hide');
+        setTimeout(function() {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 400);
+    }, 2000);
+}
+
+var galleryImages = [
+    '../images/pic02.webp',
+    '../images/pic03.webp',
+    '../images/pic04.webp',
+    '../images/pic005.webp',
+    '../images/pic006.webp',
+    '../images/pic007.webp',
+    '../images/pic008.webp',
+    '../images/pic09.webp',
+    '../images/banner.webp'
+];
+var currentImageIndex = 0;
+
+function openGallery() {
+    currentImageIndex = 0;
+    var modal = document.getElementById('gallery-modal');
+    var img = document.getElementById('gallery-image');
+    var totalSpan = document.getElementById('gallery-total');
+    var currentSpan = document.getElementById('gallery-current');
+    
+    img.src = galleryImages[currentImageIndex];
+    totalSpan.textContent = galleryImages.length;
+    currentSpan.textContent = currentImageIndex + 1;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGallery() {
+    var modal = document.getElementById('gallery-modal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function prevImage() {
+    currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+    updateGalleryImage();
+}
+
+function nextImage() {
+    currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+    updateGalleryImage();
+}
+
+function updateGalleryImage() {
+    var img = document.getElementById('gallery-image');
+    var currentSpan = document.getElementById('gallery-current');
+    
+    img.src = galleryImages[currentImageIndex];
+    currentSpan.textContent = currentImageIndex + 1;
+}
+
+document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('gallery-modal');
+    if (!modal.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') {
+        closeGallery();
+    } else if (e.key === 'ArrowLeft') {
+        prevImage();
+    } else if (e.key === 'ArrowRight') {
+        nextImage();
+    }
+});
+
 
 
 

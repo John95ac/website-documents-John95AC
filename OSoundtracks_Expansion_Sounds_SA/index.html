@@ -218,6 +218,7 @@
     </style>
 </head>
 <body>
+<div id="toast-container"></div>
 <div class="spotlight-bg-container">
     <div class="spotlight-slide" data-slide="1"></div>
     <div class="spotlight-slide" data-slide="2"></div>
@@ -240,7 +241,7 @@
 <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo-area">
-                <img src="../Data/013.gif" alt="Cat Running" class="logo-cat">
+                <img src="../Data/013.gif" alt="Cat Running" class="logo-cat" onclick="catMeow()" style="cursor: pointer;">
                 <span class="logo-text">OSoundtracks SA</span>
             </div>
         </div>
@@ -309,6 +310,11 @@
                 </div>
             </div>
         </nav>
+        
+        <div class="sidebar-gallery-btn" onclick="openGallery()">
+            <span class="gallery-icon">🖼️</span>
+            <span class="gallery-text">Gallery</span>
+        </div>
         
         <div class="sidebar-footer">
             <div class="footer-text">
@@ -692,7 +698,7 @@
         <div class="container">
             <iframe width="100%" height="400" src="https://time.graphics/embed?v=1&id=1001694" frameborder="0" allowfullscreen></iframe>
             <div><a rel="nofollow" style="font-size: 12px; text-decoration: none;" title="Design timeline" href="https://time.graphics">Design timeline</a></div>
-            <div style="background-color: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: 20px; margin: 20px 0; text-align: center;">
+            <div style="background: rgba(22, 27, 34, 0.45); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(45, 55, 72, 0.4); border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
                 <p style="margin-bottom: 10px; font-size: 1em; color: var(--color-teal-300); line-height: 1.5;">
                     This is the progress of several projects I'm working on for Skyrim. I'll be uploading them as they are completed in stages. It's already been 3 years publishing mods, patches, and manuals, so I hope there will be many more. Thank you to everyone who supports me with comments and ideas.
                 </p>
@@ -1633,5 +1639,16 @@ return
         });
     })();
     </script>
+
+    <div id="gallery-modal" class="gallery-modal">
+        <div class="gallery-overlay" onclick="closeGallery()"></div>
+        <div class="gallery-container">
+            <button class="gallery-close" onclick="closeGallery()">✕</button>
+            <button class="gallery-nav prev" onclick="prevImage()">◀</button>
+            <img id="gallery-image" src="" alt="Gallery Image">
+            <button class="gallery-nav next" onclick="nextImage()">▶</button>
+            <div class="gallery-counter"><span id="gallery-current">1</span> / <span id="gallery-total">9</span></div>
+        </div>
+    </div>
 </body>
 </html>

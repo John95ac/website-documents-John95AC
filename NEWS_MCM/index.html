@@ -224,6 +224,19 @@
     </style>
 </head>
 <body>
+<div id="toast-container"></div>
+<div class="spotlight-bg-container">
+    <div class="spotlight-slide" data-slide="1"></div>
+    <div class="spotlight-slide" data-slide="2"></div>
+    <div class="spotlight-slide" data-slide="3"></div>
+    <div class="spotlight-slide" data-slide="4"></div>
+    <div class="spotlight-slide" data-slide="5"></div>
+    <div class="spotlight-slide" data-slide="6"></div>
+    <div class="spotlight-slide" data-slide="7"></div>
+    <div class="spotlight-slide" data-slide="8"></div>
+    <div class="spotlight-slide" data-slide="9"></div>
+</div>
+<div class="spotlight-overlay"></div>
 <div id="christmas-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
     <div id="saint-patrick-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
     <div id="easter-effects-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
@@ -234,7 +247,7 @@
 <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo-area">
-                <img src="../Data/013.gif" alt="Cat Running" class="logo-cat">
+                <img src="../Data/013.gif" alt="Cat Running" class="logo-cat" onclick="catMeow()" style="cursor: pointer;">
                 <span class="logo-text">John95ac Projects</span>
             </div>
         </div>
@@ -316,6 +329,10 @@
                 </div>
             </div>
         </nav>
+        <div class="sidebar-gallery-btn" onclick="openGallery()">
+            <span class="gallery-icon">🖼️</span>
+            <span class="gallery-text">Gallery</span>
+        </div>
         
         <div class="sidebar-footer">
             <div class="footer-text">
@@ -2990,5 +3007,15 @@
         });
     })();
     </script>
+<div id="gallery-modal" class="gallery-modal">
+    <div class="gallery-overlay" onclick="closeGallery()"></div>
+    <div class="gallery-container">
+        <button class="gallery-close" onclick="closeGallery()">✕</button>
+        <button class="gallery-nav prev" onclick="prevImage()">◀</button>
+        <img id="gallery-image" src="" alt="Gallery Image">
+        <button class="gallery-nav next" onclick="nextImage()">▶</button>
+        <div class="gallery-counter"><span id="gallery-current">1</span> / <span id="gallery-total">9</span></div>
+    </div>
+</div>
 </body>
 </html>
