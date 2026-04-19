@@ -29,8 +29,9 @@
             emoji.style.position = 'absolute';
             emoji.style.left = Math.random() * 100 + 'vw';
             emoji.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-            emoji.style.opacity = '0.2';
-            emoji.style.filter = 'blur(1px)';
+            emoji.style.opacity = '0.05';
+            emoji.style.filter = 'blur(0.2px)';
+            emoji.style.zIndex = '-1';
             emoji.style.animation = 'new-year-fall 10s linear forwards';
             container.appendChild(emoji);
 
@@ -44,23 +45,23 @@
         fixedNewYear.style.bottom = '-10px';
         fixedNewYear.style.right = '20px';
         fixedNewYear.style.fontSize = '4rem';
-        fixedNewYear.style.opacity = '0.3';
-        fixedNewYear.style.filter = 'blur(0.5px)';
-        fixedNewYear.style.zIndex = '1';
+        fixedNewYear.style.opacity = '0.05';
+        fixedNewYear.style.filter = 'blur(0.2px)';
+        fixedNewYear.style.zIndex = '-1';
         fixedNewYear.style.pointerEvents = 'none';
         container.appendChild(fixedNewYear);
         // Agregar segundo emoji fijo de Año Nuevo en esquina inferior izquierda
-        const fixedNewYearLeft = document.createElement('div');
-        fixedNewYearLeft.textContent = '🎇';
-        fixedNewYearLeft.style.position = 'fixed';
-        fixedNewYearLeft.style.bottom = '-25px';
-        fixedNewYearLeft.style.left = '10px';
-        fixedNewYearLeft.style.fontSize = '8rem';
-        fixedNewYearLeft.style.opacity = '0.3';
-        fixedNewYearLeft.style.filter = 'blur(0.5px)';
-        fixedNewYearLeft.style.zIndex = '1';
-        fixedNewYearLeft.style.pointerEvents = 'none';
-        container.appendChild(fixedNewYearLeft);
+                const fixedNewYearLeft = document.createElement('div');
+                fixedNewYearLeft.textContent = '🎇';
+                fixedNewYearLeft.style.position = 'fixed';
+                fixedNewYearLeft.style.bottom = '-25px';
+                fixedNewYearLeft.style.left = '10px';
+                fixedNewYearLeft.style.fontSize = '8rem';
+                fixedNewYearLeft.style.opacity = '0.05';
+                fixedNewYearLeft.style.filter = 'blur(0.2px)';
+                fixedNewYearLeft.style.zIndex = '-1';
+                fixedNewYearLeft.style.pointerEvents = 'none';
+                container.appendChild(fixedNewYearLeft);
 
 
         // CSS para animación

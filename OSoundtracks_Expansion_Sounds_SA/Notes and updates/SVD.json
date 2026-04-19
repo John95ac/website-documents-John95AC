@@ -1,0 +1,18 @@
+[
+  {
+    "update_title": "Skyrim Voice Decoder Beta tester release",
+    "version": "1.0.0",
+    "update_type": "hard",
+    "description": "Initial beta release of the Skyrim Voice Decoder project, established as the foundation for automated voice processing.",
+    "details": {
+      "date": "2026-01-31",
+      "changes": [
+        "- Core system implementation for ESP/ESL data extraction and voice line categorization",
+        "- Integration of automated FUZ to WAV/LIP conversion and analysis tools",
+        "- Development of the unified Audio Manager with support for XTTS, ElevenLabs, and localized AI generation",
+        "- Added native Windows failsafe for audio playback (winsound) to ensure reliability",
+        "- Implementation of the real-time Mod Analyzer with live update tracking"
+      ]
+    }
+  }
+]

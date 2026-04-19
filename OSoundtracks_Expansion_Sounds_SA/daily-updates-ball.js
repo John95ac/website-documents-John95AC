@@ -123,7 +123,7 @@
     const style = document.createElement('style');
     style.textContent = `
       #daily-updates-ball {
-        position: fixed; bottom: 120px; right: 20px; width: 40px; height: 40px;
+        position: fixed; bottom: 95px; right: 20px; width: 40px; height: 40px;
         background: linear-gradient(135deg, #10b981, #059669);
         border-radius: 50%; cursor: pointer; z-index: 9997;
         display: flex; align-items: center; justify-content: center;
@@ -133,11 +133,11 @@
         border: 2px solid rgba(255,255,255,0.3);
       }
       #daily-updates-ball.near {
-        animation: dailyGlow 2s ease-in-out infinite;
+        animation: dailyGlow 1.5s ease-in-out infinite;
       }
       @keyframes dailyGlow {
         0%, 100% { box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
-        50% { box-shadow: 0 4px 20px rgba(16,185,129,0.4), 0 0 15px rgba(16,185,129,0.6), 0 0 30px rgba(16,185,129,0.3); }
+        50% { box-shadow: 0 4px 30px rgba(16,185,129,0.9), 0 0 15px rgba(16,185,129,0.6), 0 0 30px rgba(16,185,129,0.3); }
       }
       #daily-updates-ball:hover {
         background: linear-gradient(135deg, #059669, #047857);
@@ -152,7 +152,7 @@
         50% { box-shadow: 0 4px 30px rgba(16,185,129,0.8), 0 0 20px rgba(16,185,129,0.6); }
       }
       #daily-updates-panel {
-        position: fixed; bottom: 170px; right: 20px;
+        position: fixed; bottom: 145px; right: 20px;
         background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(30,30,30,0.95));
         border-radius: 15px; z-index: 10000; display: none;
         min-width: 380px; max-width: 440px;

@@ -13,6 +13,12 @@
       alt: 'Visit Web Doc John95AC'
     },
     {
+      name: 'News',
+      image: 'images/news.png',
+      url: 'https://john95ac.github.io/website-documents-John95AC/NEWS_MCM/index.html',
+      alt: 'News, acknowledgments and updates'
+    },
+    {
       name: 'YouTube',
       image: 'images/support_me_on_Youtube_badge.png',
       url: 'https://www.youtube.com/@John1995ac',
@@ -302,7 +308,7 @@
         <img src="${link.image}" alt="${link.alt}" loading="lazy">
         <div class="social-link-info">
           <h4 class="social-link-title">${link.name}</h4>
-          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : link.name === 'Web Doc John95AC' ? 'Web - Work in progress' : `Click to follow on ${link.name}`}</p>
+          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : link.name === 'Web Doc John95AC' ? 'Web - Work in progress' : link.name === 'News' ? 'News, acknowledgments and updates' : `Click to follow on ${link.name}`}</p>
         </div>
         <div class="social-link-icon">→</div>
       `;

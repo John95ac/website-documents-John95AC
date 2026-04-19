@@ -29,8 +29,9 @@
             emoji.style.position = 'absolute';
             emoji.style.left = Math.random() * 100 + 'vw';
             emoji.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-            emoji.style.opacity = '0.2';
-            emoji.style.filter = 'blur(1px)';
+            emoji.style.opacity = '0.05';
+            emoji.style.filter = 'blur(0.2px)';
+            emoji.style.zIndex = '-1';
             emoji.style.animation = 'easter-fall 10s linear forwards';
             container.appendChild(emoji);
 
@@ -44,23 +45,23 @@
         fixedEaster.style.bottom = '-10px';
         fixedEaster.style.right = '20px';
         fixedEaster.style.fontSize = '4rem';
-        fixedEaster.style.opacity = '0.3';
-        fixedEaster.style.filter = 'blur(0.5px)';
-        fixedEaster.style.zIndex = '1';
+        fixedEaster.style.opacity = '0.05';
+        fixedEaster.style.filter = 'blur(0.2px)';
+        fixedEaster.style.zIndex = '-1';
         fixedEaster.style.pointerEvents = 'none';
         container.appendChild(fixedEaster);
         // Agregar segundo emoji fijo de Pascua en esquina inferior izquierda
-        const fixedEasterLeft = document.createElement('div');
-        fixedEasterLeft.textContent = '🍫';
-        fixedEasterLeft.style.position = 'fixed';
-        fixedEasterLeft.style.bottom = '-25px';
-        fixedEasterLeft.style.left = '10px';
-        fixedEasterLeft.style.fontSize = '8rem';
-        fixedEasterLeft.style.opacity = '0.3';
-        fixedEasterLeft.style.filter = 'blur(0.5px)';
-        fixedEasterLeft.style.zIndex = '1';
-        fixedEasterLeft.style.pointerEvents = 'none';
-        container.appendChild(fixedEasterLeft);
+                const fixedEasterLeft = document.createElement('div');
+                fixedEasterLeft.textContent = '🍫';
+                fixedEasterLeft.style.position = 'fixed';
+                fixedEasterLeft.style.bottom = '-25px';
+                fixedEasterLeft.style.left = '10px';
+                fixedEasterLeft.style.fontSize = '8rem';
+                fixedEasterLeft.style.opacity = '0.05';
+                fixedEasterLeft.style.filter = 'blur(0.2px)';
+                fixedEasterLeft.style.zIndex = '-1';
+                fixedEasterLeft.style.pointerEvents = 'none';
+                container.appendChild(fixedEasterLeft);
 
 
         // CSS para animación

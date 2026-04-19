@@ -29,8 +29,9 @@
             emoji.style.position = 'absolute';
             emoji.style.left = Math.random() * 100 + 'vw';
             emoji.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-            emoji.style.opacity = '0.2';
-            emoji.style.filter = 'blur(1px)';
+            emoji.style.opacity = '0.05';
+            emoji.style.filter = 'blur(0.2px)';
+            emoji.style.zIndex = '-1';
             emoji.style.animation = 'saint-patrick-fall 10s linear forwards';
             container.appendChild(emoji);
 
@@ -44,23 +45,23 @@
         fixedSaintPatrick.style.bottom = '-10px';
         fixedSaintPatrick.style.right = '20px';
         fixedSaintPatrick.style.fontSize = '4rem';
-        fixedSaintPatrick.style.opacity = '0.3';
-        fixedSaintPatrick.style.filter = 'blur(0.5px)';
-        fixedSaintPatrick.style.zIndex = '1';
+        fixedSaintPatrick.style.opacity = '0.05';
+        fixedSaintPatrick.style.filter = 'blur(0.2px)';
+        fixedSaintPatrick.style.zIndex = '-1';
         fixedSaintPatrick.style.pointerEvents = 'none';
         container.appendChild(fixedSaintPatrick);
         // Agregar segundo emoji fijo de San Patricio en esquina inferior izquierda
-        const fixedSaintPatrickLeft = document.createElement('div');
-        fixedSaintPatrickLeft.textContent = '🍻';
-        fixedSaintPatrickLeft.style.position = 'fixed';
-        fixedSaintPatrickLeft.style.bottom = '-25px';
-        fixedSaintPatrickLeft.style.left = '10px';
-        fixedSaintPatrickLeft.style.fontSize = '8rem';
-        fixedSaintPatrickLeft.style.opacity = '0.3';
-        fixedSaintPatrickLeft.style.filter = 'blur(0.5px)';
-        fixedSaintPatrickLeft.style.zIndex = '1';
-        fixedSaintPatrickLeft.style.pointerEvents = 'none';
-        container.appendChild(fixedSaintPatrickLeft);
+                const fixedSaintPatrickLeft = document.createElement('div');
+                fixedSaintPatrickLeft.textContent = '🍻';
+                fixedSaintPatrickLeft.style.position = 'fixed';
+                fixedSaintPatrickLeft.style.bottom = '-25px';
+                fixedSaintPatrickLeft.style.left = '10px';
+                fixedSaintPatrickLeft.style.fontSize = '8rem';
+                fixedSaintPatrickLeft.style.opacity = '0.05';
+                fixedSaintPatrickLeft.style.filter = 'blur(0.2px)';
+                fixedSaintPatrickLeft.style.zIndex = '-1';
+                fixedSaintPatrickLeft.style.pointerEvents = 'none';
+                container.appendChild(fixedSaintPatrickLeft);
 
 
         // CSS para animación

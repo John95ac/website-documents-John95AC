@@ -13,6 +13,12 @@
       alt: 'Visit Web Doc John95AC'
     },
     {
+      name: 'News',
+      image: 'images/news.png',
+      url: 'https://john95ac.github.io/website-documents-John95AC/NEWS_MCM/index.html',
+      alt: 'News, acknowledgments and updates'
+    },
+    {
       name: 'YouTube',
       image: 'images/support_me_on_Youtube_badge.png',
       url: 'https://www.youtube.com/@John1995ac',
@@ -84,10 +90,10 @@
     style.textContent = `
       #social-links-ball {
         position: fixed;
-        bottom: 70px; /* Positioned ABOVE the support sphere */
+        bottom: 55px; /* Separación clara de la de soporte (70px) */
         right: 20px;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         background: linear-gradient(135deg, #6B7280, #4B5563);
         border-radius: 50%;
         cursor: pointer;
@@ -96,7 +102,7 @@
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 16px;
+        font-size: 14px;
         transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         box-shadow: 0 4px 20px rgba(107, 114, 128, 0.4);
         border: 2px solid rgba(255, 255, 255, 0.3);
@@ -110,7 +116,7 @@
 
       #social-links-panel {
         position: fixed;
-        bottom: 120px; /* Positioned ABOVE the support sphere */
+        bottom: 105px; /* Ajustado a la nueva posición de la esfera */
         right: 20px;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
         border-radius: 15px;
@@ -302,7 +308,7 @@
         <img src="${link.image}" alt="${link.alt}" loading="lazy">
         <div class="social-link-info">
           <h4 class="social-link-title">${link.name}</h4>
-          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : link.name === 'Web Doc John95AC' ? 'Web - Work in progress' : `Click to follow on ${link.name}`}</p>
+          <p class="social-link-desc">${link.name === 'Discord' ? 'Discord server coming soon' : link.name === 'Web Doc John95AC' ? 'Web - Work in progress' : link.name === 'News' ? 'News, acknowledgments and updates' : `Click to follow on ${link.name}`}</p>
         </div>
         <div class="social-link-icon">→</div>
       `;
