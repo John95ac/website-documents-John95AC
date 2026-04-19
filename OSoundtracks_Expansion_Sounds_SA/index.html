@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../assets/css/icons.css">
     <link rel="icon" type="image/x-icon" href="../images/log.ico">
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
       mermaid.initialize({ startOnLoad: true, theme: 'forest' });
     </script>
@@ -292,15 +293,28 @@
             </div>
             
             <div class="nav-group">
+                <a href="#" class="nav-item" id="documentationToggle">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Documentation</span>
+                    <span class="nav-arrow" id="documentationArrow">▾</span>
+                </a>
+                <div class="sub-nav" id="documentationSubNav">
+                    <a href="#" class="sub-nav-item" data-anchor="getting-started">
+                        <span class="sub-icon">🚀</span> Getting Started
+                    </a>
+                    <a href="#" class="sub-nav-item" data-anchor="tts-usage">
+                        <span class="sub-icon">🎤</span> VoiceTex
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-group">
                 <a href="#" class="nav-item" id="projectsToggle">
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Projects</span>
                     <span class="nav-arrow" id="projectsArrow">▾</span>
                 </a>
                 <div class="sub-nav" id="projectsSubNav">
-                    <a href="#" class="sub-nav-item" data-anchor="timeline">
-                        <span class="sub-icon">🕐</span> Timeline
-                    </a>
                     <a href="#" class="sub-nav-item" data-anchor="projects-descriptions">
                         <span class="sub-icon">📄</span> Projects and their descriptions
                     </a>
@@ -344,15 +358,60 @@
             </div>
 
             <div id="generator-soundmenukey" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
-                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🎶 SoundMenuKey Generator</span>
+                <span style="font-size: 1.2em;">🎶</span>&nbsp;<span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">SoundMenuKey Generator</span>
             </div>
             <div class="credit-item">
                 <h4>SoundMenuKey</h4>
-                <p>Generator placeholder - configuration will be added here.</p>
+                <p style="color: var(--color-text-secondary); text-align: justify;">Generator creates packs for background sound albums. Drag music, drag cover image, place album name and pack name. Everything is automatic. Press download and have <span style="color: #10B981; font-weight: 600;">the mod in your hands</span>. Packs are yours to share. No problem creating your own packs with your preferred music. Download from wherever you want. I am not responsible for non-royalty-free audios. If publishing, must be royalty-free with proper permissions. Without permissions, not a good idea to publish. Preferably add source links. Always give thanks to music creators.</p>
+                <div id="soundmenukey-configurator" class="generator-configurator">
+                    <div class="smk-layout-container">
+                        <div class="smk-left-column">
+                            <div class="generator-section">
+                                <label for="smk-mod-name">Pack Name</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">Place the name of the mod you are creating. Each space automatically replaces with an underscore.</p>
+                                <input type="text" id="smk-mod-name" placeholder="Nord_Menu_SoundPack" required>
+                            </div>
+                            <div class="generator-section">
+                                <label for="smk-moderlister">Album Name</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">Add the creator name and attach the album name together. Example: John95acNord</p>
+                                <input type="text" id="smk-moderlister" placeholder="John95acNord" required>
+                            </div>
+                            <div class="generator-section">
+                                <label>Cover Image</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">Drag any image and inside the selector it will convert to 1080x1080 .webp format for your pack cover.</p>
+                                <div id="smk-image-dropzone" class="dropzone dropzone-image">Drag & drop image or click to select</div>
+                                <div id="smk-image-preview" class="image-preview"></div>
+                                <canvas id="smk-image-canvas" class="hidden" width="1080" height="1080"></canvas>
+                            </div>
+                            <div class="generator-section">
+                                <label for="smk-royalty-links">Royalty-Free Links</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">Optional. Copy and paste the source links if you want to publish. If personal, not necessary.</p>
+                                <textarea id="smk-royalty-links" rows="3" placeholder="Enter links to music sources..."></textarea>
+                            </div>
+                        </div>
+                        <div class="smk-right-column">
+                            <div class="generator-section">
+                                <label>Audio Files</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">Drag any audio you want to add. Any format supported. You can play, pause, and remove if needed.</p>
+                                <div id="smk-music-dropzone" class="dropzone">Drag & drop audio files here or click to select</div>
+                                <div id="smk-music-list" class="smk-music-scroll"></div>
+                            </div>
+                            <div class="generator-section">
+                                <label>INI Preview</label>
+                                <p style="color: var(--color-text-secondary); font-size: 0.85em; margin-bottom: 4px;">This is completely automatic. Just place your audio, album name, and press Create Pack. Everything organized to install.</p>
+                                <pre id="smk-ini-preview" class="smk-ini-scroll"></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="generator-actions">
+                        <button id="smk-create-pack" class="btn-create-pack" disabled>Create Pack</button>
+                        <button id="smk-clear-all" class="btn-clear">Clear All</button>
+                    </div>
+                </div>
             </div>
 
             <div id="generator-soundpositionkey" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
-                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">📍 SoundPositionKey Generator</span>
+                <span style="font-size: 1.2em;">📍</span>&nbsp;<span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">SoundPositionKey Generator</span>
             </div>
             <div class="credit-item">
                 <h4>SoundPositionKey</h4>
@@ -360,7 +419,7 @@
             </div>
 
             <div id="generator-soundkey" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
-                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🔊 SoundKey Generator</span>
+                <span style="font-size: 1.2em;">🔊</span>&nbsp;<span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">SoundKey Generator</span>
             </div>
             <div class="credit-item">
                 <h4>SoundKey</h4>
@@ -368,19 +427,21 @@
             </div>
 
             <div id="generator-soundeffectkey" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
-                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">💥 SoundEffectKey Generator</span>
+                <span style="font-size: 1.2em;">💥</span>&nbsp;<span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">SoundEffectKey Generator</span>
             </div>
             <div class="credit-item">
                 <h4>SoundEffectKey</h4>
-                <p>Generator placeholder - configuration will be added here.</p>
+                <p>Generator is being built, please wait for the next weeks.</p>
+                <img src="../images/pic01under.png" alt="Cat building" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; display: block; margin: var(--space-16) auto;">
             </div>
 
             <div id="generator-soundtagkey" class="year-separator" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 15px 20px; margin: 20px 0; text-align: center;">
-                <span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">🏷️ SoundTAGKey Generator</span>
+                <span style="font-size: 1.2em;">🏷️</span>&nbsp;<span style="font-size: 1.2em; font-weight: 700; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px;">SoundTAGKey Generator</span>
             </div>
             <div class="credit-item">
                 <h4>SoundTAGKey</h4>
-                <p>Generator placeholder - configuration will be added here.</p>
+                <p>Generator is being built, please wait for the next weeks.</p>
+                <img src="../images/pic01under.png" alt="Cat building" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; display: block; margin: var(--space-16) auto;">
             </div>
 
         </div>
@@ -392,7 +453,22 @@
             <div class="modal-body">
                 <img id="newsImageModalImg" src="" alt="">
             </div>
-        </div>
+</div>
+</div>
+
+<div id="smk-crop-modal" class="modal" style="display:none;">
+<div class="modal-content" style="max-width:800px; padding:20px;">
+<span class="close" id="smk-crop-close">&times;</span>
+<h3 style="color:#38bdf8; margin-bottom:15px;">Cover Adjustment (1080x1080)</h3>
+<div id="smk-crop-container" style="position:relative; width:500px; height:500px; overflow:hidden; border:2px solid #38bdf8; margin:0 auto; cursor:grab;">
+<img id="smk-crop-image" style="position:absolute; max-width:none;">
+</div>
+<div style="margin-top:15px; text-align:center;">
+<button id="smk-crop-zoom-in" style="padding:8px 16px; margin-right:10px; background:rgba(255,255,255,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:6px; cursor:pointer;">Zoom +</button>
+<button id="smk-crop-zoom-out" style="padding:8px 16px; margin-right:10px; background:rgba(255,255,255,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:6px; cursor:pointer;">Zoom -</button>
+<button id="smk-crop-apply" style="padding:8px 20px; background:rgba(16,185,129,0.2); color:#10B981; border:1px solid rgba(16,185,129,0.5); border-radius:6px; cursor:pointer;">Apply Crop</button>
+</div>
+</div>
 </div>
 <div class="section-header">
         <div class="header-decoration"></div>
@@ -696,18 +772,15 @@
 
     <section id="project-schedule-outline" class="section bg-celeste">
         <div class="container">
-            <iframe width="100%" height="400" src="https://time.graphics/embed?v=1&id=1001694" frameborder="0" allowfullscreen></iframe>
-            <div><a rel="nofollow" style="font-size: 12px; text-decoration: none;" title="Design timeline" href="https://time.graphics">Design timeline</a></div>
-            <div style="background: rgba(22, 27, 34, 0.45); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(45, 55, 72, 0.4); border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
-                <p style="margin-bottom: 10px; font-size: 1em; color: var(--color-teal-300); line-height: 1.5;">
-                    This is the progress of several projects I'm working on for Skyrim. I'll be uploading them as they are completed in stages. It's already been 3 years publishing mods, patches, and manuals, so I hope there will be many more. Thank you to everyone who supports me with comments and ideas.
+            <div style="background: rgba(22, 27, 34, 0.45); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(45, 55, 72, 0.4); border-radius: 12px; padding: 30px; margin: 20px 0; text-align: center;">
+                <p style="margin-bottom: 20px; font-size: 1.1em; color: var(--color-text); line-height: 1.6;">
+                    Want to know more about the projects daily? Visit the <strong style="color: #38bdf8;">News page</strong> to stay up to date. 
+                    There is a <strong style="color: #10B981;">Daily News</strong> section where John uploads daily updates on what he's working on, 
+                    including progress reports, new features, and upcoming releases.
                 </p>
-                <p style="margin: 0; font-size: 1em; color: var(--color-teal-300); line-height: 1.5;">
-                    Thank you for being so patient 😿, I'm always delayed because either my ideas don't have existing mods and I have to create everything from scratch, or I simply have to buy things, so I work Monday to Friday and my time is limited. I have more projects that aren't Skyrim related, so I have to make time for everything, but I like to keep my word even as time passes, I always move forward.
-                </p>
-                <p style="margin-top: 10px; margin-bottom: 0; font-size: 1em; color: var(--color-orange-400); line-height: 1.5;">
-                    The estimated date for each project is just an estimate, so they are subject to change, especially the manuals, since I like to review everything in detail.
-                </p>
+                <a href="../NEWS_MCM/index.html" class="news-btn" style="display: inline-block; background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(16, 185, 129, 0.3)); border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 12px; padding: 16px 40px; color: #38bdf8; font-weight: 700; font-size: 1.2em; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);">
+                    📰 Visit Daily News Page
+                </a>
             </div>
 
             <div class="acknowledgments-content">
@@ -881,6 +954,11 @@
                             <h4>🐉️ Python 🤝 Skyrim</h4>
                             <p>You know, I love Python. It's solid as a rock and versatile as a feather, free and can be used in many ways, whether compiled or not, installed or Embeddable, with a very useful usage license. I've used it a lot for almost a decade, and I'm glad that little by little I managed to make it functional for Skyrim, creating a kind of agreement between the Skyrim engine powered by C++ and in turn communicated to Python in a simple Embeddable version, also proving to be fast without CPU load with great persistence. So thank you, Python. There will be many future projects that will include this emblem because it can be used on Windows and Linux without problems, and as I like to now mix Python with JS, CSS, and HTML, <span class="image-tooltip-trigger" data-tooltip-image="Beta Testers/Flm9ZbKaAAI_FHb.png" style="color: #38bdf8; cursor: help; border-bottom: 1px dashed #38bdf8">(That's how I felt when I was almost forced to use only Qt5 and Tkinter in my projects 😹)</span> this gives it a superior appearance to what I could achieve with the common Tkinter or Qt5, "I have also made an application or two with Flet, which are quite nice, but when converting them to EXE or trying to port them to other environments, problems appear. And I haven't dedicated much investigation time to it, maybe I will in the future" although I don't want to learn about React or Rust, because React has very serious security problems, they are category 10. 10 is the highest, so no, for now. And about Rust, it's good but its work environment is annoying for me, it's not as practical as Python. To create an EXE I have to consume several GB of my PC in compilation, reviewing the project is tedious and takes a lot of time. With Python, I just have to change .py to .pyw and that's it, each modification I make, with a simple click I check how the project is going, without compiling anything. So maybe when I have a more powerful PC I'll review Rust again, but I don't have space on my C drive for so many compilations. But I have to learn, it's a fact.</p>
                         </div>
+
+                        <div class="credit-item">
+                            <h4>💎 Prisma Mods</h4>
+                            <p>After several years of working with modifications and entering the world of MCM files, there is currently a new way to create controls and configurations for mods which currently uses JS, CSS and HTML files as the main ones to achieve excellent results. Obviously it is not perfect, videos cannot be reproduced natively, audio cannot be reproduced natively. But that is not a limitation. Many of the projects I am currently working on have already overcome those limitations including communication videos including sound including games even inside. So for me it is an excellent way to work. Also, having worked for so many years with Python, working with JS is not so complicated and great things can be done online without having to download any program. Obviously there are many limitations currently and I am working hard for months to overcome each one of these limitations with simply tricks. One trick after another manages to solve the problems. It requires high amount of thinking yes but I love finding solutions to problems like this. Currently I think I have published very few on Nexus but most are on Discord or other places where I communicate. Also if you are a patron or someone who wants to know more about this aspect simply contact me and you can become a beta tester. Anyway I thank very much the creation of Prisma which has helped me a lot to improve all the mods I was working on and finally be able to leave aside the tedious MCM. I do not have hatred for it at all, I have worked quite a bit using Papyrus scripts but currently at portability level it is much better using this new Prisma system that uses Papyrus scripts for the MCM system since it has the problem that each update requires a new game new which is unfeasible for people like me who play games for years and have to find many tricks to even be able to use the old system again. That is why now I will pass all my main mods and their installations impressively easy.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -986,6 +1064,155 @@
                 </div>
 
             </div>
+        </div>
+    </section>
+
+<div class="section-header">
+        <div class="header-decoration"></div>
+        <div class="header-content">
+            <h1 class="main-title">📚 Documentation</h1>
+            <p class="main-subtitle">Guides, API reference, and usage manuals</p>
+        </div>
+    </div>
+
+<section id="documentation" class="section">
+        <div class="container">
+            
+            <div id="getting-started" class="credits">
+                <div class="credits-list">
+                    <div class="credit-item">
+                        <h4 style="color: #38bdf8; font-size: 1.3em; font-weight: var(--font-weight-bold); margin-bottom: var(--space-12);">🚀 Getting Started</h4>
+                        <p>OSoundtracks SA is a comprehensive soundtrack system for Skyrim Special Edition. It provides automated music playback during scenes with multiple generator tools for creating custom sound packs.</p>
+                        
+                        <h4>Three Core Systems</h4>
+                        <div class="feature-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-16); margin: var(--space-16) 0;">
+                            <div class="feature-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-16);">
+                                <div style="font-size: 2em; margin-bottom: var(--space-8);">🎶</div>
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-primary); margin-bottom: var(--space-8);">SoundMenuKey</div>
+                                <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">Menu music generator. Create custom playlists for in-game menus with drag & drop audio organization.</div>
+                            </div>
+                            <div class="feature-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-16);">
+                                <div style="font-size: 2em; margin-bottom: var(--space-8);">📍</div>
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-primary); margin-bottom: var(--space-8);">SoundPositionKey</div>
+                                <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">Position-based sound triggers. Configure sounds for specific animation positions and keywords.</div>
+                            </div>
+                            <div class="feature-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-16);">
+                                <div style="font-size: 2em; margin-bottom: var(--space-8);">🔊</div>
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-primary); margin-bottom: var(--space-8);">SoundKey</div>
+                                <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">Animation event triggers. Link sounds to specific animation events with playback options.</div>
+                            </div>
+                        </div>
+                        
+                        <h4>Requirements</h4>
+                        <ul style="margin-top: var(--space-8); padding-left: 24px;">
+                            <li><span style="color: #FBBF24; font-weight: 600;">SKSE</span> (Skyrim Script Extender)</li>
+                            <li><span style="color: #FBBF24; font-weight: 600;">USSEP</span> (Unofficial Skyrim Special Edition Patch)</li>
+                            <li>A web browser for pack generation (Chrome preferred)</li>
+                            <li>Audio files (MP3, WAV, OGG, FLAC, etc.)</li>
+                        </ul>
+                        
+                        <h4>Quick Start</h4>
+                        <p>Creating a sound pack is simple. Use the generators on this page to create INI configurations automatically.</p>
+                        
+                        <div style="display: flex; align-items: center; gap: var(--space-16); margin: var(--space-16) 0; flex-wrap: wrap;">
+                            <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: var(--radius-md); padding: var(--space-12); display: flex; align-items: center; gap: var(--space-8);">
+                                <span style="font-size: 1.5em;">📦</span>
+                                <span>Add audio files via drag & drop</span>
+                            </div>
+                            <span style="color: var(--color-primary); font-size: 1.5em;">→</span>
+                            <div style="background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: var(--radius-md); padding: var(--space-12); display: flex; align-items: center; gap: var(--space-8);">
+                                <span style="font-size: 1.5em;">📝</span>
+                                <span>Fill Pack Name & Creator</span>
+                            </div>
+                            <span style="color: var(--color-primary); font-size: 1.5em;">→</span>
+                            <div style="background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); border-radius: var(--radius-md); padding: var(--space-12); display: flex; align-items: center; gap: var(--space-8);">
+                                <span style="font-size: 1.5em;">🎯</span>
+                                <span>Click Create Pack</span>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); padding: var(--space-16); margin-top: var(--space-16);">
+                            <span style="font-size: 1.2em;">💡</span>
+                            <div style="margin-left: var(--space-8);">
+                                <strong style="color: var(--color-primary);">Portable Packs:</strong> All generated packs are ZIP files ready to install with any mod manager (MO2, Vortex, Wabbajack). Simply download, install, and activate. The INI format follows OSoundtracks standards automatically.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tts-usage" class="credits">
+                <div class="credits-list">
+                    <div class="credit-item">
+                        <h4 style="color: #38bdf8; font-size: 1.3em; font-weight: var(--font-weight-bold); margin-bottom: var(--space-12);">🎤 VoiceTex</h4>
+                        <p>VoiceTex is the web-based voice transcription hub integrated with OSoundtracks. It captures your voice through the browser and converts it to text in real-time, allowing quick naming and configuration.</p>
+                        
+                        <h4>Key Features</h4>
+                        <ul style="margin-top: var(--space-8); padding-left: 24px;">
+                            <li><strong>Live Transcription</strong> - Speak and see text appear instantly for pack naming</li>
+                            <li><strong>Correction Library</strong> - Auto-fix speech recognition errors using custom word library</li>
+                            <li><strong>Clipboard Integration</strong> - One-click copy to clipboard for quick paste</li>
+                            <li><strong>Sound Feedback</strong> - Audio cues for recording start/stop</li>
+                            <li><strong>Multi-language Support</strong> - Works with any language supported by the browser</li>
+                        </ul>
+                        
+                        <h4>Interface Controls</h4>
+                        <p>The VoiceTex toolbar provides action buttons to manage your transcriptions:</p>
+                        
+                        <div style="display: flex; align-items: center; gap: var(--space-12); margin: var(--space-16) 0; flex-wrap: wrap;">
+                            <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: var(--radius-md); padding: var(--space-8); display: flex; align-items: center; gap: var(--space-4);">
+                                <span style="font-size: 1.2em;">🎤</span>
+                                <span>Start Recording</span>
+                            </div>
+                            <span style="color: var(--color-primary);">→</span>
+                            <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: var(--radius-md); padding: var(--space-8); display: flex; align-items: center; gap: var(--space-4);">
+                                <span style="font-size: 1.2em;">⏹️</span>
+                                <span>Stop & Send</span>
+                            </div>
+                            <span style="color: var(--color-primary);">→</span>
+                            <div style="background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: var(--radius-md); padding: var(--space-8); display: flex; align-items: center; gap: var(--space-4);">
+                                <span style="font-size: 1.2em;">📋</span>
+                                <span>Copy Text</span>
+                            </div>
+                            <span style="color: var(--color-primary);">→</span>
+                            <div style="background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); border-radius: var(--radius-md); padding: var(--space-8); display: flex; align-items: center; gap: var(--space-4);">
+                                <span style="font-size: 1.2em;">✨</span>
+                                <span>Copy Clean</span>
+                            </div>
+                            <span style="color: var(--color-primary);">→</span>
+                            <div style="background: rgba(107, 114, 128, 0.2); border: 1px solid rgba(107, 114, 128, 0.5); border-radius: var(--radius-md); padding: var(--space-8); display: flex; align-items: center; gap: var(--space-4);">
+                                <span style="font-size: 1.2em;">🗑️</span>
+                                <span>Clear (2× click)</span>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); padding: var(--space-16); margin-top: var(--space-16);">
+                            <span style="font-size: 1.2em;">📝</span>
+                            <div style="margin-left: var(--space-8);">
+                                <strong style="color: var(--color-primary);">Transcribed Text Area:</strong> You can paste text, type notes, or add any content directly into the transcription panel. Pausing the transcription is ideal for quick memos or text snippets — no buttons needed, just paste.
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); padding: var(--space-16); margin-top: var(--space-16);">
+                            <span style="font-size: 1.2em;">🖱️</span>
+                            <div style="margin-left: var(--space-8);">
+                                <strong style="color: var(--color-primary);">Clear Button:</strong> Requires double-click to activate. Prevents accidental deletion. The last transcription stays visible at the bottom for recovery.
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); padding: var(--space-16); margin-top: var(--space-16);">
+                            <span style="font-size: 1.2em;">🔊</span>
+                            <div style="margin-left: var(--space-8);">
+                                <strong style="color: var(--color-primary);">Export Audio WAV:</strong> Lets you listen to your own voice and compare it with the transcription. Useful for quality checks.
+                            </div>
+                        </div>
+                        
+                        <h4>How to Use</h4>
+                        <p>Click the microphone button in the main interface to start recording. Your speech is transcribed in real-time. Use the Correction Library to fix common recognition errors automatically.</p>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </section>
 <section class="section final-note-section bg-celeste">
@@ -1532,14 +1759,16 @@ return
             'newsToggle': 'news',
             'acknowledgmentsToggle': 'acknowledgments',
             'projectsToggle': 'project-schedule-outline',
+            'documentationToggle': 'documentation',
             'aboutmeToggle': 'faq'
         };
         
-        var headerMap = {
+var headerMap = {
             'newsToggle': 0,
             'acknowledgmentsToggle': 1,
             'projectsToggle': 2,
-            'aboutmeToggle': 3
+            'aboutmeToggle': 3,
+            'documentationToggle': 4
         };
         
         var scrollOffsetMap = {

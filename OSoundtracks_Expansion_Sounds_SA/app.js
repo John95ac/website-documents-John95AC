@@ -680,7 +680,7 @@ function showToast(message) {
     
     var toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = '<span class="toast-icon">🐱</span><span>' + message + '</span>';
+    toast.innerHTML = '<img src="../Data/013.gif" alt="Cat" style="height: 1.5em; width: auto; margin-right: 8px;"><span>' + message + '</span>';
     
     container.appendChild(toast);
     
@@ -692,6 +692,31 @@ function showToast(message) {
             }
         }, 400);
     }, 2000);
+}
+
+function showCreatingToast(message) {
+    var container = document.getElementById('toast-container');
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.id = 'creating-toast';
+    toast.innerHTML = '<img src="../Data/013.gif" alt="Cat" style="height: 1.5em; width: auto; margin-right: 8px;"><span>' + message + '</span>';
+    
+    container.appendChild(toast);
+    
+    return toast;
+}
+
+function hideCreatingToast() {
+    var toast = document.getElementById('creating-toast');
+    if (toast) {
+        toast.classList.add('toast-hide');
+        setTimeout(function() {
+            if (toast && toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 400);
+    }
 }
 
 var galleryImages = [
@@ -758,6 +783,539 @@ document.addEventListener('keydown', function(e) {
         nextImage();
     }
 });
+
+var smkState = {
+    musicFiles: [],
+    imageData: null,
+    currentAudio: null,
+    currentPlayingIndex: null,
+    cropState: null
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSoundMenuKeyGenerator();
+});
+
+function initializeSoundMenuKeyGenerator() {
+    var musicDropzone = document.getElementById('smk-music-dropzone');
+    var imageDropzone = document.getElementById('smk-image-dropzone');
+    var modNameInput = document.getElementById('smk-mod-name');
+    var moderlisterInput = document.getElementById('smk-moderlister');
+    var royaltyLinksInput = document.getElementById('smk-royalty-links');
+    var createPackBtn = document.getElementById('smk-create-pack');
+    var clearAllBtn = document.getElementById('smk-clear-all');
+    
+    if (!musicDropzone || !imageDropzone) return;
+    
+    musicDropzone.addEventListener('dragover', handleMusicDragOver);
+    musicDropzone.addEventListener('drop', handleMusicDrop);
+    musicDropzone.addEventListener('click', function() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'audio/*';
+        input.multiple = true;
+        input.addEventListener('change', handleMusicSelect);
+        input.click();
+    });
+    
+    imageDropzone.addEventListener('dragover', handleImageDragOver);
+    imageDropzone.addEventListener('drop', handleImageDrop);
+    imageDropzone.addEventListener('click', function() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.addEventListener('change', handleImageSelect);
+        input.click();
+    });
+    
+    if (modNameInput) {
+        modNameInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\s+/g, '_');
+            updateIniPreview();
+            updateCreateButton();
+        });
+    }
+    if (moderlisterInput) {
+        moderlisterInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\s+/g, '_');
+            updateIniPreview();
+            updateCreateButton();
+        });
+    }
+    if (royaltyLinksInput) {
+        royaltyLinksInput.addEventListener('input', updateIniPreview);
+    }
+    
+    if (createPackBtn) {
+        createPackBtn.addEventListener('click', createPackZip);
+    }
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', clearAll);
+    }
+    
+    var cropCloseBtn = document.getElementById('smk-crop-close');
+    var cropZoomInBtn = document.getElementById('smk-crop-zoom-in');
+    var cropZoomOutBtn = document.getElementById('smk-crop-zoom-out');
+    var cropApplyBtn = document.getElementById('smk-crop-apply');
+    
+    if (cropCloseBtn) cropCloseBtn.addEventListener('click', closeCropModal);
+    if (cropZoomInBtn) cropZoomInBtn.addEventListener('click', cropZoomIn);
+    if (cropZoomOutBtn) cropZoomOutBtn.addEventListener('click', cropZoomOut);
+    if (cropApplyBtn) cropApplyBtn.addEventListener('click', applyCropImage);
+    
+    updateIniPreview();
+}
+
+function handleMusicDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('dropzone-active');
+}
+
+function handleMusicDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('dropzone-active');
+    
+    var files = e.dataTransfer.files;
+    for (var i = 0; i < files.length; i++) {
+        if (files[i].type.startsWith('audio/') || files[i].name.match(/\.(mp3|wav|ogg|flac|m4a|aac|wma|aiff|ape)$/i)) {
+            addMusicFile(files[i]);
+        }
+    }
+}
+
+function handleMusicSelect(e) {
+    var files = e.target.files;
+    for (var i = 0; i < files.length; i++) {
+        addMusicFile(files[i]);
+    }
+}
+
+function addMusicFile(file) {
+    var fileName = file.name.replace(/\.[^\.]+$/, '');
+    if (smkState.musicFiles.some(function(f) { return f.name === fileName; })) return;
+    
+    smkState.musicFiles.push({
+        name: fileName,
+        file: file,
+        playback: ''
+    });
+    
+    renderMusicList();
+    updateIniPreview();
+    updateCreateButton();
+}
+
+function renderMusicList() {
+    var container = document.getElementById('smk-music-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    smkState.musicFiles.forEach(function(item, index) {
+        var div = document.createElement('div');
+        div.className = 'music-item';
+        
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'music-name';
+        nameSpan.textContent = item.name;
+        
+        var controlsDiv = document.createElement('div');
+        controlsDiv.className = 'music-controls';
+        
+        var playbackSelect = document.createElement('select');
+        playbackSelect.className = 'playback-select';
+        var optEmpty = document.createElement('option');
+        optEmpty.value = '';
+        optEmpty.textContent = '--';
+        var optLoop = document.createElement('option');
+        optLoop.value = 'loop';
+        optLoop.textContent = 'loop';
+        var optOnce = document.createElement('option');
+        optOnce.value = 'once';
+        optOnce.textContent = 'once';
+        playbackSelect.appendChild(optEmpty);
+        playbackSelect.appendChild(optLoop);
+        playbackSelect.appendChild(optOnce);
+        playbackSelect.value = item.playback;
+        playbackSelect.addEventListener('change', function(e) {
+            smkState.musicFiles[index].playback = e.target.value;
+            updateIniPreview();
+        });
+        
+        var playBtn = document.createElement('button');
+        playBtn.className = 'btn-play';
+        playBtn.setAttribute('data-index', index);
+        playBtn.innerHTML = '▶';
+        playBtn.addEventListener('click', function() {
+            playMusicPreview(item.file, index, playBtn);
+        });
+        
+        var removeBtn = document.createElement('button');
+        removeBtn.className = 'btn-remove';
+        removeBtn.innerHTML = '✕';
+        removeBtn.addEventListener('click', function() {
+            removeMusicItem(index);
+        });
+        
+        controlsDiv.appendChild(playbackSelect);
+        controlsDiv.appendChild(playBtn);
+        controlsDiv.appendChild(removeBtn);
+        
+        div.appendChild(nameSpan);
+        div.appendChild(controlsDiv);
+        
+        container.appendChild(div);
+    });
+}
+
+function removeMusicItem(index) {
+    smkState.musicFiles.splice(index, 1);
+    renderMusicList();
+    updateIniPreview();
+    updateCreateButton();
+}
+
+function playMusicPreview(file, index, btn) {
+    if (smkState.currentAudio && smkState.currentPlayingIndex === index) {
+        smkState.currentAudio.pause();
+        smkState.currentAudio = null;
+        smkState.currentPlayingIndex = null;
+        btn.innerHTML = '▶';
+        return;
+    }
+    
+    if (smkState.currentAudio) {
+        smkState.currentAudio.pause();
+        var prevBtn = document.querySelector('.btn-play[data-index="' + smkState.currentPlayingIndex + '"]');
+        if (prevBtn) prevBtn.innerHTML = '▶';
+    }
+    
+    var audio = new Audio();
+    audio.src = URL.createObjectURL(file);
+    audio.play();
+    smkState.currentAudio = audio;
+    smkState.currentPlayingIndex = index;
+    btn.innerHTML = '■';
+    
+    audio.addEventListener('ended', function() {
+        smkState.currentAudio = null;
+        smkState.currentPlayingIndex = null;
+        btn.innerHTML = '▶';
+    });
+}
+
+function handleImageDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('dropzone-active');
+}
+
+function handleImageDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('dropzone-active');
+    
+    var files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].type.startsWith('image/')) {
+        processImage(files[0]);
+    }
+}
+
+function handleImageSelect(e) {
+    var files = e.target.files;
+    if (files.length > 0) {
+        processImage(files[0]);
+    }
+}
+
+function processImage(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        smkState.cropState = {
+            originalImage: e.target.result,
+            scale: 1,
+            offsetX: 0,
+            offsetY: 0,
+            isDragging: false,
+            startX: 0,
+            startY: 0
+        };
+        openCropModal();
+    };
+    reader.readAsDataURL(file);
+}
+
+function openCropModal() {
+    var modal = document.getElementById('smk-crop-modal');
+    var cropImg = document.getElementById('smk-crop-image');
+    var container = document.getElementById('smk-crop-container');
+    
+    if (!modal || !cropImg || !smkState.cropState) return;
+    
+    cropImg.src = smkState.cropState.originalImage;
+    
+    cropImg.onload = function() {
+        var imgWidth = cropImg.naturalWidth;
+        var imgHeight = cropImg.naturalHeight;
+        var containerSize = 500;
+        
+        var minScale = Math.max(containerSize / imgWidth, containerSize / imgHeight);
+        smkState.cropState.scale = minScale;
+        smkState.cropState.minScale = minScale;
+        
+        cropImg.style.width = (imgWidth * smkState.cropState.scale) + 'px';
+        cropImg.style.height = (imgHeight * smkState.cropState.scale) + 'px';
+        
+        smkState.cropState.offsetX = (containerSize - imgWidth * smkState.cropState.scale) / 2;
+        smkState.cropState.offsetY = (containerSize - imgHeight * smkState.cropState.scale) / 2;
+        
+        cropImg.style.left = smkState.cropState.offsetX + 'px';
+        cropImg.style.top = smkState.cropState.offsetY + 'px';
+    };
+    
+    modal.style.display = 'block';
+    
+    container.onmousedown = function(e) {
+        smkState.cropState.isDragging = true;
+        smkState.cropState.startX = e.clientX - smkState.cropState.offsetX;
+        smkState.cropState.startY = e.clientY - smkState.cropState.offsetY;
+        container.style.cursor = 'grabbing';
+    };
+    
+    container.onmousemove = function(e) {
+        if (!smkState.cropState.isDragging) return;
+        smkState.cropState.offsetX = e.clientX - smkState.cropState.startX;
+        smkState.cropState.offsetY = e.clientY - smkState.cropState.startY;
+        cropImg.style.left = smkState.cropState.offsetX + 'px';
+        cropImg.style.top = smkState.cropState.offsetY + 'px';
+    };
+    
+    container.onmouseup = function() {
+        smkState.cropState.isDragging = false;
+        container.style.cursor = 'grab';
+    };
+    
+    container.onmouseleave = function() {
+        smkState.cropState.isDragging = false;
+        container.style.cursor = 'grab';
+    };
+}
+
+function closeCropModal() {
+    var modal = document.getElementById('smk-crop-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function cropZoomIn() {
+    if (!smkState.cropState) return;
+    smkState.cropState.scale *= 1.2;
+    applyCropScale();
+}
+
+function cropZoomOut() {
+    if (!smkState.cropState) return;
+    smkState.cropState.scale = Math.max(smkState.cropState.minScale, smkState.cropState.scale * 0.8);
+    applyCropScale();
+}
+
+function applyCropScale() {
+    var cropImg = document.getElementById('smk-crop-image');
+    if (!cropImg) return;
+    
+    cropImg.style.width = (cropImg.naturalWidth * smkState.cropState.scale) + 'px';
+    cropImg.style.height = (cropImg.naturalHeight * smkState.cropState.scale) + 'px';
+}
+
+function applyCropImage() {
+    var cropImg = document.getElementById('smk-crop-image');
+    var container = document.getElementById('smk-crop-container');
+    if (!cropImg || !container || !smkState.cropState) return;
+    
+    var canvas = document.getElementById('smk-image-canvas');
+    var ctx = canvas.getContext('2d');
+    
+    canvas.width = 1080;
+    canvas.height = 1080;
+    
+    var containerSize = 500;
+    var outputSize = 1080;
+    
+    var scaleToOriginal = outputSize / containerSize;
+    
+    var srcX = -smkState.cropState.offsetX * (cropImg.naturalWidth / (cropImg.naturalWidth * smkState.cropState.scale));
+    var srcY = -smkState.cropState.offsetY * (cropImg.naturalHeight / (cropImg.naturalHeight * smkState.cropState.scale));
+    var srcW = containerSize / smkState.cropState.scale;
+    var srcH = containerSize / smkState.cropState.scale;
+    
+    ctx.drawImage(cropImg, srcX, srcY, srcW, srcH, 0, 0, 1080, 1080);
+    
+    canvas.toBlob(function(blob) {
+        smkState.imageData = {
+            blob: blob,
+            fileName: null
+        };
+        
+        var preview = document.getElementById('smk-image-preview');
+        if (preview) {
+            preview.innerHTML = '<img src="' + URL.createObjectURL(blob) + '" alt="Preview" style="max-width: 200px; border-radius: 8px;">';
+        }
+        
+        updateCreateButton();
+        closeCropModal();
+    }, 'image/webp', 0.9);
+}
+
+function generateIniContent() {
+    var modName = document.getElementById('smk-mod-name') ? document.getElementById('smk-mod-name').value.trim() : '';
+    var moderlister = document.getElementById('smk-moderlister') ? document.getElementById('smk-moderlister').value.trim() : '';
+    
+    if (!modName || !moderlister || smkState.musicFiles.length === 0) return '';
+    
+    var lines = [];
+    lines.push(';OSoundtracks-SA-Expansion-Sounds-NG');
+    lines.push('');
+    lines.push(';Example of code designs: it\'s very similar to SPID but shorter and simpler.');
+    lines.push('');
+    lines.push(';SoundKey = AnimationKeyName|SoundNameFile|Playback');
+    lines.push(';SoundEffectKey = MoodName|SoundNameFile|Playback');
+    lines.push(';SoundPositionKey = PositionKeyword|SoundNameFile|Playback');
+    lines.push(';SoundTAGKey = TagName|SoundNameFile|Playback');
+    lines.push(';SoundMenuKey = ModerLister|SoundNameFile|Playback');
+    lines.push('');
+    lines.push(';AnimationKeyName: Animation event message');
+    lines.push('');
+    lines.push(';MoodName: Mood state related to the animation (e.g., alegria)');
+    lines.push('');
+    lines.push(';PositionKeyword: Keyword representing the animation or position (e.g., kiss)');
+    lines.push('');
+    lines.push(';SoundNameFile: Sound file located at \\sound\\OSoundtracks\\Example.mp3');
+    lines.push('');
+    lines.push(';Playback: Support for \'loop\' and \'once\' keywords');
+    lines.push('');
+    lines.push(';SoundMenuKey: Menu musica');
+    lines.push('');
+    lines.push('');
+    lines.push(';------------------------------------------------------------------------------------------------------');
+    lines.push(';------------------------------------------------------------------------------------------------------');
+    lines.push('');
+    lines.push('');
+    
+    smkState.musicFiles.forEach(function(item) {
+        var playback = item.playback || '';
+        lines.push(';' + moderlister);
+        lines.push('SoundMenuKey = ' + moderlister + '|' + item.name + '|' + playback);
+        lines.push('');
+    });
+    
+    return lines.join('\r\n');
+}
+
+function updateIniPreview() {
+    var preview = document.getElementById('smk-ini-preview');
+    if (!preview) return;
+    
+    var content = generateIniContent();
+    if (content) {
+        preview.textContent = content;
+    } else {
+        preview.textContent = 'Fill Pack Name, Creator Name, and add music files to generate INI preview...';
+    }
+}
+
+function updateCreateButton() {
+    var btn = document.getElementById('smk-create-pack');
+    if (!btn) return;
+    
+    var modName = document.getElementById('smk-mod-name') ? document.getElementById('smk-mod-name').value.trim() : '';
+    var moderlister = document.getElementById('smk-moderlister') ? document.getElementById('smk-moderlister').value.trim() : '';
+    
+    var isValid = modName && moderlister && smkState.musicFiles.length > 0;
+    btn.disabled = !isValid;
+}
+
+function createPackZip() {
+    var modName = document.getElementById('smk-mod-name').value.trim();
+    var moderlister = document.getElementById('smk-moderlister').value.trim();
+    var royaltyLinks = document.getElementById('smk-royalty-links') ? document.getElementById('smk-royalty-links').value.trim() : '';
+    
+    if (!modName || !moderlister || smkState.musicFiles.length === 0) {
+        showToast('Please fill all required fields');
+        return;
+    }
+    
+    showCreatingToast('Creating pack... Working on the pack meow');
+    
+    var zip = new JSZip();
+    
+    var iniContent = generateIniContent();
+    var iniFileName = 'OSoundtracks_(' + modName + '_' + moderlister + ').ini';
+    zip.file(iniFileName, iniContent);
+    
+    var soundFolder = zip.folder('sound').folder('OSoundtracks');
+    smkState.musicFiles.forEach(function(item) {
+        soundFolder.file(item.name + '.mp3', item.file);
+    });
+    
+    if (royaltyLinks) {
+        var royaltyFileName = 'Sound_' + modName + '_Royalty-free_Links.txt';
+        var royaltyHeaderText = 'All sounds or music used in this project are Royalty-free, free to access and reproduce, not for profit. \r\n' +
+            'I really like music, and it truly gives a better atmosphere to the game\'s scenes and effects, \r\n' +
+            'so many thanks to the creators who publish their music or effects, I will also make my own and publish them.\r\n\r\n';
+        soundFolder.file(royaltyFileName, royaltyHeaderText + royaltyLinks);
+    }
+    
+    if (smkState.imageData) {
+        smkState.imageData.fileName = moderlister + '.webp';
+        var imageFolder = zip.folder('PrismaUI').folder('views').folder('OSoundtracks-Prisma').folder('Assets').folder('Images');
+        imageFolder.file(smkState.imageData.fileName, smkState.imageData.blob);
+    }
+    
+    var zipFileName = 'OSoundtracks ' + modName.replace(/_/g, ' ') + '.zip';
+    
+    zip.generateAsync({ type: 'blob' }).then(function(blob) {
+        hideCreatingToast();
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = zipFileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Pack generated! Download starting...');
+    }).catch(function(err) {
+        hideCreatingToast();
+        console.error('Error creating pack:', err);
+        showToast('Error creating pack');
+    });
+}
+
+function clearAll() {
+    smkState.musicFiles = [];
+    smkState.imageData = null;
+    
+    if (smkState.currentAudio) {
+        smkState.currentAudio.pause();
+        smkState.currentAudio = null;
+    }
+    
+    var modNameInput = document.getElementById('smk-mod-name');
+    var moderlisterInput = document.getElementById('smk-moderlister');
+    var royaltyLinksInput = document.getElementById('smk-royalty-links');
+    var musicList = document.getElementById('smk-music-list');
+    var imagePreview = document.getElementById('smk-image-preview');
+    
+    if (modNameInput) modNameInput.value = '';
+    if (moderlisterInput) moderlisterInput.value = '';
+    if (royaltyLinksInput) royaltyLinksInput.value = '';
+    if (musicList) musicList.innerHTML = '';
+    if (imagePreview) imagePreview.innerHTML = '';
+    
+    updateIniPreview();
+    updateCreateButton();
+    
+    showToast('All cleared');
+}
 
 
 
