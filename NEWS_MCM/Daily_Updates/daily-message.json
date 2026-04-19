@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-17",
-  "message": "Hi everyone! Big release day! 🎉 OSoundtracks SA Expansion Sounds Prisma NG is officially released (beta testers gave positive feedback)! Also publishing the Dice Mod today - still early stages but fully functional. Working on final polishing details for both mods!",
+  "date": "2026-04-19",
+  "message": "Hi everyone! Spent all day Saturday working on the OSoundtracks SA Generator Packs online web page. Fixed all the errors beta testers reported (they took a while to respond, but we got there!). Expecting to upload everything today!",
   "details": "Daily update",
-  "tags": ["OSoundtracks", "Prisma", "dice-mod", "release", "beta-approved", "Skyrim"],
+  "tags": ["OSoundtracks", "Generator-Packs", "web-page", "beta-feedback", "bugfixes", "Skyrim"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-17T12:13:00Z"
+  "updated_at": "2026-04-19T08:08:00Z"
 }
