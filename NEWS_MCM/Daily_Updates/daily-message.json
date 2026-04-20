@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-19",
-  "message": "Hi everyone! Spent all day Saturday working on the OSoundtracks SA Generator Packs online web page. Fixed all the errors beta testers reported (they took a while to respond, but we got there!). Expecting to upload everything today!",
+  "date": "2026-04-20",
+  "message": "Hi everyone! Yesterday (Sunday) I uploaded album audio updates and enhanced the web Page, now you can generate your own OSoundtracks SA packs directly from the website! Also uploading the modified engine today. Everything is ready to go!",
   "details": "Daily update",
-  "tags": ["OSoundtracks", "Generator-Packs", "web-page", "beta-feedback", "bugfixes", "Skyrim"],
+  "tags": ["OSoundtracks", "Generator Packs", "web page", "engine update", "audio albums", "Skyrim"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-19T08:08:00Z"
+  "updated_at": "2026-04-20T08:32:00Z"
 }
