@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video to Sprite Sheet (Grim) Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -44,6 +45,40 @@
         #drop-zone:hover, #drop-zone.dragover {
             border-color: #f59e0b;
             background-color: #222;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            background-color: #181818;
+            color: #888;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+        .tab-btn:hover {
+            color: #ccc;
+            background-color: #1e1e1e;
+        }
+        .tab-btn.active {
+            color: #f59e0b;
+            border-bottom-color: #f59e0b;
+            background-color: #1e1e1e;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
         }
         #video-container {
             display: none;
@@ -135,6 +170,30 @@
             cursor: not-allowed;
             transform: none;
         }
+        .btn-audio-mini {
+            background-color: #00e5ff;
+            color: #111;
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+        .btn-audio-mini:hover {
+            background-color: #33ecff;
+        }
+        .btn-audio-mini:active {
+            transform: scale(0.97);
+        }
+        .btn-audio-mini:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
         #progress-container {
             display: none;
             margin-top: 15px;
@@ -186,65 +245,658 @@
         .explanation-box li b {
             color: #fff;
         }
+        .btn-acrylic {
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, opacity 0.2s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .btn-acrylic:hover {
+            background: rgba(245, 158, 11, 0.55);
+        }
+        .btn-acrylic:active {
+            transform: scale(0.98);
+        }
+        .btn-acrylic:disabled {
+            background: rgba(85, 85, 85, 0.35);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            border: 1px solid rgba(85, 85, 85, 0.3);
+        }
+        .btn-acrylic-cyan {
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 229, 255, 0.3);
+            color: #00e5ff;
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            white-space: nowrap;
+        }
+        .btn-acrylic-cyan:hover {
+            background: rgba(0, 229, 255, 0.5);
+        }
+        .btn-acrylic-cyan:active {
+            transform: scale(0.97);
+        }
+        .btn-acrylic-cyan:disabled {
+            background: rgba(85, 85, 85, 0.35);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            border: 1px solid rgba(85, 85, 85, 0.3);
+        }
+        .btn-acrylic-emerald {
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn-acrylic-emerald:hover {
+            background: rgba(16, 185, 129, 0.55);
+        }
+        .btn-acrylic-emerald:active {
+            transform: scale(0.98);
+        }
+        .btn-acrylic-emerald:disabled {
+            background: rgba(85, 85, 85, 0.35);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            border: 1px solid rgba(85, 85, 85, 0.3);
+        }
+        .btn-acrylic-red {
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(239, 68, 68, 0.35);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-acrylic-red:hover {
+            background: rgba(239, 68, 68, 0.55);
+        }
+        .btn-acrylic-red:active {
+            transform: scale(0.98);
+        }
+        .btn-acrylic-red:disabled {
+            background: rgba(85, 85, 85, 0.35);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            border: 1px solid rgba(85, 85, 85, 0.3);
+        }
+        .btn-acrylic-purple {
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(168, 85, 247, 0.35);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .btn-acrylic-purple:hover {
+            background: rgba(168, 85, 247, 0.55);
+        }
+        .btn-acrylic-purple:active {
+            transform: scale(0.97);
+        }
+        .btn-acrylic-purple:disabled {
+            background: rgba(85, 85, 85, 0.35);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            border: 1px solid rgba(85, 85, 85, 0.3);
+        }
+        .btn-acrylic-green {
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(34, 197, 94, 0.35);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .btn-acrylic-green:hover {
+            background: rgba(34, 197, 94, 0.55);
+        }
+        .btn-acrylic-green:active {
+            transform: scale(0.97);
+        }
+        .audio-mixer-section {
+            background-color: #181818;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 0;
+        }
+        .audio-mixer-section h2 {
+            text-align: center;
+            color: #34d399;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .mix-upload-zone {
+            border: 2px dashed #444;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background-color: #111;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        .mix-upload-zone:hover {
+            border-color: #34d399;
+            background-color: #1a1a1a;
+        }
+        .mix-tracks-container {
+            max-height: 480px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 #181818;
+        }
+        .mix-tracks-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mix-tracks-container::-webkit-scrollbar-track {
+            background: #181818;
+        }
+        .mix-tracks-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 3px;
+        }
+        .mix-tracks-container::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        *::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        *::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #444 #1e1e1e;
+        }
+        .mix-track {
+            background-color: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .mix-track.master {
+            border-color: #f59e0b;
+            border-width: 2px;
+        }
+        .track-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .track-name {
+            font-size: 13px;
+            color: #aaa;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 360px;
+        }
+        .track-master-badge {
+            font-size: 11px;
+            background: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .track-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .track-btn {
+            background-color: #222;
+            color: #aaa;
+            border: 1px solid #333;
+            padding: 3px 10px;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .track-btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        .track-btn.playing {
+            background-color: rgba(0, 229, 255, 0.2);
+            color: #00e5ff;
+            border-color: #00e5ff;
+        }
+        .track-btn.remove {
+            color: #ff4444;
+            border-color: #442222;
+        }
+        .track-btn.remove:hover {
+            background-color: #442222;
+            color: #ff6666;
+        }
+        .track-volume-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .track-volume-row label {
+            font-size: 11px;
+            color: #666;
+            margin: 0;
+            min-width: 32px;
+        }
+        .track-volume-row input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            outline: none;
+        }
+        .track-volume-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #00e5ff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .track-volume-row .vol-value {
+            font-size: 11px;
+            color: #888;
+            min-width: 30px;
+            text-align: right;
+        }
+        .waveform-container {
+            position: relative;
+            width: 100%;
+            height: 50px;
+        }
+        .waveform-canvas {
+            width: 100%;
+            height: 50px;
+            background-color: #0a0a0a;
+            border-radius: 4px;
+            display: block;
+        }
+        .playback-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: #ff4444;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+            box-shadow: 0 0 4px rgba(255, 68, 68, 0.6);
+        }
+        .offset-bar-container {
+            position: relative;
+            height: 24px;
+            background-color: #0a0a0a;
+            border-radius: 4px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .offset-bar-timeline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(0, 229, 255, 0.15);
+            border-radius: 4px;
+            cursor: grab;
+            min-width: 10px;
+        }
+        .offset-bar-timeline:active {
+            cursor: grabbing;
+        }
+        .offset-bar-timeline::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background-color: rgba(0, 229, 255, 0.6);
+            border-radius: 50%;
+        }
+        .offset-label {
+            font-size: 10px;
+            color: #555;
+            margin-top: 2px;
+        }
+        .mix-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .v2t-section {
+            background-color: #181818;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .v2t-section h2 {
+            text-align: center;
+            color: #a855f7;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .v2t-section p {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .v2t-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .v2t-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .v2t-input-group label {
+            font-size: 12px;
+            color: #aaa;
+        }
+        .v2t-btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .v2t-visualizer-area {
+            text-align: center;
+            position: relative;
+            height: 40px;
+            margin-bottom: 16px;
+        }
+        .v2t-canvas {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            opacity: 0.4;
+            transition: opacity 0.5s ease;
+        }
+        .v2t-canvas.active {
+            opacity: 1;
+        }
+        .v2t-result-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .v2t-result-area label {
+            font-size: 13px;
+            color: #aaa;
+        }
+        .v2t-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 12px;
+            color: #fff;
+            font-family: inherit;
+            resize: vertical;
+            font-size: 14px;
+            line-height: 1.5;
+            outline: none;
+        }
+        .v2t-textarea:focus {
+            border-color: #a855f7;
+        }
+        .v2t-result-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .format-select-inline {
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        .format-select-inline:focus {
+            border-color: #34d399;
+        }
+        .mix-format-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎞️ Grim (Sprite Sheet) Generator</h1>
+    <h1>⚡ Prisma Grim Video Generator</h1>
 
-    <div id="drop-zone" onclick="document.getElementById('file-input').click()">
-        📁 Drag & Drop a video here or click to select (MP4, AVI, WEBM...)
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-grim">🎞️ Grim</button>
+        <button class="tab-btn" data-tab="tab-audio">🎚️ Audio Mixer</button>
+        <button class="tab-btn" data-tab="tab-v2t">📝 Voice to Text</button>
     </div>
-    <input type="file" id="file-input" accept="video/*" style="display: none;">
+
+    <div id="tab-grim" class="tab-panel active">
+        <h2 style="text-align: center; color: #f59e0b; font-size: 20px; margin-top: 0;">🎞️ Grim (Sprite Sheet) Generator</h2>
+        <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+            📁 Drag & Drop a video here or click to select (MP4, AVI, WEBM...)
+        </div>
+        <input type="file" id="file-input" accept="video/*" style="display: none;">
 
         <div id="video-container">
-        <video id="video-preview" controls></video>
-        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
-            <div id="video-info" style="font-size: 12px; color: #888; align-self: center;"></div>
-            <button id="btn-snapshot" style="background-color: #00e5ff; color: #111; border: none; padding: 5px 15px; font-weight: bold; border-radius: 4px; cursor: pointer;">📸 Snapshot (PNG)</button>
+            <video id="video-preview" controls></video>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                <div id="video-info" style="font-size: 12px; color: #888; align-self: center;"></div>
+                <button id="btn-snapshot" class="btn-acrylic-cyan">📸 Snapshot (PNG)</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Grim Size (Grid)</label>
+                <select id="grid-select">
+                    <option value="3">3x3 (9 frames)</option>
+                    <option value="4">4x4 (16 frames)</option>
+                    <option value="5">5x5 (25 frames)</option>
+                    <option value="6">6x6 (36 frames)</option>
+                    <option value="7">7x7 (49 frames)</option>
+                    <option value="8" selected>8x8 (64 frames)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Frames Per Second (FPS)</label>
+                <input type="number" id="fps-input" value="24" min="1" max="60" style="width: 80px;">
+            </div>
+            <div class="control-group">
+                <label>Format & Compression</label>
+                <select id="quality-select">
+                    <option value="0.95">WebP - 0.95 (High)</option>
+                    <option value="0.90" selected>WebP - 0.90 (Default)</option>
+                    <option value="0.80">WebP - 0.80</option>
+                    <option value="0.70">WebP - 0.70 (Light)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Resolution Scale</label>
+                <select id="scale-select">
+                    <option value="1" selected>1:1 (Original)</option>
+                    <option value="0.75">3/4 (75%)</option>
+                    <option value="0.6667">2/3 (~67%)</option>
+                    <option value="0.5">1/2 (50%)</option>
+                    <option value="0.3333">1/3 (~33%)</option>
+                    <option value="0.25">1/4 (25%)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="action-group">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                <label class="audio-toggle">🎵 Audio</label>
+                <select id="audio-format-select" class="format-select-inline">
+                    <option value="wav" selected>WAV</option>
+                    <option value="mp3">MP3</option>
+                </select>
+                <label class="audio-toggle">
+                    <input type="checkbox" id="include-audio" checked> Include in ZIP
+                </label>
+                <button id="btn-audio" class="btn-acrylic-cyan" disabled>🎵 Generate Audio</button>
+            </div>
+            <button id="btn-convert" class="btn-acrylic" disabled>📸 Generate ZIP Archive</button>
+        </div>
+
+        <div id="progress-container">
+            <div id="progress-bar"><div id="progress-fill"></div></div>
+            <div id="progress-text">Processing: 0%</div>
         </div>
     </div>
 
-    <div class="controls">
-        <div class="control-group">
-            <label>Grim Size (Grid)</label>
-            <select id="grid-select">
-                <option value="3">3x3 (9 frames)</option>
-                <option value="4">4x4 (16 frames)</option>
-                <option value="5">5x5 (25 frames)</option>
-                <option value="6">6x6 (36 frames)</option>
-                <option value="7">7x7 (49 frames)</option>
-                <option value="8" selected>8x8 (64 frames)</option>
-            </select>
-        </div>
-
-        <div class="control-group">
-            <label>Frames Per Second (FPS)</label>
-            <input type="number" id="fps-input" value="24" min="1" max="60" style="width: 80px;">
-        </div>
-
-        <div class="control-group">
-            <label>Format & Compression</label>
-            <select id="quality-select">
-                <option value="0.95">WebP - 0.95 (High)</option>
-                <option value="0.90" selected>WebP - 0.90 (Default)</option>
-                <option value="0.80">WebP - 0.80</option>
-                <option value="0.70">WebP - 0.70 (Light)</option>
-            </select>
+    <div id="tab-audio" class="tab-panel">
+        <div class="audio-mixer-section">
+            <h2>🎚️ Audio Mixer</h2>
+            <p style="font-size: 12px; color: #999; text-align: center; margin: 0 0 12px 0;">Extract audio from video as the Master track, then add background music, narration, sound effects. Adjust volume and offset per track. Download the final mix as a single audio file inside a ZIP.</p>
+            <div class="mix-upload-zone" id="mix-upload-zone">
+                🎵 Drag & Drop audio files here or click to select (WAV, MP3, OGG...)
+            </div>
+            <input type="file" id="mix-file-input" accept="audio/*" multiple style="display: none;">
+            <div class="mix-tracks-container" id="mix-tracks"></div>
+            <div class="mix-actions" id="mix-actions" style="display: none;">
+                <div class="mix-format-row">
+                    <select id="mix-format-select" class="format-select-inline">
+                        <option value="wav" selected>WAV</option>
+                        <option value="mp3">MP3</option>
+                    </select>
+                    <button id="btn-mix" class="btn-acrylic-emerald" disabled>🎚️ Mix & Download</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="action-group">
-        <label class="audio-toggle">
-            <input type="checkbox" id="extract-audio" checked> 🎵 Extract Audio (WAV)
-        </label>
-        <button id="btn-convert" class="btn-record" disabled>📸 Generate ZIP Archive</button>
-    </div>
-
-    <div id="progress-container">
-        <div id="progress-bar"><div id="progress-fill"></div></div>
-        <div id="progress-text">Processing: 0%</div>
+    <div id="tab-v2t" class="tab-panel">
+        <div class="v2t-section">
+            <h2>📝 Voice to Text</h2>
+            <p>Connect your microphone to transcribe spoken audio to text and export your recording.</p>
+            <div class="v2t-controls">
+                <div class="v2t-input-group">
+                    <label for="v2t-lang">Recognition Language:</label>
+                    <select id="v2t-lang" class="format-select-inline">
+                        <option value="en-US" selected>English (US)</option>
+                        <option value="es-ES">Spanish (Spain)</option>
+                        <option value="fr-FR">French (France)</option>
+                        <option value="de-DE">German (Germany)</option>
+                        <option value="it-IT">Italian (Italy)</option>
+                        <option value="pt-PT">Portuguese (Portugal)</option>
+                        <option value="ja-JP">Japanese (Japan)</option>
+                        <option value="zh-CN">Chinese (Mandarin)</option>
+                        <option value="ru-RU">Russian (Russia)</option>
+                    </select>
+                </div>
+                <div class="v2t-btn-group">
+                    <button id="v2t-record-btn" class="btn-acrylic-cyan" style="padding: 10px 18px; font-size: 14px;">🎤 Start Recording</button>
+                    <button id="v2t-stop-btn" class="btn-acrylic-red" disabled>🛑 Stop</button>
+                </div>
+            </div>
+            <div class="v2t-visualizer-area">
+                <canvas id="v2t-visualizer" class="v2t-canvas"></canvas>
+            </div>
+            <div class="v2t-result-area">
+                <label for="v2t-text">Transcribed Text:</label>
+                <textarea id="v2t-text" class="v2t-textarea" placeholder="Your transcription will appear here..."></textarea>
+                <div class="v2t-result-actions">
+                    <button id="v2t-clear-btn" class="btn-acrylic-red" style="padding: 8px 16px; font-size: 13px;">🗑️ Clear</button>
+                    <button id="v2t-copy-btn" class="btn-acrylic-green" style="padding: 8px 16px; font-size: 13px;">📋 Copy Text</button>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <select id="v2t-format-select" class="format-select-inline">
+                            <option value="wav" selected>WAV</option>
+                            <option value="mp3">MP3</option>
+                        </select>
+                        <button id="v2t-export-btn" class="btn-acrylic-purple" disabled>💾 Export Audio</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="explanation-box">
@@ -253,13 +905,25 @@
             <li><b>Grim Size (Grid):</b> Sets the maximum layout size for each sprite sheet image. For example, 8x8 will fit 64 frames in a single image before creating a new one.</li>
             <li><b>Frames Per Second (FPS):</b> Determines how many still frames to capture per second of video. Higher FPS means smoother animation but more output files.</li>
             <li><b>Format & Compression:</b> Adjusts the WebP image quality. Lower values reduce the final file size but may lower visual clarity.</li>
-            <li><b>Extract Audio:</b> Automatically extracts the original audio track from the video and includes it as a high-quality WAV file inside your ZIP.</li>
+            <li><b>Resolution Scale:</b> Scales down the output frame dimensions by a factor. For example, a 1920x1080 video at 1/2 scale produces 960x540 frames. The Output resolution is shown next to the original in the video info bar. Snapshots are also generated at the selected scale.</li>
+            <li><b>Audio Format:</b> Choose between WAV (lossless, larger) or MP3 (compressed, smaller). The audio file is named after the video. Check "Include in ZIP" to add it to the sprite sheet archive, or use "Generate Audio" to extract only the audio in a ZIP.</li>
+            <li><b>Audio Mixer:</b> Upload multiple audio tracks. The first track becomes the Master (duration reference). Other tracks can be dragged along the timeline via the offset bar. Adjust volume per track (0-100%). Mix downloads as a single audio file inside a ZIP. Choose WAV or MP3 format for the mix output.</li>
+            <li><b>Voice to Text:</b> Uses your browser's Speech Recognition API to transcribe spoken audio in real time. Select your recognition language (saved automatically). Start recording to capture audio and transcribe. Use "Export Audio" to download your recording as WAV or MP3 inside a ZIP.</li>
             <li><b>Generate ZIP:</b> All processing is done locally in your browser. The final ZIP contains all the generated sprite sheets, the extracted audio, and a config.ini file.</li>
         </ul>
     </div>
 </div>
 
 <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab).classList.add('active');
+        });
+    });
+
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const videoContainer = document.getElementById('video-container');
@@ -273,13 +937,39 @@
     let currentFile = null;
     let isProcessing = false;
 
-    // --- SNAPSHOT FEATURE ---
+    function getScaleFactor() {
+        return parseFloat(document.getElementById('scale-select').value);
+    }
+
+    function getGrimResolution() {
+        if (!video.videoWidth) return { w: 0, h: 0 };
+        const scale = getScaleFactor();
+        return {
+            w: Math.round(video.videoWidth * scale),
+            h: Math.round(video.videoHeight * scale)
+        };
+    }
+
+    function updateVideoInfo() {
+        if (!video.videoWidth) return;
+        const grim = getGrimResolution();
+        const scale = getScaleFactor();
+        if (scale === 1) {
+            videoInfo.innerText = `Resolution: ${video.videoWidth}x${video.videoHeight} | Duration: ${video.duration.toFixed(2)}s`;
+        } else {
+            videoInfo.innerText = `Resolution: ${video.videoWidth}x${video.videoHeight} | Output: ${grim.w}x${grim.h} | Duration: ${video.duration.toFixed(2)}s`;
+        }
+    }
+
+    document.getElementById('scale-select').addEventListener('change', updateVideoInfo);
+
     const btnSnapshot = document.getElementById('btn-snapshot');
     btnSnapshot.addEventListener('click', () => {
         if (!currentFile || !video.videoWidth) return;
         const snapCanvas = document.createElement('canvas');
-        snapCanvas.width = video.videoWidth;
-        snapCanvas.height = video.videoHeight;
+        const grim = getGrimResolution();
+        snapCanvas.width = grim.w;
+        snapCanvas.height = grim.h;
         const ctx = snapCanvas.getContext('2d');
         ctx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
 
@@ -288,7 +978,6 @@
         a.style.display = 'none';
         a.href = url;
 
-        // Calculate current frame number roughly based on time (assuming 24fps base or the one selected)
         const fps = parseFloat(document.getElementById('fps-input').value) || 24;
         const currentFrame = Math.floor(video.currentTime * fps);
 
@@ -297,7 +986,6 @@
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 100);
     });
-
 
     dropZone.addEventListener('dragover', e => {
         e.preventDefault();
@@ -334,8 +1022,9 @@
         videoContainer.style.display = 'block';
 
         video.onloadedmetadata = () => {
-            videoInfo.innerText = `Resolution: ${video.videoWidth}x${video.videoHeight} | Duration: ${video.duration.toFixed(2)}s`;
+            updateVideoInfo();
             btnConvert.disabled = false;
+            btnAudio.disabled = false;
         };
     }
 
@@ -351,26 +1040,26 @@
         function setUint16(data) { view.setUint16(offset, data, true); offset += 2; }
         function setUint32(data) { view.setUint32(offset, data, true); offset += 4; }
 
-        setUint32(0x46464952); 
-        setUint32(length - 8); 
-        setUint32(0x45564157); 
-        setUint32(0x20746d66); 
-        setUint32(16);         
-        setUint16(1);          
+        setUint32(0x46464952);
+        setUint32(length - 8);
+        setUint32(0x45564157);
+        setUint32(0x20746d66);
+        setUint32(16);
+        setUint16(1);
         setUint16(numOfChan);
         setUint32(buffer.sampleRate);
         setUint32(buffer.sampleRate * 2 * numOfChan);
         setUint16(numOfChan * 2);
-        setUint16(16);         
-        setUint32(0x61746164); 
+        setUint16(16);
+        setUint32(0x61746164);
         setUint32(length - pos - 4);
 
         for(i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
 
         while(pos < buffer.length) {
             for(i = 0; i < numOfChan; i++) {
-                sample = Math.max(-1, Math.min(1, channels[i][pos])); 
-                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; 
+                sample = Math.max(-1, Math.min(1, channels[i][pos]));
+                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0;
                 view.setInt16(offset, sample, true);
                 offset += 2;
             }
@@ -379,23 +1068,119 @@
         return new Blob([bufferArray], {type: "audio/wav"});
     }
 
+    function audioBufferToMp3(audioBuffer) {
+        const channels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const encoder = new lamejs.Mp3Encoder(channels, sampleRate, 192);
+        const mp3Data = [];
+        const samplesPerFrame = 1152;
+
+        for (let i = 0; i < audioBuffer.length; i += samplesPerFrame) {
+            const left = audioBuffer.getChannelData(0);
+            const leftChunk = new Int16Array(Math.min(samplesPerFrame, left.length - i));
+            for (let j = 0; j < leftChunk.length; j++) {
+                leftChunk[j] = Math.max(-32768, Math.min(32767, Math.round(left[i + j] * 32768)));
+            }
+
+            if (channels === 2) {
+                const right = audioBuffer.getChannelData(1);
+                const rightChunk = new Int16Array(Math.min(samplesPerFrame, right.length - i));
+                for (let j = 0; j < rightChunk.length; j++) {
+                    rightChunk[j] = Math.max(-32768, Math.min(32767, Math.round(right[i + j] * 32768)));
+                }
+                const buf = encoder.encodeBuffer(leftChunk, rightChunk);
+                if (buf.length > 0) mp3Data.push(buf);
+            } else {
+                const buf = encoder.encodeBuffer(leftChunk);
+                if (buf.length > 0) mp3Data.push(buf);
+            }
+        }
+
+        const flush = encoder.flush();
+        if (flush.length > 0) mp3Data.push(flush);
+        return new Blob(mp3Data, {type: "audio/mp3"});
+    }
+
+    const btnAudio = document.getElementById('btn-audio');
+    btnAudio.addEventListener('click', async () => {
+        if (isProcessing || !currentFile) return;
+        isProcessing = true;
+        btnAudio.disabled = true;
+        btnConvert.disabled = true;
+        progressContainer.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressFill.style.backgroundColor = '#00e5ff';
+
+        const audioFormat = document.getElementById('audio-format-select').value;
+        const baseNameAudio = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
+        const ext = audioFormat === 'mp3' ? 'mp3' : 'wav';
+
+        progressText.innerText = `🎵 Extracting audio (${ext.toUpperCase()})...`;
+
+        try {
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+            let audioBlob;
+            if (audioFormat === 'mp3') {
+                audioBlob = audioBufferToMp3(audioBuffer);
+            } else {
+                audioBlob = audioBufferToWav(audioBuffer);
+            }
+            audioCtx.close();
+
+            progressText.innerText = "Packaging audio ZIP...";
+            const zip = new JSZip();
+            zip.file(`${baseNameAudio}.${ext}`, audioBlob);
+            const zipBlob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+            const zipUrl = URL.createObjectURL(zipBlob);
+
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = zipUrl;
+            a.download = `${baseNameAudio}_${ext}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(zipUrl), 500);
+
+            progressText.innerText = "Audio extraction completed!";
+        } catch (err) {
+            console.error(err);
+            progressText.innerText = "Failed: No compatible audio track found.";
+            progressFill.style.backgroundColor = "#ff4444";
+        }
+
+        btnAudio.disabled = false;
+        btnConvert.disabled = false;
+        isProcessing = false;
+    });
+
     btnConvert.addEventListener('click', async () => {
         if (isProcessing || !currentFile) return;
         isProcessing = true;
         btnConvert.disabled = true;
-        btnConvert.innerText = "⏳ Processing... Please wait";
+        btnAudio.disabled = true;
         progressContainer.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressFill.style.backgroundColor = '#00e5ff';
+        progressText.innerText = 'Starting process...';
+        btnConvert.innerText = '📸 Processing...';
 
         const gridSize = parseInt(document.getElementById('grid-select').value);
         const fps = parseFloat(document.getElementById('fps-input').value);
         const quality = parseFloat(document.getElementById('quality-select').value);
 
         const framesPerSheet = gridSize * gridSize;
-        const dt = 1.0 / fps; 
+        const dt = 1.0 / fps;
         const totalEstimatedFrames = Math.floor(video.duration / dt) + 1;
 
-        const videoW = video.videoWidth;
-        const videoH = video.videoHeight;
+        const grim = getGrimResolution();
+        const videoW = grim.w;
+        const videoH = grim.h;
+        const originalW = video.videoWidth;
+        const originalH = video.videoHeight;
+        const scaleFactor = getScaleFactor();
 
         const sheetCanvas = document.createElement('canvas');
         sheetCanvas.width = videoW * gridSize;
@@ -410,7 +1195,7 @@
         let currentSheetCount = 0;
 
         video.pause();
-        video.muted = true; 
+        video.muted = true;
 
         while (currentTime <= video.duration) {
             video.currentTime = currentTime;
@@ -447,16 +1232,24 @@
         }
 
         let audioStatus = "Not requested";
-        if (document.getElementById('extract-audio').checked) {
-            progressText.innerText = "🎵 Extracting and decoding audio...";
+        if (document.getElementById('include-audio').checked) {
+            const audioFormat = document.getElementById('audio-format-select').value;
+            const baseNameAudio = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
+            progressText.innerText = `🎵 Extracting and decoding audio (${audioFormat.toUpperCase()})...`;
             try {
                 const arrayBuffer = await currentFile.arrayBuffer();
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-                const wavBlob = audioBufferToWav(audioBuffer);
-                zip.file("extracted_audio.wav", wavBlob);
-                audioStatus = "Success (extracted_audio.wav)";
-                audioCtx.close(); 
+                if (audioFormat === 'mp3') {
+                    const mp3Blob = audioBufferToMp3(audioBuffer);
+                    zip.file(`${baseNameAudio}.mp3`, mp3Blob);
+                    audioStatus = `Success (${baseNameAudio}.mp3)`;
+                } else {
+                    const wavBlob = audioBufferToWav(audioBuffer);
+                    zip.file(`${baseNameAudio}.wav`, wavBlob);
+                    audioStatus = `Success (${baseNameAudio}.wav)`;
+                }
+                audioCtx.close();
             } catch (err) {
                 console.error(err);
                 audioStatus = "Failed / No compatible audio track";
@@ -468,7 +1261,9 @@
         const iniContent = `[Configuration]
 OriginalFile=${currentFile.name}
 VideoDurationSeconds=${video.duration.toFixed(2)}
-VideoResolution=${videoW}x${videoH}
+OriginalResolution=${originalW}x${originalH}
+OutputResolution=${videoW}x${videoH}
+ScaleFactor=${scaleFactor}
 TargetFPS=${fps}
 GridSize=${gridSize}x${gridSize}
 WebPQuality=${quality}
@@ -480,15 +1275,13 @@ AudioExtracted=${audioStatus}
 `;
         zip.file("config.ini", iniContent);
 
-        
-        // 3. Generate .js configuration file (like corto-v1_config.js)
         const baseName = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
         const configObjName = `${baseName.toUpperCase()}_CONFIG`;
 
         let spritesheetsArrayStr = "    spritesheets: [\n";
         for (let i = 0; i < currentSheetCount; i++) {
             const startF = i * framesPerSheet;
-            // Last sheet might not be fully populated
+
             const endF = (i === currentSheetCount - 1) ? (globalFrameCount - 1) : (startF + framesPerSheet - 1);
             const fileName = `${baseName}_sheet_${String(i).padStart(4, '0')}.webp`;
             spritesheetsArrayStr += `        { file: "${fileName}", startFrame: ${startF}, endFrame: ${endF} }`;
@@ -497,12 +1290,14 @@ AudioExtracted=${audioStatus}
         }
         spritesheetsArrayStr += "    ]";
 
-        const jsContent = `// Video config - generated from ZIP export
-const ${configObjName} = {
+        const jsContent = `const ${configObjName} = {
     format: "webp",
     totalFrames: ${globalFrameCount},
     frameWidth: ${videoW},
     frameHeight: ${videoH},
+    originalWidth: ${originalW},
+    originalHeight: ${originalH},
+    scaleFactor: ${scaleFactor},
     fps: ${fps},
     grid: "${gridSize}x${gridSize}",
     columns: ${gridSize},
@@ -530,8 +1325,694 @@ ${spritesheetsArrayStr}
         progressFill.style.backgroundColor = "#00e5ff";
         btnConvert.innerText = "📸 Generate ZIP Archive";
         btnConvert.disabled = false;
+        btnAudio.disabled = false;
         isProcessing = false;
     });
+
+    const MIX_MAX_VISIBLE = 4;
+    const mixTracks = [];
+    const mixTracksContainer = document.getElementById('mix-tracks');
+    const mixUploadZone = document.getElementById('mix-upload-zone');
+    const mixFileInput = document.getElementById('mix-file-input');
+    const mixActions = document.getElementById('mix-actions');
+    const btnMix = document.getElementById('btn-mix');
+
+    mixUploadZone.addEventListener('click', () => mixFileInput.click());
+    mixUploadZone.addEventListener('dragover', e => { e.preventDefault(); mixUploadZone.style.borderColor = '#34d399'; });
+    mixUploadZone.addEventListener('dragleave', e => { e.preventDefault(); mixUploadZone.style.borderColor = '#444'; });
+    mixUploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        mixUploadZone.style.borderColor = '#444';
+        if (e.dataTransfer.files.length > 0) addMixFiles(e.dataTransfer.files);
+    });
+    mixFileInput.addEventListener('change', e => { if (e.target.files.length > 0) addMixFiles(e.target.files); });
+
+    function addMixFiles(files) {
+        for (const file of files) {
+            if (!file.type.startsWith('audio/')) continue;
+            addMixTrack(file);
+        }
+    }
+
+    function addMixTrack(file) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        file.arrayBuffer().then(buffer => ctx.decodeAudioData(buffer)).then(audioBuffer => {
+            const track = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                file: file,
+                audioBuffer: audioBuffer,
+                duration: audioBuffer.duration,
+                volume: 1.0,
+                offset: 0,
+                master: mixTracks.length === 0,
+                source: null,
+                playing: false,
+                playStartTime: 0,
+                playStartOffset: 0,
+                progressAnimId: null
+            };
+            mixTracks.push(track);
+            renderMixTracks();
+            mixActions.style.display = 'flex';
+            btnMix.disabled = mixTracks.length < 1;
+            ctx.close();
+        }).catch(err => {
+            console.error(err);
+            alert('Failed to decode audio: ' + file.name);
+            ctx.close();
+        });
+    }
+
+    function renderMixTracks() {
+        mixTracksContainer.innerHTML = '';
+        const masterDuration = mixTracks.length > 0 ? mixTracks[0].duration : 0;
+
+        mixTracks.forEach((track, idx) => {
+            const div = document.createElement('div');
+            div.className = 'mix-track' + (track.master ? ' master' : '');
+
+            const header = document.createElement('div');
+            header.className = 'track-header';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'track-name';
+            nameSpan.textContent = track.name;
+
+            const controls = document.createElement('div');
+            controls.className = 'track-controls';
+
+            const playBtn = document.createElement('button');
+            playBtn.className = 'track-btn' + (track.playing ? ' playing' : '');
+            playBtn.textContent = track.playing ? '⏸ Pause' : '▶ Play';
+            playBtn.addEventListener('click', () => toggleTrackPlay(track, playBtn));
+            controls.appendChild(playBtn);
+
+            if (!track.master) {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'track-btn remove';
+                removeBtn.textContent = '✕';
+                removeBtn.addEventListener('click', () => {
+                    stopTrack(track);
+                    mixTracks.splice(idx, 1);
+                    renderMixTracks();
+                    if (mixTracks.length < 1) mixActions.style.display = 'none';
+                });
+                controls.appendChild(removeBtn);
+            }
+
+            if (track.master) {
+                const badge = document.createElement('span');
+                badge.className = 'track-master-badge';
+                badge.textContent = 'MASTER';
+                controls.appendChild(badge);
+            }
+
+            header.appendChild(nameSpan);
+            header.appendChild(controls);
+            div.appendChild(header);
+
+            const waveContainer = document.createElement('div');
+            waveContainer.className = 'waveform-container';
+            const canvas = document.createElement('canvas');
+            canvas.className = 'waveform-canvas';
+            canvas.id = 'wave-' + track.id;
+            const pLine = document.createElement('div');
+            pLine.className = 'playback-line';
+            pLine.id = 'pline-' + track.id;
+            if (track.offset > 0 && !track.playing) {
+                pLine.style.display = 'block';
+                pLine.style.left = (Math.min(1, track.offset / track.duration) * 100) + '%';
+            }
+            waveContainer.appendChild(canvas);
+            waveContainer.appendChild(pLine);
+            div.appendChild(waveContainer);
+
+            canvas.addEventListener('click', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) / rect.width;
+                const seekTime = clickX * track.duration;
+                if (track.playing) {
+                    stopTrack(track);
+                    track.offset = seekTime;
+                    playTrack(track);
+                    renderMixTracks();
+                } else {
+                    track.offset = seekTime;
+                    renderMixTracks();
+                    const pLineEl = document.getElementById('pline-' + track.id);
+                    if (pLineEl) {
+                        pLineEl.style.display = 'block';
+                        pLineEl.style.left = (clickX * 100) + '%';
+                    }
+                }
+            });
+
+            if (!track.master && masterDuration > 0) {
+                const offsetContainer = document.createElement('div');
+                offsetContainer.className = 'offset-bar-container';
+
+                const bar = document.createElement('div');
+                bar.className = 'offset-bar-timeline';
+
+                const maxOffset = Math.max(0, masterDuration - track.duration);
+                const offsetRatio = maxOffset > 0 ? track.offset / maxOffset : 0;
+                const widthRatio = Math.min(1, track.duration / masterDuration);
+
+                bar.style.left = (offsetRatio * (1 - widthRatio) * 100) + '%';
+                bar.style.width = (widthRatio * 100) + '%';
+
+                if (maxOffset > 0) {
+                    bar.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        const onMove = (ev) => {
+                            const rect = offsetContainer.getBoundingClientRect();
+                            let x = (ev.clientX - rect.left) / rect.width;
+                            x = Math.max(0, Math.min(1, x));
+                            track.offset = x * maxOffset;
+                            bar.style.left = (x * (1 - widthRatio) * 100) + '%';
+                            const label = document.getElementById('offset-label-' + track.id);
+                            if (label) label.textContent = 'Offset: ' + formatTime(track.offset);
+                        };
+                        const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+                        document.addEventListener('mousemove', onMove);
+                        document.addEventListener('mouseup', onUp);
+                    });
+                }
+
+                offsetContainer.appendChild(bar);
+                div.appendChild(offsetContainer);
+
+                const offsetLabel = document.createElement('div');
+                offsetLabel.className = 'offset-label';
+                offsetLabel.textContent = 'Offset: ' + formatTime(track.offset);
+                offsetLabel.id = 'offset-label-' + track.id;
+                div.appendChild(offsetLabel);
+            }
+
+            const volRow = document.createElement('div');
+            volRow.className = 'track-volume-row';
+            const volLabel = document.createElement('label');
+            volLabel.textContent = 'Vol';
+            const volSlider = document.createElement('input');
+            volSlider.type = 'range';
+            volSlider.min = '0';
+            volSlider.max = '100';
+            volSlider.value = String(Math.round(track.volume * 100));
+            volSlider.addEventListener('input', (e) => {
+                track.volume = parseInt(e.target.value) / 100;
+                volValue.textContent = e.target.value + '%';
+            });
+            const volValue = document.createElement('span');
+            volValue.className = 'vol-value';
+            volValue.textContent = Math.round(track.volume * 100) + '%';
+            volRow.appendChild(volLabel);
+            volRow.appendChild(volSlider);
+            volRow.appendChild(volValue);
+            div.appendChild(volRow);
+
+            mixTracksContainer.appendChild(div);
+            requestAnimationFrame(() => drawWaveform(track, canvas));
+
+            if (track.playing) {
+                startProgressAnimation(track, canvas.id);
+            }
+        });
+
+        mixTracksContainer.style.overflowY = mixTracks.length > MIX_MAX_VISIBLE ? 'scroll' : 'auto';
+        mixTracksContainer.style.maxHeight = '480px';
+    }
+
+    function drawWaveform(track, canvas) {
+        const data = track.audioBuffer.getChannelData(0);
+        const dpr = window.devicePixelRatio || 1;
+        const w = canvas.clientWidth || 500;
+        canvas.width = w * dpr;
+        canvas.height = 50 * dpr;
+        const ctx2d = canvas.getContext('2d');
+        ctx2d.scale(dpr, dpr);
+        ctx2d.clearRect(0, 0, w, 50);
+        const step = Math.ceil(data.length / w);
+        const amp = 25;
+        ctx2d.fillStyle = track.master ? '#f59e0b' : '#00e5ff';
+        ctx2d.globalAlpha = 0.6;
+        for (let i = 0; i < w; i++) {
+            let min = 1.0, max = -1.0;
+            for (let j = 0; j < step; j++) {
+                const d = data[(i * step) + j] || 0;
+                if (d < min) min = d;
+                if (d > max) max = d;
+            }
+            ctx2d.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+        }
+        ctx2d.globalAlpha = 1;
+    }
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = (s % 60).toFixed(1);
+        return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function toggleTrackPlay(track, btn) {
+        if (track.playing) {
+            stopTrack(track);
+            btn.textContent = '▶ Play';
+            btn.classList.remove('playing');
+        } else {
+            playTrack(track);
+            btn.textContent = '⏸ Pause';
+            btn.classList.add('playing');
+        }
+    }
+
+    function startProgressAnimation(track, canvasId) {
+        const pLine = document.getElementById('pline-' + track.id);
+        if (!pLine) return;
+        pLine.style.display = 'block';
+
+        if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+
+        function update() {
+            if (!track.playing) {
+                track.progressAnimId = null;
+                return;
+            }
+            const elapsed = (Date.now() - track.playStartTime) / 1000 + track.playStartOffset;
+            const progress = Math.min(1, elapsed / track.duration);
+            pLine.style.left = (progress * 100) + '%';
+            track.progressAnimId = requestAnimationFrame(update);
+        }
+        track.progressAnimId = requestAnimationFrame(update);
+    }
+
+    function playTrack(track) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = ctx.createBufferSource();
+        const gain = ctx.createGain();
+        source.buffer = track.audioBuffer;
+        gain.gain.value = track.volume;
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(0, track.offset);
+        track.source = source;
+        track.audioCtx = ctx;
+        track.playing = true;
+        track.playStartTime = Date.now();
+        track.playStartOffset = track.offset;
+        source.onended = () => {
+            track.playing = false;
+            track.source = null;
+            track.offset = 0;
+            if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+            track.progressAnimId = null;
+            const pLine = document.getElementById('pline-' + track.id);
+            if (pLine) pLine.style.display = 'none';
+            try { ctx.close(); } catch(e) {}
+            renderMixTracks();
+        };
+        startProgressAnimation(track, 'wave-' + track.id);
+    }
+
+    function stopTrack(track) {
+        if (track.source) { try { track.source.stop(); } catch(e) {} track.source = null; }
+        if (track.audioCtx) { try { track.audioCtx.close(); } catch(e) {} track.audioCtx = null; }
+        track.playing = false;
+        if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+        track.progressAnimId = null;
+        const elapsed = (Date.now() - track.playStartTime) / 1000 + track.playStartOffset;
+        track.offset = Math.min(elapsed, track.duration);
+        const pLine = document.getElementById('pline-' + track.id);
+        if (pLine) {
+            pLine.style.display = 'block';
+            pLine.style.left = (Math.min(1, track.offset / track.duration) * 100) + '%';
+        }
+    }
+
+    btnMix.addEventListener('click', async () => {
+        if (mixTracks.length < 1) return;
+        btnMix.disabled = true;
+        btnMix.textContent = '🎚️ Mixing...';
+
+        const masterBuffer = mixTracks[0].audioBuffer;
+        const sampleRate = masterBuffer.sampleRate;
+        const numChannels = masterBuffer.numberOfChannels;
+        const masterDuration = mixTracks[0].duration;
+        const masterSamples = Math.ceil(masterDuration * sampleRate);
+
+        const offlineCtx = new OfflineAudioContext(numChannels, masterSamples, sampleRate);
+
+        for (const track of mixTracks) {
+            const startOffset = track.master ? 0 : track.offset;
+            const source = offlineCtx.createBufferSource();
+            source.buffer = track.audioBuffer;
+            const gain = offlineCtx.createGain();
+            gain.gain.value = track.volume;
+            source.connect(gain);
+            gain.connect(offlineCtx.destination);
+            source.start(startOffset);
+        }
+
+        try {
+            const renderedBuffer = await offlineCtx.startRendering();
+            const baseNameMix = mixTracks[0].name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
+            const audioFormat = document.getElementById('mix-format-select').value;
+
+            let finalBlob;
+            let ext;
+            if (audioFormat === 'mp3') {
+                finalBlob = audioBufferToMp3(renderedBuffer);
+                ext = 'mp3';
+            } else {
+                finalBlob = audioBufferToWav(renderedBuffer);
+                ext = 'wav';
+            }
+
+            const zip = new JSZip();
+            zip.file(`${baseNameMix}.${ext}`, finalBlob);
+            const zipBlob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+            const zipUrl = URL.createObjectURL(zipBlob);
+            const a = document.createElement('a');
+            a.href = zipUrl;
+            a.download = `${baseNameMix}_${ext}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(zipUrl), 500);
+        } catch (err) {
+            console.error(err);
+            alert('Mixing failed: ' + err.message);
+        }
+
+        btnMix.disabled = false;
+        btnMix.textContent = '🎚️ Mix & Download';
+    });
+
+    const v2tSavedLang = localStorage.getItem('v2t_lang') || 'en-US';
+    document.getElementById('v2t-lang').value = v2tSavedLang;
+    document.getElementById('v2t-lang').addEventListener('change', function() {
+        localStorage.setItem('v2t_lang', this.value);
+    });
+
+    const v2tState = {
+        recognizer: null,
+        mediaRecorder: null,
+        audioChunks: [],
+        isRecording: false,
+        audioCtx: null,
+        analyser: null,
+        animId: null
+    };
+
+    const v2tRecordBtn = document.getElementById('v2t-record-btn');
+    const v2tStopBtn = document.getElementById('v2t-stop-btn');
+    const v2tText = document.getElementById('v2t-text');
+    const v2tCopyBtn = document.getElementById('v2t-copy-btn');
+    const v2tClearBtn = document.getElementById('v2t-clear-btn');
+    const v2tExportBtn = document.getElementById('v2t-export-btn');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        v2tState.recognizer = new SpeechRecognition();
+        v2tState.recognizer.continuous = true;
+        v2tState.recognizer.interimResults = true;
+        v2tState.recognizer.lang = v2tSavedLang;
+
+        let restartAttempts = 0;
+        const maxRestartAttempts = 5;
+        let lastRestartTime = 0;
+
+        v2tState.recognizer.onresult = function(event) {
+            let final = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                if (event.results[i].isFinal) {
+                    final += event.results[i][0].transcript;
+                }
+            }
+            if (final) {
+                v2tText.value += (v2tText.value ? ' ' : '') + final;
+                v2tText.scrollTop = v2tText.scrollHeight;
+                v2tExportBtn.disabled = false;
+                restartAttempts = 0;
+            }
+        };
+
+        v2tState.recognizer.onend = function() {
+            if (v2tState.isRecording) {
+                const now = Date.now();
+                if (now - lastRestartTime < 500) return;
+                lastRestartTime = now;
+                restartAttempts++;
+                if (restartAttempts > maxRestartAttempts) {
+                    v2tStopRecording();
+                    return;
+                }
+                setTimeout(() => {
+                    if (v2tState.isRecording && v2tState.recognizer) {
+                        try {
+                            v2tState.recognizer.lang = document.getElementById('v2t-lang').value;
+                            v2tState.recognizer.start();
+                        } catch(e) {}
+                    }
+                }, 300);
+            }
+        };
+
+        v2tState.recognizer.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                v2tStopRecording();
+            }
+        };
+    }
+
+    function v2tStartVisualizer(stream) {
+        const canvas = document.getElementById('v2t-visualizer');
+        if (!canvas) return;
+        canvas.classList.add('active');
+        const ctx2d = canvas.getContext('2d');
+
+        v2tState.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = v2tState.audioCtx.createMediaStreamSource(stream);
+        const v2tGain = v2tState.audioCtx.createGain();
+        v2tGain.gain.value = 5.0;
+        v2tState.analyser = v2tState.audioCtx.createAnalyser();
+        v2tState.analyser.fftSize = 512;
+        v2tState.analyser.smoothingTimeConstant = 0.4;
+        source.connect(v2tGain);
+        v2tGain.connect(v2tState.analyser);
+
+        const dataArray = new Uint8Array(v2tState.analyser.frequencyBinCount);
+        canvas.width = canvas.offsetWidth || 500;
+        canvas.height = canvas.offsetHeight || 40;
+
+        function draw() {
+            v2tState.animId = requestAnimationFrame(draw);
+            v2tState.analyser.getByteTimeDomainData(dataArray);
+
+            const w = canvas.width;
+            const h = canvas.height;
+            const mid = h / 2;
+            ctx2d.clearRect(0, 0, w, h);
+            ctx2d.lineWidth = 2.5;
+            ctx2d.strokeStyle = '#a855f7';
+            ctx2d.beginPath();
+
+            const sliceWidth = w / dataArray.length;
+            let x = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                const raw = (dataArray[i] - 128) / 128.0;
+                const amplified = raw * 3.0;
+                const clamped = Math.max(-1, Math.min(1, amplified));
+                const y = mid + clamped * mid * 0.9;
+                if (i === 0) ctx2d.moveTo(x, y);
+                else ctx2d.lineTo(x, y);
+                x += sliceWidth;
+            }
+            ctx2d.lineTo(w, mid);
+            ctx2d.stroke();
+
+            ctx2d.shadowBlur = v2tState.isRecording ? 10 : 0;
+            ctx2d.shadowColor = '#a855f7';
+        }
+        draw();
+    }
+
+    function v2tStopVisualizer() {
+        if (v2tState.animId) cancelAnimationFrame(v2tState.animId);
+        v2tState.animId = null;
+        const canvas = document.getElementById('v2t-visualizer');
+        if (canvas) {
+            canvas.classList.remove('active');
+            const ctx2d = canvas.getContext('2d');
+            ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+            ctx2d.lineWidth = 1;
+            ctx2d.strokeStyle = '#333';
+            ctx2d.beginPath();
+            ctx2d.moveTo(0, canvas.height / 2);
+            ctx2d.lineTo(canvas.width, canvas.height / 2);
+            ctx2d.stroke();
+        }
+        if (v2tState.analyser) {
+            try { v2tState.analyser.disconnect(); } catch(e) {}
+            v2tState.analyser = null;
+        }
+        if (v2tState.audioCtx) {
+            try { v2tState.audioCtx.close(); } catch(e) {}
+            v2tState.audioCtx = null;
+        }
+    }
+
+    function v2tStartRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            v2tState.mediaRecorder = new MediaRecorder(stream);
+            v2tState.audioChunks = [];
+            v2tState.mediaRecorder.ondataavailable = e => v2tState.audioChunks.push(e.data);
+            v2tState.mediaRecorder.start();
+
+            if (v2tState.recognizer) {
+                v2tState.recognizer.lang = document.getElementById('v2t-lang').value;
+                v2tState.recognizer.start();
+            }
+
+            v2tStartVisualizer(stream);
+            v2tState.isRecording = true;
+            v2tRecordBtn.disabled = true;
+            v2tStopBtn.disabled = false;
+            document.getElementById('v2t-lang').disabled = true;
+        }).catch(err => {
+            console.error('Mic error:', err);
+            alert('Microphone access denied or not available.');
+        });
+    }
+
+    function v2tStopRecording() {
+        v2tState.isRecording = false;
+        if (v2tState.mediaRecorder && v2tState.mediaRecorder.state !== 'inactive') {
+            v2tState.mediaRecorder.stop();
+            v2tState.mediaRecorder.stream.getTracks().forEach(t => t.stop());
+        }
+        if (v2tState.recognizer) {
+            try { v2tState.recognizer.stop(); } catch(e) {}
+        }
+        v2tStopVisualizer();
+        v2tRecordBtn.disabled = false;
+        v2tStopBtn.disabled = true;
+        document.getElementById('v2t-lang').disabled = false;
+        if (v2tState.audioChunks.length > 0) {
+            v2tExportBtn.disabled = false;
+        }
+    }
+
+    v2tRecordBtn.addEventListener('click', v2tStartRecording);
+    v2tStopBtn.addEventListener('click', v2tStopRecording);
+
+    v2tCopyBtn.addEventListener('click', () => {
+        const text = v2tText.value;
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text);
+        } else {
+            v2tText.select();
+            document.execCommand('copy');
+        }
+    });
+
+    let v2tClearClickCount = 0;
+    let v2tClearClickTimeout = null;
+    v2tClearBtn.addEventListener('click', () => {
+        v2tClearClickCount++;
+        if (v2tClearClickCount === 1) {
+            v2tShowToast('Double click to clear', '#4ade80', 2000);
+            v2tClearClickTimeout = setTimeout(() => { v2tClearClickCount = 0; }, 600);
+        } else if (v2tClearClickCount === 2) {
+            clearTimeout(v2tClearClickTimeout);
+            v2tClearClickCount = 0;
+            v2tText.value = '';
+            v2tExportBtn.disabled = true;
+        }
+    });
+
+    function v2tShowToast(message, color, durationMs) {
+        const existing = document.querySelector('.v2t-toast');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.className = 'v2t-toast';
+        toast.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background: rgba(30,30,30,0.9); border: 1px solid ${color};
+            color: ${color}; padding: 10px 18px; border-radius: 6px;
+            font-size: 13px; font-weight: 500; z-index: 10000;
+            backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        if (durationMs !== Infinity) {
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, durationMs);
+        }
+    }
+
+    v2tExportBtn.addEventListener('click', () => {
+        if (v2tState.audioChunks.length === 0) return;
+        const format = document.getElementById('v2t-format-select').value;
+        const timestamp = Date.now();
+        const baseName = 'voice_export_' + timestamp;
+        const audioBlob = new Blob(v2tState.audioChunks, { type: 'audio/webm' });
+
+        audioBlob.arrayBuffer().then(buffer => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            ctx.decodeAudioData(buffer).then(audioBuffer => {
+                let outputBlob;
+                let ext;
+                if (format === 'mp3') {
+                    outputBlob = audioBufferToMp3(audioBuffer);
+                    ext = 'mp3';
+                } else {
+                    outputBlob = audioBufferToWav(audioBuffer);
+                    ext = 'wav';
+                }
+                ctx.close();
+
+                const zip = new JSZip();
+                zip.file(baseName + '.' + ext, outputBlob);
+                const transText = v2tText.value.trim();
+                if (transText) zip.file(baseName + '.txt', transText);
+
+                zip.generateAsync({ type: 'blob', compression: 'STORE' }).then(zipBlob => {
+                    const url = URL.createObjectURL(zipBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = baseName + '_' + ext + '.zip';
+                    a.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 500);
+                });
+            }).catch(err => {
+                console.error(err);
+                const zip = new JSZip();
+                zip.file(baseName + '.webm', audioBlob);
+                zip.generateAsync({ type: 'blob', compression: 'STORE' }).then(zipBlob => {
+                    const url = URL.createObjectURL(zipBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = baseName + '_webm.zip';
+                    a.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 500);
+                });
+            });
+        });
+    });
+
+    const v2tCanvas = document.getElementById('v2t-visualizer');
+    if (v2tCanvas) {
+        const ctx2d = v2tCanvas.getContext('2d');
+        v2tCanvas.width = v2tCanvas.offsetWidth || 500;
+        v2tCanvas.height = v2tCanvas.offsetHeight || 40;
+        ctx2d.lineWidth = 1;
+        ctx2d.strokeStyle = '#333';
+        ctx2d.beginPath();
+        ctx2d.moveTo(0, v2tCanvas.height / 2);
+        ctx2d.lineTo(v2tCanvas.width, v2tCanvas.height / 2);
+        ctx2d.stroke();
+    }
 </script>
 <script src="../pages-ball.js"></script>
 </body>
