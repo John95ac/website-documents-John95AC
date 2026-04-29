@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-20",
-  "message": "Hi everyone! Yesterday (Sunday) I uploaded album audio updates and enhanced the web Page, now you can generate your own OSoundtracks SA packs directly from the website! Also uploading the modified engine today. Everything is ready to go!",
-  "details": "Daily update",
-  "tags": ["OSoundtracks", "Generator Packs", "web page", "engine update", "audio albums", "Skyrim"],
+  "date": "2026-04-29",
+  "message": "Hi everyone! Working as fast as possible to improve the soundtrack mod to avoid CTDs. The problematic config will be disabled by default. Also uploading several mods today and creating videos. Haha, ironically what takes me longest is creating the media than the mods themselves. Also working on translations for BWY dependencies. Busy day but I'll be messaging. Discord channel opening soon, stay tuned. Doom for Skyrim is coming.",
+  "details": "Daily update v70",
+  "tags": ["soundtrack", "CTD fix", "mods", "videos", "BWY translations", "Discord", "Doom", "Skyrim"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-04-20T08:32:00Z"
+  "updated_at": "2026-04-29T18:08:00Z"
 }
