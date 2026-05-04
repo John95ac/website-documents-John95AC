@@ -1,10 +1,10 @@
 const sponsorsData = {
     patreon: {
         stats: {
-            total: 135,
+            total: 136,
             active: 5,
             former: 7,
-            free: 123
+            free: 124
         },
         tiers: {
             level4: {
@@ -45,7 +45,7 @@ const sponsorsData = {
             },
             free: {
                 name: "Free Members & Followers",
-                count: 123,
+                count: 124,
                 patrons: [
                     { name: "$@uron", since: "Nov 2024" },
                     { name: "_ _", since: "Nov 2024" },
@@ -90,6 +90,7 @@ const sponsorsData = {
                     { name: "Elias choque", since: "Jul 2025" },
                     { name: "EvilMortyC137B", since: "Sep 2025" },
                     { name: "Ezano", since: "Nov 2025" },
+                    { name: "Frue", since: "Apr 2026" },
                     { name: "Gabriel", since: "May 2025" },
                     { name: "GraufeuerEisaugenofPlebia", since: "Aug 2024" },
                     { name: "Holto243", since: "Feb 2026" },
@@ -128,6 +129,7 @@ const sponsorsData = {
                     { name: "Patricia Rolston", since: "Apr 2026" },
                     { name: "Pedro Luis", since: "Oct 2025" },
                     { name: "Peterfall", since: "Dec 2024" },
+                    { name: "Raven storm", since: "May 2026" },
                     { name: "Redot", since: "Nov 2024" },
                     { name: "Rogue Koala", since: "Nov 2024" },
                     { name: "Rudi Volland", since: "Oct 2024" },
@@ -150,13 +152,13 @@ const sponsorsData = {
                     { name: "TheBerk", since: "Oct 2025" },
                     { name: "TheBlackLink", since: "Apr 2025" },
                     { name: "Thorfinn Bjornstad", since: "Mar 2025" },
-                    { name: "Timothy Waterson", since: "Feb 2026" },
                     { name: "Tommy Theriot", since: "Sep 2025" },
                     { name: "tugnuts", since: "Oct 2025" },
                     { name: "User1500", since: "Dec 2025" },
                     { name: "victor133x", since: "Feb 2025" },
                     { name: "VXAstora", since: "Oct 2025" },
                     { name: "Will", since: "Oct 2025" },
+                    { name: "Wink", since: "Mar 2026" },
                     { name: "Wino Gándara", since: "Nov 2025" },
                     { name: "Wskeev", since: "Dec 2024" },
                     { name: "x a n i", since: "Nov 2024" },
@@ -175,7 +177,7 @@ const sponsorsData = {
     },
     kofi: {
         stats: {
-            total: 10
+            total: 11
         },
         supporters: [
             { name: "EpicFaylure01", amount: 50.00, date: "08/25/2024 12:48", message: "", color: "#ffd700", side: "#b8860b" },
@@ -187,6 +189,7 @@ const sponsorsData = {
             { name: "Diegolin", amount: 5.00, date: "07/08/2024 15:26", message: "Menuda sacada traduciendo el mod de yuriana", color: "#81c784", side: "#388e3c" },
             { name: "Kybalion", amount: 5.00, date: "01/31/2025 16:47", message: "", color: "#66bb6a", side: "#2e7d32" },
             { name: "n1by2", amount: 3.00, date: "06/01/2024 13:09", message: "Love what you're doiung <3", color: "#4caf50", side: "#1b5e20" },
+            { name: "Ko-fi Supporter", amount: 15.00, date: "04/29/2026 16:43", message: "", color: "#ffcc33", side: "#cc9900" },
             { name: "Ko-fi Supporter", amount: 1.00, date: "10/20/2025 10:37", message: "", color: "#43a047", side: "#1b5e20" }
         ]
     }
