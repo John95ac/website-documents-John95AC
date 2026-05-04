@@ -712,5 +712,55 @@
         "side": "#1b5e20"
       }
     ]
+  },
+  "beta_testers": {
+    "title": "Beta Testers",
+    "description": "Special thanks to our dedicated beta testers who helped make this project possible",
+    "testers": [
+      {
+        "name": "Cryshy",
+        "role": "Beta review, observation of future applications"
+      },
+      {
+        "name": "IAleX",
+        "role": "Beta review"
+      },
+      {
+        "name": "Lucas",
+        "role": "JSON analysis and observation of corrections in ini parameters"
+      },
+      {
+        "name": "OpheliaMoonlight",
+        "role": "Testing Unicode support, multiple betas reviewed"
+      },
+      {
+        "name": "storm12",
+        "role": "Mod betatester in complex mod list"
+      },
+      {
+        "name": "Thalzamar",
+        "role": "Beta tester"
+      },
+      {
+        "name": "iDeadSea",
+        "role": "Beta tester for COtR and multi-language analysis"
+      },
+      {
+        "name": "AdrienMassenot",
+        "role": "Observations on the HIMBO system, which led to improvements"
+      },
+      {
+        "name": "Edsley",
+        "role": "Advisor on templates and free web addons"
+      },
+      {
+        "name": "Triberzis",
+        "role": "Advice/ideas for system modes and keys"
+      },
+      {
+        "name": "djdunha",
+        "role": "Beta tester for the GOG platform, communicated through Nexus"
+      }
+    ]
   }
 }
