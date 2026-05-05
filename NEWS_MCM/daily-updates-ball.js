@@ -168,7 +168,7 @@
       kofiDiv.className = 'spon-group spon-kofi';
       var kofiH5 = document.createElement('h5');
       kofiH5.className = 'spon-title';
-      kofiH5.textContent = 'Ko-fi Supporters (' + sponsorsData.kofi.total_supporters + ')';
+      kofiH5.textContent = 'Ko-fi Supporters (' + sponsorsData.kofi.supporters.length + ')';
       kofiDiv.appendChild(kofiH5);
       var kofiNames = document.createElement('div');
       kofiNames.className = 'spon-names';
@@ -246,7 +246,7 @@
     if (!mainPanel || !sponPanel) return;
     var rect = mainPanel.getBoundingClientRect();
     sponPanel.style.top = rect.top + 'px';
-    sponPanel.style.right = (window.innerWidth - rect.left) + 'px';
+    sponPanel.style.right = (window.innerWidth - rect.left - 6) + 'px';
     sponPanel.style.height = rect.height + 'px';
   }
 
@@ -452,16 +452,22 @@
         vertical-align: middle;
       }
       .daily-thank-btn {
-        position: absolute; top: 8px; left: 8px; z-index: 5;
-        display: flex; flex-direction: column; align-items: center; gap: 0;
-        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 6px; padding: 3px 7px; cursor: pointer;
-        color: white; font-size: 8px; font-weight: 600;
-        transition: background 0.2s;
+        position: absolute; top: 50%; left: 12px; z-index: 5;
+        transform: translateY(-50%);
+        display: flex; align-items: center; gap: 6px;
+        background: rgba(255,255,255,0.12); border: none;
+        border-radius: 20px; padding: 6px 12px; cursor: pointer;
+        color: white; font-family: inherit;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       }
-      .daily-thank-btn:hover { background: rgba(255,255,255,0.3); }
-      .daily-thank-btn .tbtn-icon { font-size: 14px; line-height: 1; }
-      .daily-thank-btn .tbtn-text { font-size: 7px; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px; }
+      .daily-thank-btn:hover {
+        background: rgba(255,255,255,0.25);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        transform: translateY(-50%) scale(1.04);
+      }
+      .daily-thank-btn .tbtn-icon { font-size: 15px; line-height: 1; }
+      .daily-thank-btn .tbtn-text { font-size: 9px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
       #daily-sponsors-panel {
         position: fixed;
         background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(30,30,30,0.95));
@@ -492,7 +498,7 @@
       .spon-main-title {
         margin: 0 0 8px 0; font-size: 12px; font-weight: 700;
         letter-spacing: 0.5px; text-transform: uppercase;
-        color: rgba(255,255,255,0.9); padding: 10px 12px 0 12px;
+         color: #22d3ee; padding: 10px 12px 0 12px;
       }
       .spon-group { margin: 8px 0; padding: 8px 10px; border-radius: 6px; }
       .spon-title { margin: 0 0 5px 0; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -504,8 +510,8 @@
       .spon-r1 .spon-title { color: #e0f6ff; }
       .spon-kofi { background: rgba(91,192,235,0.08); border: 1px solid rgba(91,192,235,0.2); }
       .spon-kofi .spon-title { color: #e0f2ff; }
-      .spon-beta { background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.2); }
-      .spon-beta .spon-title { color: #fed7aa; }
+      .spon-beta { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); }
+      .spon-beta .spon-title { color: #c4b5fd; }
       .spon-free { background: rgba(107,114,128,0.06); border: 1px solid rgba(107,114,128,0.18); }
       .spon-free .spon-title { color: #d1d5db; }
       .spon-former { background: rgba(230,213,184,0.06); border: 1px solid rgba(230,213,184,0.18); }
@@ -516,7 +522,7 @@
       .spon-r2 .spon-names span { background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.2); color: #d1fae5; }
       .spon-r1 .spon-names span { background: rgba(56,189,248,0.10); border: 1px solid rgba(56,189,248,0.2); color: #e0f6ff; }
       .spon-kofi .spon-names span { background: rgba(91,192,235,0.10); border: 1px solid rgba(91,192,235,0.2); color: #e0f2ff; }
-      .spon-beta .spon-names span { background: rgba(249,115,22,0.10); border: 1px solid rgba(249,115,22,0.2); color: #fed7aa; }
+      .spon-beta .spon-names span { background: rgba(139,92,246,0.10); border: 1px solid rgba(139,92,246,0.2); color: #c4b5fd; }
       .spon-free .spon-names span { background: rgba(107,114,128,0.08); border: 1px solid rgba(107,114,128,0.15); color: #d1d5db; }
       .spon-former .spon-names span { background: rgba(230,213,184,0.08); border: 1px solid rgba(230,213,184,0.15); color: #fff4e3; }
       .spon-names span[data-tip]::after {
@@ -576,12 +582,12 @@
     $ball.onmouseenter = () => { $panel.classList.add('show'); animateContent(); };
     $ball.onmouseleave = () => { setTimeout(() => { if (!$panel.matches(':hover') && !document.getElementById('daily-sponsors-panel')?.matches(':hover')) $panel.classList.remove('show'); }, 200); };
     $panel.onmouseenter = () => {};
-    $panel.onmouseleave = () => { setTimeout(() => { var sp = document.getElementById('daily-sponsors-panel'); if (!sp || !sp.matches(':hover')) $panel.classList.remove('show'); }, 100); };
+    $panel.onmouseleave = () => { setTimeout(() => { var sp = document.getElementById('daily-sponsors-panel'); if (!sp || !sp.matches(':hover')) $panel.classList.remove('show'); }, 300); };
     var sponPanelEl2 = document.getElementById('daily-sponsors-panel');
     if (sponPanelEl2) {
       sponPanelEl2.addEventListener('mouseenter', function() {});
       sponPanelEl2.addEventListener('mouseleave', function() {
-        setTimeout(function() { if (!$panel.matches(':hover')) { if (sponsorsOpen) toggleSponsorsPanel(); $panel.classList.remove('show'); } }, 100);
+        setTimeout(function() { if (!$panel.matches(':hover')) { if (sponsorsOpen) toggleSponsorsPanel(); $panel.classList.remove('show'); } }, 300);
       });
     }
     document.addEventListener('click', (e) => { if (!e.target.closest('#daily-updates-ball, #daily-updates-panel, #daily-sponsors-panel, #daily-thank-btn')) { $panel.classList.remove('show'); if (sponsorsOpen) toggleSponsorsPanel(); } });
