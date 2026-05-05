@@ -252,6 +252,7 @@
 
   function toggleSponsorsPanel() {
     var sponPanel = document.getElementById('daily-sponsors-panel');
+    var thankBtn = document.getElementById('daily-thank-btn');
     if (!sponPanel) return;
     sponsorsOpen = !sponsorsOpen;
     if (sponsorsOpen) {
@@ -325,9 +326,9 @@
         overflow-y: auto;
       }
       .daily-date {
-        font-size: 11px;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 10px;
+         font-size: 13px;
+         color: rgba(255,255,255,0.9);
+         margin-bottom: 10px;
         text-align: center;
         letter-spacing: 1.5px;
         text-transform: uppercase;
@@ -403,8 +404,8 @@
         background: rgba(16,185,129,0.2);
         border: 1px solid rgba(16,185,129,0.4);
         border-radius: 10px;
-        font-size: 9px;
-        color: #10b981;
+         font-size: 11px;
+         color: #10b981;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -421,15 +422,29 @@
       .daily-updates-footer small {
         color: rgba(255,255,255,0.6);
         font-style: italic;
-        font-size: 11px;
-      }
-      .daily-hot-badge {
+         font-size: 13px;
+       }
+       .daily-hot-badge {
         display: inline-block;
         padding: 1px 8px;
         margin-left: 6px;
         background: linear-gradient(135deg, #f59e0b, #d97706);
         border-radius: 8px;
-        font-size: 9px;
+         font-size: 11px;
+         font-weight: 700;
+         font-style: normal;
+         color: #000;
+         letter-spacing: 0.5px;
+         text-transform: uppercase;
+         vertical-align: middle;
+       }
+       .daily-normal-badge {
+         display: inline-block;
+         padding: 1px 8px;
+         margin-left: 6px;
+         background: linear-gradient(135deg, #22d3ee, #06b6d4);
+         border-radius: 8px;
+         font-size: 11px;
         font-weight: 700;
         font-style: normal;
         color: #000;
@@ -437,37 +452,23 @@
         text-transform: uppercase;
         vertical-align: middle;
       }
-      .daily-normal-badge {
-        display: inline-block;
-        padding: 1px 8px;
-        margin-left: 6px;
-        background: linear-gradient(135deg, #22d3ee, #06b6d4);
-        border-radius: 8px;
-        font-size: 9px;
-        font-weight: 700;
-        font-style: normal;
-        color: #000;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        vertical-align: middle;
-      }
-      .daily-thank-btn {
-        position: absolute; top: 50%; left: 12px; z-index: 5;
-        transform: translateY(-50%);
-        display: flex; align-items: center; gap: 6px;
-        background: rgba(255,255,255,0.12); border: none;
-        border-radius: 20px; padding: 6px 12px; cursor: pointer;
-        color: white; font-family: inherit;
-        transition: all 0.25s ease;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      }
-      .daily-thank-btn:hover {
-        background: rgba(255,255,255,0.25);
-        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-        transform: translateY(-50%) scale(1.04);
-      }
+       .daily-thank-btn {
+         position: absolute; top: 50%; left: 12px; z-index: 5;
+         transform: translateY(-50%);
+         display: flex; align-items: center; gap: 6px;
+         background: rgba(255,255,255,0.12); border: none; outline: none;
+         border-radius: 20px; padding: 6px 12px; cursor: pointer;
+         color: white; font-family: inherit;
+         transition: all 0.25s ease;
+         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+       }
+       .daily-thank-btn:hover {
+         background: rgba(255,255,255,0.25);
+         box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+         transform: translateY(-50%) scale(1.04);
+       }
       .daily-thank-btn .tbtn-icon { font-size: 15px; line-height: 1; }
-      .daily-thank-btn .tbtn-text { font-size: 9px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+      .daily-thank-btn .tbtn-text { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
       #daily-sponsors-panel {
         position: fixed;
         background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(30,30,30,0.95));
@@ -490,18 +491,18 @@
         scrollbar-width: thin; scrollbar-color: rgba(124,58,237,0.4) transparent;
       }
       .spon-intro {
-        font-size: 13px; line-height: 1.6; color: rgba(200,200,210,0.85);
+         font-size: 15px; line-height: 1.6; color: rgba(200,200,210,0.85);
         margin: 0 0 10px 0; padding: 10px 12px;
         background: rgba(255,255,255,0.05); border-radius: 8px;
         border: 1px solid rgba(255,255,255,0.08);
       }
       .spon-main-title {
-        margin: 0 0 8px 0; font-size: 12px; font-weight: 700;
+        margin: 0 0 8px 0; font-size: 14px; font-weight: 700;
         letter-spacing: 0.5px; text-transform: uppercase;
          color: #22d3ee; padding: 10px 12px 0 12px;
       }
       .spon-group { margin: 8px 0; padding: 8px 10px; border-radius: 6px; }
-      .spon-title { margin: 0 0 5px 0; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+       .spon-title { margin: 0 0 5px 0; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
       .spon-r4 { background: rgba(212,175,55,0.10); border: 1px solid rgba(212,175,55,0.25); }
       .spon-r4 .spon-title { color: #fff7d6; }
       .spon-r2 { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
@@ -517,7 +518,7 @@
       .spon-former { background: rgba(230,213,184,0.06); border: 1px solid rgba(230,213,184,0.18); }
       .spon-former .spon-title { color: #fff4e3; }
       .spon-names { display: flex; flex-wrap: wrap; gap: 5px; }
-      .spon-names span { padding: 3px 8px; border-radius: 4px; font-size: 11px; position: relative; cursor: default; }
+       .spon-names span { padding: 3px 8px; border-radius: 4px; font-size: 13px; position: relative; cursor: default; }
       .spon-r4 .spon-names span { background: rgba(212,175,55,0.12); border: 1px solid rgba(212,175,55,0.25); color: #fff7d6; }
       .spon-r2 .spon-names span { background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.2); color: #d1fae5; }
       .spon-r1 .spon-names span { background: rgba(56,189,248,0.10); border: 1px solid rgba(56,189,248,0.2); color: #e0f6ff; }
@@ -527,7 +528,7 @@
       .spon-former .spon-names span { background: rgba(230,213,184,0.08); border: 1px solid rgba(230,213,184,0.15); color: #fff4e3; }
       .spon-names span[data-tip]::after {
         content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-        padding: 4px 8px; border-radius: 4px; font-size: 10px; white-space: pre;
+         padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: pre;
         background: rgba(0,0,0,0.95); border: 1px solid rgba(255,255,255,0.2);
         color: #fff; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 10001;
       }
@@ -594,9 +595,16 @@
 
     var thankBtn = document.getElementById('daily-thank-btn');
     if (thankBtn) {
-      thankBtn.addEventListener('click', function(e) {
+      thankBtn.addEventListener('mouseenter', function(e) {
         e.stopPropagation();
-        toggleSponsorsPanel();
+        if (!sponsorsOpen) toggleSponsorsPanel();
+      });
+      thankBtn.addEventListener('mouseleave', function(e) {
+        setTimeout(function() {
+          var sp = document.getElementById('daily-sponsors-panel');
+          if (sp && sp.matches(':hover')) return;
+          if (sponsorsOpen) toggleSponsorsPanel();
+        }, 300);
       });
     }
   }
