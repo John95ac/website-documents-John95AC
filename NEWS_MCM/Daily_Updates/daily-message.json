@@ -1,10 +1,10 @@
 {
-  "date": "2026-05-05",
-  "message": "Hi everyone! Dice Check - Prisma UI is already published on Nexus. In a few hours Dwemer Doom - Prisma UI will be available on Nexus too. I'm also going to upload the OSoundtracks mod update with many fixes I've been meaning to make for months, but Prisma absorbed all my attention lately. So here it is!",
-  "details": "Daily update v75",
-  "tags": ["Skyrim", "mods", "Prisma", "OBody", "OSoundtracks", "mod release"],
+  "date": "2026-05-06",
+  "message": "Hi everyone! Yesterday Dice Check Prisma UI was successfully uploaded. Currently I'm working on the OSoundtracks video which is already on YouTube, but I still need to upload the OSoundtracks mod update. After that I'll push Dwemer Doom Prisma UI, and then everything goes to GitHub. It's a long day ahead of me. Back from work, you know what's new today.",
+  "details": "Daily update v76",
+  "tags": ["Skyrim", "mods", "Prisma", "OSoundtracks", "Dwemer Doom", "video", "YouTube"],
   "links": [],
   "image": null,
   "priority": "normal",
-  "updated_at": "2026-05-05T00:30:00Z"
+  "updated_at": "2026-05-06T23:00:00Z"
 }
