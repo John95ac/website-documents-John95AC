@@ -246,7 +246,6 @@
             color: #fff;
         }
         .btn-acrylic {
-            border: none;
             padding: 12px 30px;
             font-size: 16px;
             font-weight: bold;
@@ -273,7 +272,6 @@
             border: 1px solid rgba(85, 85, 85, 0.3);
         }
         .btn-acrylic-cyan {
-            border: none;
             padding: 6px 14px;
             font-size: 13px;
             font-weight: bold;
@@ -301,7 +299,6 @@
             border: 1px solid rgba(85, 85, 85, 0.3);
         }
         .btn-acrylic-emerald {
-            border: none;
             padding: 12px 30px;
             font-size: 16px;
             font-weight: bold;
@@ -330,7 +327,6 @@
             border: 1px solid rgba(85, 85, 85, 0.3);
         }
         .btn-acrylic-red {
-            border: none;
             padding: 12px 24px;
             font-size: 15px;
             font-weight: bold;
@@ -357,7 +353,6 @@
             border: 1px solid rgba(85, 85, 85, 0.3);
         }
         .btn-acrylic-purple {
-            border: none;
             padding: 8px 16px;
             font-size: 13px;
             font-weight: bold;
@@ -384,7 +379,6 @@
             border: 1px solid rgba(85, 85, 85, 0.3);
         }
         .btn-acrylic-green {
-            border: none;
             padding: 8px 16px;
             font-size: 13px;
             font-weight: bold;
@@ -746,6 +740,180 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+        .aa-section {
+            background-color: #181818;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 0;
+        }
+        .aa-section h2 {
+            text-align: center;
+            color: #f59e0b;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .aa-upload-zone {
+            border: 2px dashed #444;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background-color: #111;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        .aa-upload-zone:hover {
+            border-color: #f59e0b;
+            background-color: #1a1a1a;
+        }
+        .aa-cards-container {
+            max-height: 480px;
+            overflow-y: auto;
+        }
+        .aa-card {
+            background-color: #111;
+            border: 2px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: stretch;
+            gap: 14px;
+            min-height: 130px;
+        }
+        .aa-card-inner {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .aa-card-name {
+            font-size: 13px;
+            color: #aaa;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 8px;
+        }
+        .aa-wave-container {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            background-color: #0a0a0a;
+            border-radius: 8px;
+            overflow: hidden;
+            min-height: 100px;
+        }
+        .aa-wave-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .aa-playback-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: #ff4444;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+            box-shadow: 0 0 4px rgba(255, 68, 68, 0.6);
+        }
+        .aa-external-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+        .aa-btn {
+            background-color: #222;
+            color: #aaa;
+            border: 1px solid #333;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .aa-btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        .aa-btn.playing {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+        .aa-btn.color-btn {
+            background-color: #222;
+            border: 1px solid #333;
+            min-width: 36px;
+        }
+        .aa-btn.color-btn:hover {
+            background-color: #333;
+        }
+        .aa-btn.remove {
+            color: #ff4444;
+            border-color: #442222;
+        }
+        .aa-btn.remove:hover {
+            background-color: #442222;
+            color: #ff6666;
+        }
+        .aa-record-canvas-wrapper {
+            background-color: #111;
+            border: 2px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .aa-canvas-box {
+            background-color: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #333;
+            padding: 15px;
+        }
+        .aa-record-controls {
+            margin-top: 15px;
+        }
+        .aa-color-popup {
+            position: absolute;
+            bottom: 0;
+            right: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 6px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .aa-color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s;
+        }
+        .aa-color-swatch:hover {
+            transform: scale(1.15);
+        }
+        .aa-color-swatch.selected {
+            border-color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -757,6 +925,7 @@
         <button class="tab-btn active" data-tab="tab-grim">🎞️ Grim</button>
         <button class="tab-btn" data-tab="tab-audio">🎚️ Audio Mixer</button>
         <button class="tab-btn" data-tab="tab-v2t">📝 Voice to Text</button>
+        <button class="tab-btn" data-tab="tab-animate">✨ Audio Animate</button>
     </div>
 
     <div id="tab-grim" class="tab-panel active">
@@ -893,6 +1062,28 @@
                             <option value="mp3">MP3</option>
                         </select>
                         <button id="v2t-export-btn" class="btn-acrylic-purple" disabled>💾 Export Audio</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-animate" class="tab-panel">
+        <div class="aa-section">
+            <h2>✨ Audio Animate</h2>
+            <div class="aa-upload-zone" id="aa-upload-zone">
+                🎵 Drag & Drop audio files here or click to select (WAV, MP3, OGG...)
+            </div>
+            <input type="file" id="aa-file-input" accept="audio/*" multiple style="display: none;">
+            <div class="aa-cards-container" id="aa-cards"></div>
+            <div id="aa-record-area" style="display: none; margin-top: 15px;">
+                <div id="aa-canvas-container"></div>
+                <div class="aa-record-controls">
+                    <div id="aa-rec-indicator" style="display: none; color: #ff4444; font-weight: bold; text-align: center; margin-bottom: 10px;">● REC</div>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <button id="aa-start-record" class="btn-acrylic-red">🔴 Record</button>
+                        <button id="aa-stop-record" class="btn-acrylic" disabled>⏹ Stop</button>
+                        <button id="aa-close-record" class="btn-acrylic-cyan">✕ Close</button>
                     </div>
                 </div>
             </div>
@@ -1276,7 +1467,8 @@ AudioExtracted=${audioStatus}
         zip.file("config.ini", iniContent);
 
         const baseName = currentFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_");
-        const configObjName = `${baseName.toUpperCase()}_CONFIG`;
+        let configObjName = `${baseName.toUpperCase()}_CONFIG`;
+        if (/^[0-9]/.test(configObjName)) configObjName = '_' + configObjName;
 
         let spritesheetsArrayStr = "    spritesheets: [\n";
         for (let i = 0; i < currentSheetCount; i++) {
@@ -2013,6 +2205,473 @@ ${spritesheetsArrayStr}
         ctx2d.lineTo(v2tCanvas.width, v2tCanvas.height / 2);
         ctx2d.stroke();
     }
+
+    const AA_MAX_VISIBLE = 4;
+    const aaTracks = [];
+    const aaCardsContainer = document.getElementById('aa-cards');
+    const aaUploadZone = document.getElementById('aa-upload-zone');
+    const aaFileInput = document.getElementById('aa-file-input');
+    const aaActiveAnims = {};
+
+    aaUploadZone.addEventListener('click', () => aaFileInput.click());
+    aaUploadZone.addEventListener('dragover', e => { e.preventDefault(); aaUploadZone.style.borderColor = '#f59e0b'; });
+    aaUploadZone.addEventListener('dragleave', e => { e.preventDefault(); aaUploadZone.style.borderColor = '#444'; });
+    aaUploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        aaUploadZone.style.borderColor = '#444';
+        if (e.dataTransfer.files.length > 0) addAaFiles(e.dataTransfer.files);
+    });
+    aaFileInput.addEventListener('change', e => { if (e.target.files.length > 0) addAaFiles(e.target.files); });
+
+    function addAaFiles(files) {
+        for (const file of files) {
+            if (!file.type.startsWith('audio/')) continue;
+            addAaTrack(file);
+        }
+    }
+
+    function addAaTrack(file) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        file.arrayBuffer().then(buffer => ctx.decodeAudioData(buffer)).then(audioBuffer => {
+            const track = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                file: file,
+                audioBuffer: audioBuffer,
+                duration: audioBuffer.duration,
+                source: null,
+                playing: false,
+                offset: 0,
+                playStartTime: 0,
+                playStartOffset: 0,
+                progressAnimId: null,
+                color: '#f59e0b'
+            };
+            aaTracks.push(track);
+            renderAaCards();
+            ctx.close();
+        }).catch(err => {
+            console.error(err);
+            alert('Failed to decode audio: ' + file.name);
+            ctx.close();
+        });
+    }
+
+    function renderAaCards() {
+        aaCardsContainer.innerHTML = '';
+        aaTracks.forEach((track, idx) => {
+            const card = document.createElement('div');
+            card.className = 'aa-card';
+
+            const inner = document.createElement('div');
+            inner.className = 'aa-card-inner';
+
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'aa-card-name';
+            nameSpan.textContent = track.name;
+            inner.appendChild(nameSpan);
+
+            const waveContainer = document.createElement('div');
+            waveContainer.className = 'aa-wave-container';
+            const canvas = document.createElement('canvas');
+            canvas.className = 'aa-wave-canvas';
+            canvas.id = 'aa-wave-' + track.id;
+            const pLine = document.createElement('div');
+            pLine.className = 'aa-playback-line';
+            pLine.id = 'aa-pline-' + track.id;
+            waveContainer.appendChild(canvas);
+            waveContainer.appendChild(pLine);
+            inner.appendChild(waveContainer);
+
+            canvas.addEventListener('click', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) / rect.width;
+                const seekTime = clickX * track.duration;
+                if (track.playing) {
+                    stopAaTrack(track);
+                    track.offset = seekTime;
+                    playAaTrack(track);
+                } else {
+                    track.offset = seekTime;
+                    const pLine2 = document.getElementById('aa-pline-' + track.id);
+                    if (pLine2) {
+                        pLine2.style.display = 'block';
+                        pLine2.style.left = (clickX * 100) + '%';
+                    }
+                }
+            });
+
+            card.appendChild(inner);
+
+            const controls = document.createElement('div');
+            controls.className = 'aa-external-controls';
+
+
+            const playBtn = document.createElement('button');
+            playBtn.className = 'aa-btn' + (track.playing ? ' playing' : '');
+            playBtn.textContent = track.playing ? '⏸ Pause' : '▶ Play';
+            playBtn.addEventListener('click', () => toggleAaTrackPlay(track, playBtn));
+            controls.appendChild(playBtn);
+
+            const colorBtn = document.createElement('button');
+            colorBtn.className = 'aa-btn color-btn';
+            colorBtn.textContent = '🎨';
+            colorBtn.title = 'Change color';
+            colorBtn.style.borderColor = track.color;
+            colorBtn.style.color = track.color;
+            const colorPopup = document.createElement('div');
+            colorPopup.className = 'aa-color-popup';
+            colorPopup.style.display = 'none';
+            const colors = [
+                '#f59e0b', '#ff5722', '#ff9100', '#ffeb3b', '#ffeb3b', '#cddc39', '#76ff03',
+                '#34d399', '#00bcd4', '#00e5ff', '#2196f3', '#651fff', '#a855f7', '#9c27b0',
+                '#e91e63', '#f87171', '#ff1744', '#4ade80', '#fbbf24'
+            ];
+            colors.forEach(c => {
+                const swatch = document.createElement('div');
+                swatch.className = 'aa-color-swatch';
+                swatch.style.backgroundColor = c;
+                if (c === track.color) swatch.classList.add('selected');
+                swatch.addEventListener('click', e => {
+                    e.stopPropagation();
+                    track.color = c;
+                    colorBtn.style.borderColor = c;
+                    colorBtn.style.color = c;
+                    drawAaWave(track, canvas);
+                    colorPopup.querySelectorAll('.aa-color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    colorPopup.style.display = 'none';
+                });
+                colorPopup.appendChild(swatch);
+            });
+            colorBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                const vis = colorPopup.style.display === 'none' ? 'flex' : 'none';
+                document.querySelectorAll('.aa-color-popup').forEach(p => p.style.display = 'none');
+                colorPopup.style.display = vis;
+            });
+            colorBtn.style.position = 'relative';
+            colorBtn.appendChild(colorPopup);
+            controls.appendChild(colorBtn);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'aa-btn remove';
+            removeBtn.textContent = '✕';
+            removeBtn.addEventListener('click', () => {
+                stopAaTrack(track);
+                aaTracks.splice(idx, 1);
+                renderAaCards();
+            });
+            controls.appendChild(removeBtn);
+
+            const recordBtn = document.createElement('button');
+            recordBtn.className = 'aa-btn';
+            recordBtn.textContent = '🔴';
+            recordBtn.title = 'Record this audio';
+            recordBtn.style.color = '#ff4444';
+            recordBtn.addEventListener('click', () => startAaRecording(track, card));
+            controls.appendChild(recordBtn);
+
+            card.appendChild(controls);
+            aaCardsContainer.appendChild(card);
+
+            requestAnimationFrame(() => drawAaWave(track, canvas));
+            if (track.playing) {
+                startAaProgressAnimation(track);
+            }
+            if (!track.playing && track.offset > 0) {
+                const pLine2 = document.getElementById('aa-pline-' + track.id);
+                if (pLine2) {
+                    pLine2.style.display = 'block';
+                    pLine2.style.left = (track.offset / track.duration * 100) + '%';
+                }
+            }
+        });
+        aaCardsContainer.style.overflowY = aaTracks.length > AA_MAX_VISIBLE ? 'scroll' : 'auto';
+        aaCardsContainer.style.maxHeight = '480px';
+    }
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.aa-color-popup').forEach(p => p.style.display = 'none');
+    });
+
+    function drawAaWave(track, canvas) {
+        const data = track.audioBuffer.getChannelData(0);
+        const dpr = window.devicePixelRatio || 1;
+        const w = canvas.clientWidth || 500;
+        const h = 100;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        const ctx2d = canvas.getContext('2d');
+        ctx2d.scale(dpr, dpr);
+        ctx2d.clearRect(0, 0, w, h);
+        const step = Math.ceil(data.length / w);
+        const centerY = h / 2;
+        ctx2d.fillStyle = track.color;
+        ctx2d.globalAlpha = 0.7;
+        for (let i = 0; i < w; i++) {
+            let min = 1.0, max = -1.0;
+            for (let j = 0; j < step; j++) {
+                const d = data[(i * step) + j] || 0;
+                if (d < min) min = d;
+                if (d > max) max = d;
+            }
+            const yBottom = centerY * (1 + min);
+            const yTop = centerY * (1 + max);
+            ctx2d.fillRect(i, yBottom, 1, Math.max(1, yTop - yBottom));
+        }
+        ctx2d.globalAlpha = 1;
+    }
+
+    function toggleAaTrackPlay(track, btn) {
+        if (track.playing) {
+            stopAaTrack(track);
+            btn.textContent = '▶ Play';
+            btn.classList.remove('playing');
+        } else {
+            playAaTrack(track);
+            btn.textContent = '⏸ Pause';
+            btn.classList.add('playing');
+        }
+    }
+
+    function startAaProgressAnimation(track) {
+        const pLine = document.getElementById('aa-pline-' + track.id);
+        if (!pLine) return;
+        pLine.style.display = 'block';
+        pLine.style.left = (track.offset / track.duration * 100) + '%';
+        if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+        function update() {
+            if (!track.playing) {
+                track.progressAnimId = null;
+                return;
+            }
+            const elapsed = (Date.now() - track.playStartTime) / 1000 + track.playStartOffset;
+            const progress = Math.min(1, elapsed / track.duration);
+            pLine.style.left = (progress * 100) + '%';
+            track.progressAnimId = requestAnimationFrame(update);
+        }
+        track.progressAnimId = requestAnimationFrame(update);
+        aaActiveAnims[track.id] = track.progressAnimId;
+    }
+
+    function playAaTrack(track) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = ctx.createBufferSource();
+        const gain = ctx.createGain();
+        source.buffer = track.audioBuffer;
+        gain.gain.value = 1.0;
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(0, track.offset);
+        track.source = source;
+        track.audioCtx = ctx;
+        track.playing = true;
+        track.playStartTime = Date.now();
+        track.playStartOffset = track.offset;
+        source.onended = () => {
+            track.playing = false;
+            track.source = null;
+            track.offset = 0;
+            track.playStartTime = 0;
+            track.playStartOffset = 0;
+            if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+            track.progressAnimId = null;
+            delete aaActiveAnims[track.id];
+            try { ctx.close(); } catch(e) {}
+            const pLine = document.getElementById('aa-pline-' + track.id);
+            if (pLine) pLine.style.display = 'none';
+        };
+        startAaProgressAnimation(track);
+    }
+
+    function stopAaTrack(track) {
+        if (track.source) { try { track.source.stop(); } catch(e) {} track.source = null; }
+        if (track.audioCtx) { try { track.audioCtx.close(); } catch(e) {} track.audioCtx = null; }
+        track.playing = false;
+        if (track.progressAnimId) cancelAnimationFrame(track.progressAnimId);
+        track.progressAnimId = null;
+        delete aaActiveAnims[track.id];
+        const elapsed = (Date.now() - track.playStartTime) / 1000 + track.playStartOffset;
+        track.offset = Math.min(elapsed, track.duration);
+    }
+
+    let aaRecordingTrack = null;
+    let aaRecordingCard = null;
+    let aaMediaRecorder = null;
+    let aaRecordedChunks = [];
+    let aaRecordCanvas = null;
+    let aaRecordCtx = null;
+    let aaRecordAnimId = null;
+    let aaRecordStartTime = 0;
+
+    function startAaRecording(track, card) {
+        if (aaRecordingTrack) return;
+        aaRecordingTrack = track;
+        aaRecordingCard = card;
+        if (card) card.classList.add('recording-target');
+
+        const container = document.getElementById('aa-canvas-container');
+        container.innerHTML = '';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'aa-record-canvas-wrapper active';
+
+        const box = document.createElement('div');
+        box.className = 'aa-canvas-box';
+        box.style.width = '1040px';
+        box.style.height = '400px';
+        box.style.margin = '0 auto';
+
+        aaRecordCanvas = document.createElement('canvas');
+        aaRecordCanvas.width = 1040;
+        aaRecordCanvas.height = 400;
+        aaRecordCtx = aaRecordCanvas.getContext('2d');
+        box.appendChild(aaRecordCanvas);
+        wrapper.appendChild(box);
+        container.appendChild(wrapper);
+
+        document.getElementById('aa-record-area').style.display = 'block';
+        document.getElementById('aa-rec-indicator').style.display = 'none';
+        document.getElementById('aa-start-record').disabled = false;
+        document.getElementById('aa-stop-record').disabled = true;
+    }
+
+    document.getElementById('aa-start-record').addEventListener('click', () => {
+        if (!aaRecordingTrack || !aaRecordCanvas) return;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const destNode = audioCtx.createMediaStreamDestination();
+        const videoStream = aaRecordCanvas.captureStream(30);
+        const combined = new MediaStream([
+            ...videoStream.getTracks(),
+            ...destNode.stream.getTracks()
+        ]);
+        const opts = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+            ? { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 2500000 }
+            : { mimeType: 'video/webm', videoBitsPerSecond: 2500000 };
+        aaMediaRecorder = new MediaRecorder(combined, opts);
+        aaRecordedChunks = [];
+
+        aaMediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) aaRecordedChunks.push(e.data);
+        };
+        aaMediaRecorder.onstop = () => {
+            const blob = new Blob(aaRecordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            const baseName = aaRecordingTrack.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+            a.download = baseName + '_animated.webm';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 500);
+            document.getElementById('aa-rec-indicator').style.display = 'none';
+            document.getElementById('aa-record-area').style.display = 'none';
+            if (aaRecordingCard) aaRecordingCard.classList.remove('recording-target');
+            aaRecordingTrack = null;
+            aaRecordingCard = null;
+        };
+
+        aaMediaRecorder.start();
+        aaRecordStartTime = Date.now();
+        document.getElementById('aa-rec-indicator').style.display = 'block';
+        document.getElementById('aa-start-record').disabled = true;
+        document.getElementById('aa-stop-record').disabled = false;
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = aaRecordingTrack.audioBuffer;
+        source.connect(destNode);
+        source.connect(audioCtx.destination);
+        source.start(0, aaRecordingTrack.offset);
+
+        function drawRecordFrame() {
+            if (!aaRecordingTrack) return;
+            const elapsed = (Date.now() - aaRecordStartTime) / 1000;
+            const progress = Math.min(1, elapsed / aaRecordingTrack.duration);
+
+            const w = aaRecordCanvas.width;
+            const h = aaRecordCanvas.height;
+            aaRecordCtx.fillStyle = '#0a0a0a';
+            aaRecordCtx.fillRect(0, 0, w, h);
+
+            const data = aaRecordingTrack.audioBuffer.getChannelData(0);
+            const step = Math.ceil(data.length / w);
+            const centerY = h / 2;
+            aaRecordCtx.fillStyle = aaRecordingTrack.color;
+            aaRecordCtx.globalAlpha = 0.8;
+            for (let i = 0; i < w; i++) {
+                let min = 1.0, max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const idx = (i * step) + j;
+                    if (idx >= data.length) break;
+                    const d = data[idx] || 0;
+                    if (d < min) min = d;
+                    if (d > max) max = d;
+                }
+                const yBottom = centerY * (1 + min);
+                const yTop = centerY * (1 + max);
+                aaRecordCtx.fillRect(i, yBottom, 1, Math.max(1, yTop - yBottom));
+            }
+            aaRecordCtx.globalAlpha = 1;
+
+            const lineX = progress * w;
+            aaRecordCtx.fillStyle = '#ff4444';
+            aaRecordCtx.fillRect(lineX, 0, 2, h);
+
+            aaRecordCtx.fillStyle = aaRecordingTrack.color;
+            aaRecordCtx.globalAlpha = 0.12;
+            aaRecordCtx.fillRect(0, 0, lineX, h);
+            aaRecordCtx.globalAlpha = 1;
+
+            aaRecordCtx.strokeStyle = aaRecordingTrack.color;
+            aaRecordCtx.lineWidth = 2;
+            aaRecordCtx.strokeRect(1, 1, w - 2, h - 2);
+
+            aaRecordCtx.fillStyle = '#aaa';
+            aaRecordCtx.font = 'bold 13px Segoe UI';
+            aaRecordCtx.fillText(aaRecordingTrack.name, 10, 22);
+            aaRecordCtx.fillStyle = '#888';
+            aaRecordCtx.font = '12px Segoe UI';
+            aaRecordCtx.fillText(elapsed.toFixed(1) + 's / ' + aaRecordingTrack.duration.toFixed(1) + 's', 10, h - 12);
+
+            aaRecordAnimId = requestAnimationFrame(drawRecordFrame);
+        }
+        drawRecordFrame();
+
+        source.onended = () => {
+            audioCtx.close();
+            if (aaMediaRecorder && aaMediaRecorder.state !== 'inactive') {
+                setTimeout(() => aaMediaRecorder.stop(), 200);
+            }
+        };
+    });
+
+    document.getElementById('aa-stop-record').addEventListener('click', () => {
+        if (aaMediaRecorder && aaMediaRecorder.state !== 'inactive') {
+            aaMediaRecorder.stop();
+        }
+        if (aaRecordAnimId) {
+            cancelAnimationFrame(aaRecordAnimId);
+            aaRecordAnimId = null;
+        }
+        document.getElementById('aa-start-record').disabled = false;
+        document.getElementById('aa-stop-record').disabled = true;
+    });
+
+    document.getElementById('aa-close-record').addEventListener('click', () => {
+        if (aaMediaRecorder && aaMediaRecorder.state !== 'inactive') {
+            aaMediaRecorder.stop();
+        }
+        if (aaRecordAnimId) {
+            cancelAnimationFrame(aaRecordAnimId);
+            aaRecordAnimId = null;
+        }
+        document.getElementById('aa-record-area').style.display = 'none';
+        if (aaRecordingCard) aaRecordingCard.classList.remove('recording-target');
+        aaRecordingTrack = null;
+        aaRecordingCard = null;
+    });
 </script>
 <script src="../pages-ball.js"></script>
 </body>
