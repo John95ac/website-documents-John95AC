@@ -336,6 +336,21 @@ textarea {
     outline: none;
     cursor: pointer;
 }
+.ws-log {
+    margin-top: 10px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    max-height: 70px;
+    overflow-y: auto;
+    font-family: 'Consolas', monospace;
+    background: rgba(0,0,0,0.2);
+    border-radius: var(--button-radius);
+    padding: 8px;
+}
+.ws-log-line { padding: 1px 0; }
+.ws-log-line.sent { color: var(--primary); }
+.ws-log-line.recv { color: var(--success); }
+.ws-log-line.err { color: var(--danger); }
 @media (max-width: 480px) {
     .container { padding: 20px 14px; gap: 16px; }
     .card { padding: 18px 16px; }
@@ -368,14 +383,15 @@ textarea {
             <span id="wsHint" style="font-size:0.75rem;color:var(--text-muted)">Enter IP:Port first</span>
         </div>
         <div class="btn-row">
-            <input type="text" id="serverInput" placeholder="192.168.1.104:8765" style="flex:1">
-            <input type="text" id="passwordInput" placeholder="Password" style="width:120px" value="mic2026">
+            <input type="text" id="serverInput" placeholder="192.168.1.104:8765" value="192.168.1.104:8765" style="flex:1">
             <button class="btn" id="btnConnect" onclick="toggleConnect()">Connect</button>
         </div>
         <div class="form-group" style="margin-top:4px;">
-            <label>Send Text (Enter to send)</label>
-            <textarea id="msgInput" placeholder="Type text... Press Enter to send to server" disabled></textarea>
+            <label>Send Text</label>
+            <textarea id="msgInput" placeholder="Type text..." disabled></textarea>
+            <button class="btn" id="btnSend" onclick="sendWsMsg()" disabled style="margin-top:6px;">Send</button>
         </div>
+        <div class="ws-log" id="wsLog"></div>
     </div>
 
     <div class="gyro-card">
@@ -446,11 +462,23 @@ textarea {
 
 <script>
 const PASSWORD = "mic2026";
-let ws = null, connected = false, authenticated = false;
+let ws = null;
+let connected = false;
+let authenticated = false;
+
 const dot = document.getElementById('wsDot');
 const wsStatus = document.getElementById('wsStatus');
 const wsHint = document.getElementById('wsHint');
 const msgInput = document.getElementById('msgInput');
+const logEl = document.getElementById('wsLog');
+
+function wsLog(msg, type = '') {
+    const div = document.createElement('div');
+    div.className = 'ws-log-line ' + type;
+    div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+    logEl.prepend(div);
+    while (logEl.children.length > 50) logEl.removeChild(logEl.lastChild);
+}
 
 function setWsStatus(state, text) {
     dot.className = 'dot' + (state ? ' ' + state : '');
@@ -461,50 +489,84 @@ function toggleConnect() {
     if (connected) { ws.close(); return; }
     const addr = document.getElementById('serverInput').value.trim();
     if (!addr) return;
-    const btn = document.getElementById('btnConnect');
+    connect(addr);
+}
+
+function connect(addr) {
+    wsLog('Connecting to ws://' + addr + '...');
     setWsStatus('', 'Connecting...');
+    const btn = document.getElementById('btnConnect');
     btn.disabled = true;
+
     try {
         ws = new WebSocket('ws://' + addr);
     } catch(e) {
+        wsLog('Error: ' + e.message, 'err');
         setWsStatus('error', 'Error');
         btn.disabled = false;
         return;
     }
-    ws.onopen = () => ws.send(JSON.stringify({type:'auth', password: PASSWORD}));
+
+    ws.onopen = () => {
+        wsLog('TCP connected, authenticating...');
+        ws.send(JSON.stringify({type: 'auth', password: PASSWORD}));
+    };
+
     ws.onmessage = (e) => {
         try {
-            const m = JSON.parse(e.data);
-            if (m.type === 'auth_ok') {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'auth_ok') {
                 authenticated = true; connected = true;
                 setWsStatus('authed', 'Authenticated');
                 btn.textContent = 'Disconnect'; btn.className = 'btn red'; btn.disabled = false;
-                msgInput.disabled = false; wsHint.textContent = 'Connected to ' + addr; msgInput.focus();
-            } else if (m.type === 'auth_fail') {
-                setWsStatus('error', 'Auth failed'); ws.close();
+                msgInput.disabled = false; document.getElementById('btnSend').disabled = false; wsHint.textContent = 'Connected to ' + addr; msgInput.focus();
+                wsLog('Authenticated successfully', 'recv');
+            } else if (msg.type === 'auth_fail') {
+                wsLog('Auth failed: ' + (msg.reason || 'unknown'), 'err');
+                ws.close();
+            } else {
+                wsLog('Recv: ' + e.data, 'recv');
             }
-        } catch(ex) {}
+        } catch(ex) {
+            wsLog('Recv: ' + e.data, 'recv');
+        }
     };
-    ws.onerror = () => setWsStatus('error', 'Connection error');
+
+    ws.onerror = () => {
+        wsLog('WebSocket error', 'err');
+        setWsStatus('error', 'Error');
+    };
+
     ws.onclose = () => {
         connected = false; authenticated = false;
         setWsStatus('', 'Disconnected');
         const b = document.getElementById('btnConnect');
         b.textContent = 'Connect'; b.className = 'btn'; b.disabled = false;
-        msgInput.disabled = true; wsHint.textContent = 'Enter IP:Port first'; ws = null;
+        msgInput.disabled = true; document.getElementById('btnSend').disabled = true; wsHint.textContent = 'Enter IP:Port first'; ws = null;
+        wsLog('Disconnected');
     };
 }
-document.getElementById('btnConnect').addEventListener('keydown', e => { if (e.key === 'Enter') toggleConnect(); });
-msgInput.addEventListener('keydown', e => {
+
+function sendWsMsg() {
+    const text = msgInput.value.trim();
+    if (!text || !ws || !authenticated) return;
+    ws.send(JSON.stringify({type: 'text', content: text}));
+    wsLog('Sent: ' + text, 'sent');
+    msgInput.value = '';
+}
+
+msgInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        const t = msgInput.value.trim();
-        if (!t || !ws || !authenticated) return;
-        ws.send(JSON.stringify({type:'text', content: t}));
-        msgInput.value = '';
+        sendWsMsg();
     }
 });
-document.getElementById('serverInput').addEventListener('keydown', e => { if (e.key === 'Enter') toggleConnect(); });
+
+document.getElementById('serverInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') toggleConnect();
+});
+
+setWsStatus('', 'Ready');
 
 const cube = document.getElementById('cube');
 const gyroStatus = document.getElementById('gyroStatus');
