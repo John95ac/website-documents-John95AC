@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mic-WebSocket Remote</title>
+<style>
+:root{--primary:#00bcd4;--secondary:#1b1f2e;--accent:#3b82f6;--success:#00c853;--warning:#ffd700;--danger:#ff6b6b;--purple:#a855f7;--text-primary:#e8e8e8;--text-secondary:#a0a0b0;--text-muted:#5c6370;--border-subtle:#2d3748;--surface:#161b22;--surface-hover:#1e293b;--background:#0f111a;--card-radius:8px;--button-radius:6px;--transition:0.2s}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:var(--background);color:var(--text-primary);min-height:100vh}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:0.6}
+.container{max-width:520px;margin:0 auto;padding:40px 20px;display:flex;flex-direction:column;gap:20px}
+.logo-header{text-align:center;padding:10px 0 20px}
+.logo-header h1{font-size:1.6rem;color:var(--primary);margin-bottom:4px}
+.logo-header p{font-size:0.85rem;color:var(--text-muted)}
+.card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--card-radius);padding:24px;box-shadow:0 4px 6px rgba(0,0,0,0.15)}
+.card:hover{box-shadow:0 8px 15px rgba(0,0,0,0.2);border-color:var(--primary)}
+.card-title{font-size:1.1rem;font-weight:600;margin-bottom:16px;color:var(--primary);display:flex;align-items:center;gap:8px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:0.8rem;color:var(--text-secondary);font-weight:500}
+input,select,textarea{background:var(--secondary);border:1px solid var(--border-subtle);border-radius:var(--button-radius);padding:10px 14px;color:var(--text-primary);font-size:0.95rem;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+.btn{background:var(--primary);color:#000;border:none;border-radius:var(--button-radius);padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all var(--transition)}
+.btn:hover{opacity:0.85;transform:translateY(-1px)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn.green{background:var(--success)}
+.btn.red{background:var(--danger)}
+.btn.purple{background:var(--purple);color:#fff}
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:var(--button-radius);margin-bottom:12px;font-size:0.85rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--text-muted);display:inline-block;margin-right:8px;box-shadow:0 0 6px currentColor;animation:pulse 2s infinite}
+.dot.online{background:var(--success);color:var(--success)}
+.dot.authed{background:var(--primary);color:var(--primary)}
+.dot.error{background:var(--danger);color:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
+.gyro-card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--card-radius);padding:24px}
+.scene{width:180px;height:180px;perspective:700px;margin:16px auto}
+.cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 63ms linear}
+.cube.shake{animation:shakeCube 0.5s ease-out}
+@keyframes shakeCube{0%{transform:scale(1)}10%{transform:scale(1.4) rotateX(25deg) rotateY(35deg)}20%{transform:scale(0.75) rotateX(-20deg) rotateY(-25deg)}30%{transform:scale(1.3) rotateX(30deg) rotateY(20deg)}40%{transform:scale(0.8) rotateX(-15deg) rotateY(-30deg)}50%{transform:scale(1.2) rotateX(20deg) rotateY(25deg)}60%,100%{transform:scale(1) rotateX(0) rotateY(0)}}
+.face{position:absolute;width:180px;height:180px;border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;backface-visibility:hidden;opacity:0.8}
+.face.front{background:rgba(0,188,212,0.2);transform:translateZ(90px)}
+.face.back{background:rgba(255,107,107,0.2);transform:rotateY(180deg) translateZ(90px)}
+.face.right{background:rgba(0,200,83,0.2);transform:rotateY(90deg) translateZ(90px)}
+.face.left{background:rgba(255,215,0,0.2);transform:rotateY(-90deg) translateZ(90px)}
+.face.top{background:rgba(138,43,226,0.2);transform:rotateX(90deg) translateZ(90px)}
+.face.bottom{background:rgba(255,140,0,0.2);transform:rotateX(-90deg) translateZ(90px)}
+.gyro-status{text-align:center;padding:8px;border-radius:var(--button-radius);font-size:0.82rem;background:rgba(255,255,255,0.05);color:var(--text-muted);margin-bottom:10px}
+.gyro-status.active{background:rgba(0,188,212,0.15);color:var(--primary)}
+.gyro-stats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.gyro-stat{background:rgba(0,0,0,0.3);padding:3px 8px;border-radius:4px;font-size:0.72rem;color:var(--text-secondary);font-family:'Consolas',monospace;border:1px solid var(--border-subtle)}
+.shake-count{text-align:center;padding:4px;font-size:0.85rem;color:var(--text-secondary);font-weight:600;margin-top:6px}
+.v2t-section{border-color:var(--purple)}
+.v2t-section .card-title{color:var(--purple)}
+.v2t-controls{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.v2t-btn-group{display:flex;gap:8px}
+.v2t-canvas{width:100%;height:40px;display:block;margin-bottom:12px;opacity:0.4;transition:opacity 0.3s;border-radius:var(--button-radius);background:rgba(0,0,0,0.3)}
+.v2t-canvas.active{opacity:1}
+.v2t-textarea{width:100%;min-height:100px;background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:var(--button-radius);padding:12px;color:var(--text-primary);font-family:inherit;resize:vertical;font-size:0.95rem;outline:none}
+.v2t-textarea:focus{border-color:var(--purple)}
+.v2t-result-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:8px}
+.format-select-inline{background:var(--secondary);color:var(--text-primary);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:var(--button-radius);font-size:0.9rem;cursor:pointer}
+.ws-log{margin-top:10px;font-size:0.72rem;color:var(--text-muted);max-height:70px;overflow-y:auto;font-family:'Consolas',monospace;background:rgba(0,0,0,0.2);border-radius:var(--button-radius);padding:8px}
+.ws-log-line{padding:1px 0}
+.ws-log-line.sent{color:var(--primary)}
+.ws-log-line.recv{color:var(--success)}
+.ws-log-line.err{color:var(--danger)}
+@media(max-width:480px){.container{padding:20px 14px}.card{padding:18px 16px}.scene{width:140px;height:140px}.face{width:140px;height:140px}.face.front{transform:translateZ(70px)}.face.back{transform:rotateY(180deg) translateZ(70px)}.face.right{transform:rotateY(90deg) translateZ(70px)}.face.left{transform:rotateY(-90deg) translateZ(70px)}.face.top{transform:rotateX(90deg) translateZ(70px)}.face.bottom{transform:rotateX(-90deg) translateZ(70px)}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="container">
+    <div class="logo-header">
+        <h1>Mic-WebSocket Remote</h1>
+        <p>WebRTC + Gyroscope + Voice to Text</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Session Connection</div>
+        <div class="status-bar">
+            <span><span class="dot" id="wsDot"></span><span id="wsStatus">Disconnected</span></span>
+            <span id="wsHint" style="font-size:0.75rem;color:var(--text-muted)">No session</span>
+        </div>
+        <div class="form-group">
+            <label>Session ID</label>
+            <input type="text" id="sessionInput" placeholder="ABC123DEF4" maxlength="12">
+        </div>
+        <div style="margin-top:10px">
+            <button class="btn" id="btnJoin" onclick="joinSession()">Join Session</button>
+            <button class="btn red" id="btnLeave" onclick="leaveSession()" disabled style="margin-left:8px">Leave</button>
+        </div>
+        <div class="ws-log" id="wsLog"></div>
+    </div>
+
+    <div class="gyro-card">
+        <div class="card-title" style="margin-bottom:12px;">3D Gyroscope Cube</div>
+        <div class="gyro-status" id="gyroStatus">Tap button to activate gyroscope</div>
+        <div style="display:flex;justify-content:center;margin-bottom:4px;">
+            <button class="btn purple" id="btnActivateGyro" onclick="initGyro()">Activate Gyroscope</button>
+        </div>
+        <div class="scene">
+            <div class="cube" id="cube">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
+                <div class="face top"></div>
+                <div class="face bottom"></div>
+            </div>
+        </div>
+        <div class="shake-count" id="shakeCount">Shakes: 0</div>
+        <div class="gyro-stats">
+            <span class="gyro-stat" id="gyroAlpha">alpha: 0</span>
+            <span class="gyro-stat" id="gyroBeta">beta: 0</span>
+            <span class="gyro-stat" id="gyroGamma">gamma: 0</span>
+        </div>
+    </div>
+
+    <div class="card v2t-section">
+        <div class="card-title">Voice to Text</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;">Connect your microphone to transcribe spoken audio to text and export your recording.</p>
+        <div class="v2t-controls">
+            <div class="form-group">
+                <label>Recognition Language:</label>
+                <select id="v2t-lang" class="format-select-inline">
+                    <option value="en-US" selected>English (US)</option>
+                    <option value="es-ES">Spanish (Spain)</option>
+                    <option value="es-MX">Spanish (Mexico)</option>
+                    <option value="fr-FR">French (France)</option>
+                    <option value="de-DE">German (Germany)</option>
+                    <option value="it-IT">Italian (Italy)</option>
+                    <option value="pt-PT">Portuguese (Portugal)</option>
+                    <option value="ja-JP">Japanese (Japan)</option>
+                    <option value="zh-CN">Chinese (Mandarin)</option>
+                    <option value="ru-RU">Russian (Russia)</option>
+                </select>
+            </div>
+            <div class="v2t-btn-group">
+                <button id="v2t-record-btn" class="btn purple" onclick="startV2T()">Start Recording</button>
+                <button id="v2t-stop-btn" class="btn red" onclick="stopV2T()" disabled>Stop</button>
+            </div>
+        </div>
+        <canvas id="v2t-visualizer" class="v2t-canvas"></canvas>
+        <div class="form-group">
+            <label>Transcribed Text:</label>
+            <textarea id="v2t-text" class="v2t-textarea" placeholder="Your transcription will appear here..." readonly></textarea>
+        </div>
+        <div class="form-group" style="margin-top:8px">
+            <label>Send Text</label>
+            <textarea id="msgInput" class="v2t-textarea" placeholder="Type text to send..."></textarea>
+            <button class="btn green" id="btnSend" onclick="sendText()" disabled style="margin-top:6px;">Send</button>
+        </div>
+        <div class="v2t-result-actions">
+            <button class="btn red" style="padding:8px 14px;font-size:0.8rem;" onclick="clearV2T()">Clear</button>
+            <button class="btn" style="padding:8px 14px;font-size:0.8rem;" onclick="copyV2T()">Copy</button>
+            <select id="v2t-format" class="format-select-inline">
+                <option value="wav" selected>WAV</option>
+                <option value="mp3">MP3</option>
+            </select>
+            <button id="v2t-export-btn" class="btn purple" style="padding:8px 14px;font-size:0.8rem;" onclick="exportV2T()">Export Audio</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const SIGNALING_HOST = location.host || "127.0.0.1:8766";
+function sigUrl(path) { return `http://${SIGNALING_HOST}/${path}`; }
+
+let sessionId = "";
+let pc = null;
+let dc = null;
+let connected = false;
+
+const dot = document.getElementById('wsDot');
+const wsStatus = document.getElementById('wsStatus');
+const wsHint = document.getElementById('wsHint');
+const wsLogEl = document.getElementById('wsLog');
+const sessionInput = document.getElementById('sessionInput');
+const btnJoin = document.getElementById('btnJoin');
+const btnLeave = document.getElementById('btnLeave');
+const msgInput = document.getElementById('msgInput');
+const btnSend = document.getElementById('btnSend');
+
+function sessionLog(msg, type) {
+    const div = document.createElement('div');
+    div.className = 'ws-log-line ' + type;
+    div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+    wsLogEl.prepend(div);
+    while (wsLogEl.children.length > 50) wsLogEl.removeChild(wsLogEl.lastChild);
+}
+
+function setStatus(state, text) {
+    dot.className = 'dot' + (state ? ' ' + state : '');
+    wsStatus.textContent = text;
+}
+
+function initFromURL() {
+    const params = new URLSearchParams(location.search);
+    const sid = params.get("session");
+    if (sid) {
+        sessionId = sid.toUpperCase();
+        sessionInput.value = sessionId;
+        joinSession();
+    }
+}
+
+async function joinSession() {
+    const sid = sessionInput.value.trim().toUpperCase();
+    if (!sid) return;
+    sessionId = sid;
+    sessionLog('Starting session: ' + sessionId, 'sent');
+    setStatus('', 'Connecting...');
+    btnJoin.disabled = true;
+
+    try {
+        const checkRes = await fetch(sigUrl(`session/${sessionId}`));
+        if (!checkRes.ok) {
+            sessionLog('Session not found', 'err');
+            setStatus('error', 'Not found');
+            btnJoin.disabled = false;
+            return;
+        }
+    } catch(e) {
+        sessionLog('Cannot reach signaling: ' + e.message, 'err');
+        setStatus('error', 'Signaling error');
+        btnJoin.disabled = false;
+        return;
+    }
+
+    pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    dc = pc.createDataChannel('events', {ordered:true});
+
+    dc.onopen = () => {
+        connected = true;
+        sessionLog('DataChannel open', 'sent');
+        setStatus('authed', 'Connected');
+        btnLeave.disabled = false;
+        btnSend.disabled = false;
+        wsHint.textContent = 'Session: ' + sessionId;
+        sendEvent('start', {});
+    };
+
+    dc.onmessage = (e) => {
+        sessionLog('Recv: ' + e.data, 'recv');
+    };
+
+    dc.onclose = () => {
+        connected = false;
+        setStatus('', 'Disconnected');
+        sessionLog('DataChannel closed', 'err');
+    };
+
+    pc.onicecandidate = (e) => {
+        if (e.candidate) {
+            fetch(sigUrl(`session/${sessionId}/ice`), {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    candidate: e.candidate.candidate,
+                    sdp_mid: e.candidate.sdpMid,
+                    sdp_mline_index: e.candidate.sdpMLineIndex,
+                    from: 'phone'
+                })
+            }).catch(err => sessionLog('ICE send error: ' + err.message, 'err'));
+        }
+    };
+
+    pc.oniceconnectionstatechange = () => {
+        sessionLog('ICE: ' + pc.iceConnectionState, 'recv');
+        if (pc.iceConnectionState === 'failed') sessionLog('ICE connection failed', 'err');
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+
+    await fetch(sigUrl(`session/${sessionId}/offer`), {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({sdp: offer.sdp})
+    });
+    sessionLog('Offer sent', 'sent');
+    setStatus('online', 'Waiting for PC...');
+
+    let attempts = 0;
+    const poll = setInterval(async () => {
+        if (!pc || pc.signalingState === 'closed') { clearInterval(poll); return; }
+        attempts++;
+        if (attempts > 120) { clearInterval(poll); sessionLog('Timeout waiting for answer', 'err'); return; }
+        try {
+            const ares = await fetch(sigUrl(`session/${sessionId}/answer`));
+            if (ares.ok) {
+                const adata = await ares.json();
+                if (adata && adata.sdp) {
+                    clearInterval(poll);
+                    await pc.setRemoteDescription(new RTCSessionDescription({type:'answer', sdp:adata.sdp}));
+                    sessionLog('Answer received', 'recv');
+                    startICEPoll();
+                    return;
+                }
+            }
+            const cres = await fetch(sigUrl(`session/${sessionId}/ice?from=pc`));
+            if (cres.ok) {
+                const cdata = await cres.json();
+                for (const c of (cdata.candidates || [])) {
+                    if (c.candidate) {
+                        await pc.addIceCandidate(new RTCIceCandidate(c));
+                    }
+                }
+            }
+        } catch(e) {}
+    }, 1000);
+}
+
+function startICEPoll() {
+    const interval = setInterval(async () => {
+        if (!pc || pc.iceConnectionState === 'closed' || pc.iceConnectionState === 'failed') {
+            clearInterval(interval); return;
+        }
+        try {
+            const cres = await fetch(sigUrl(`session/${sessionId}/ice?from=pc`));
+            if (cres.ok) {
+                const cdata = await cres.json();
+                for (const c of (cdata.candidates || [])) {
+                    if (c.candidate) {
+                        await pc.addIceCandidate(new RTCIceCandidate(c));
+                    }
+                }
+            }
+        } catch(e) {}
+    }, 500);
+}
+
+function leaveSession() {
+    connected = false;
+    if (dc) { dc.close(); dc = null; }
+    if (pc) { pc.close(); pc = null; }
+    setStatus('', 'Disconnected');
+    wsHint.textContent = 'No session';
+    btnJoin.disabled = false;
+    btnLeave.disabled = true;
+    btnSend.disabled = true;
+    sessionLog('Left session', 'err');
+}
+
+function sendEvent(type, payload) {
+    if (!dc || dc.readyState !== 'open') return;
+    const msg = JSON.stringify({type, session: sessionId, ts: Date.now(), payload});
+    dc.send(msg);
+    sessionLog('Send: ' + type, 'sent');
+}
+
+function sendText() {
+    const text = msgInput.value.trim();
+    if (!text) return;
+    sendEvent('text', {content: text});
+    sessionLog('Text: ' + text, 'sent');
+    msgInput.value = '';
+}
+
+msgInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(); }
+});
+
+setStatus('', 'Ready');
+initFromURL();
+
+const cube = document.getElementById('cube');
+const gyroStatus = document.getElementById('gyroStatus');
+const shakeCount = document.getElementById('shakeCount');
+const gyroAlpha = document.getElementById('gyroAlpha');
+const gyroBeta = document.getElementById('gyroBeta');
+const gyroGamma = document.getElementById('gyroGamma');
+let shakes = 0, lastShakeTime = 0, lastAccel = {x:0,y:0,z:0}, hasGyro = false;
+let curRX = 0, curRY = 0, tgtRX = 0, tgtRY = 0;
+let gyroThrottleLast = 0;
+
+function updateCube() {
+    curRX += (tgtRX - curRX) * 0.12;
+    curRY += (tgtRY - curRY) * 0.12;
+    cube.style.transform = 'rotateX(' + curRX + 'deg) rotateY(' + curRY + 'deg)';
+    requestAnimationFrame(updateCube);
+}
+
+function handleOrientation(e) {
+    const b = Math.max(-90, Math.min(90, e.beta || 0));
+    const g = e.gamma || 0;
+    tgtRX = b; tgtRY = g;
+    gyroAlpha.textContent = 'alpha: ' + ((e.alpha || 0)).toFixed(1);
+    gyroBeta.textContent = 'beta: ' + b.toFixed(1);
+    gyroGamma.textContent = 'gamma: ' + g.toFixed(1);
+    if (!hasGyro) { hasGyro = true; gyroStatus.textContent = 'Gyroscope active'; gyroStatus.className = 'gyro-status active'; }
+    const now = Date.now();
+    if (now - gyroThrottleLast < 50) return;
+    gyroThrottleLast = now;
+    sendEvent('gyro', {alpha: e.alpha || 0, beta: b, gamma: g});
+}
+
+function handleMotion(e) {
+    const acc = e.accelerationIncludingGravity || {x:0,y:0,z:0};
+    const dx = Math.abs(acc.x - lastAccel.x);
+    const dy = Math.abs(acc.y - lastAccel.y);
+    const dz = Math.abs(acc.z - lastAccel.z);
+    if (dx + dy + dz > 25) {
+        const now = Date.now();
+        if (now - lastShakeTime > 300) {
+            shakes++;
+            shakeCount.textContent = 'Shakes: ' + shakes;
+            cube.classList.remove('shake');
+            void cube.offsetWidth;
+            cube.classList.add('shake');
+            lastShakeTime = now;
+            sendEvent('shake', {count: shakes});
+        }
+    }
+    lastAccel = {x:acc.x, y:acc.y, z:acc.z};
+}
+
+function initGyro() {
+    const btn = document.getElementById('btnActivateGyro');
+    const isIOS = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function';
+    function addListeners() {
+        window.addEventListener('deviceorientation', handleOrientation);
+        window.addEventListener('devicemotion', handleMotion);
+        hasGyro = true;
+        gyroStatus.textContent = 'Gyroscope active';
+        gyroStatus.className = 'gyro-status active';
+        if (btn) { btn.textContent = 'Active'; btn.disabled = true; btn.style.opacity='0.5'; }
+    }
+    if (isIOS) {
+        DeviceOrientationEvent.requestPermission().then(r => {
+            if (r === 'granted') addListeners();
+            else gyroStatus.textContent = 'Permission denied';
+        }).catch(err => { gyroStatus.textContent = 'Error: ' + err.message; });
+    } else { addListeners(); }
+}
+
+document.addEventListener('mousemove', e => {
+    if (!hasGyro) {
+        tgtRX = (e.clientY / window.innerHeight - 0.5) * -60;
+        tgtRY = (e.clientX / window.innerWidth - 0.5) * 60;
+        gyroStatus.textContent = 'Desktop mode - move mouse';
+    }
+});
+updateCube();
+
+let v2tRecognizer = null, v2tChunks = [], v2tMediaRecorder = null;
+let v2tAudioCtx = null, v2tAnalyzer = null, v2tStream = null, v2tRecording = false;
+
+function startV2T() {
+    if (v2tRecording) return;
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Speech Recognition not supported'); return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    v2tRecognizer = new SpeechRecognition();
+    v2tRecognizer.lang = document.getElementById('v2t-lang').value;
+    v2tRecognizer.continuous = true;
+    v2tRecognizer.interimResults = true;
+    v2tRecognizer.onresult = e => {
+        let final = '', interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+            else interim += e.results[i][0].transcript + ' ';
+        }
+        document.getElementById('v2t-text').value = final + interim;
+        if (final) sendEvent('v2t', {transcript: final.trim()});
+    };
+    v2tRecognizer.onerror = e => { console.error('V2T error:', e.error); };
+    v2tRecognizer.onend = () => { if (v2tRecording) v2tRecognizer.start(); };
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        v2tStream = stream;
+        v2tAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = v2tAudioCtx.createMediaStreamSource(stream);
+        v2tAnalyzer = v2tAudioCtx.createAnalyser();
+        v2tAnalyzer.fftSize = 256;
+        src.connect(v2tAnalyzer);
+        v2tChunks = [];
+        v2tMediaRecorder = new MediaRecorder(stream);
+        v2tMediaRecorder.ondataavailable = e => { if (e.data.size > 0) v2tChunks.push(e.data); };
+        v2tMediaRecorder.start();
+        v2tRecording = true;
+        document.getElementById('v2t-record-btn').disabled = true;
+        document.getElementById('v2t-stop-btn').disabled = false;
+        document.getElementById('v2t-export-btn').disabled = true;
+        document.getElementById('v2t-visualizer').classList.add('active');
+        drawV2TVisualizer();
+        v2tRecognizer.start();
+    }).catch(err => { alert('Microphone permission denied: ' + err.message); });
+}
+
+function stopV2T() {
+    if (!v2tRecording) return;
+    v2tRecording = false;
+    if (v2tRecognizer) v2tRecognizer.stop();
+    if (v2tMediaRecorder) v2tMediaRecorder.stop();
+    if (v2tStream) v2tStream.getTracks().forEach(t => t.stop());
+    if (v2tAudioCtx) v2tAudioCtx.close();
+    document.getElementById('v2t-record-btn').disabled = false;
+    document.getElementById('v2t-stop-btn').disabled = true;
+    document.getElementById('v2t-export-btn').disabled = false;
+    document.getElementById('v2t-visualizer').classList.remove('active');
+}
+
+function clearV2T() { document.getElementById('v2t-text').value = ''; }
+function copyV2T() {
+    const t = document.getElementById('v2t-text').value;
+    if (!t) return;
+    navigator.clipboard.writeText(t).then(() => {
+        const btn = document.querySelector('.v2t-section .btn');
+        if (!btn) return;
+        const o = btn.textContent; btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = o; }, 1000);
+    });
+}
+
+function drawV2TVisualizer() {
+    if (!v2tRecording || !v2tAnalyzer) return;
+    const canvas = document.getElementById('v2t-visualizer');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth * 2;
+    canvas.height = canvas.offsetHeight * 2;
+    const bufLen = v2tAnalyzer.frequencyBinCount;
+    const dataArr = new Uint8Array(bufLen);
+    function draw() {
+        if (!v2tRecording) return;
+        requestAnimationFrame(draw);
+        v2tAnalyzer.getByteFrequencyData(dataArr);
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const barW = (canvas.width / bufLen) * 2.5;
+        let x = 0;
+        for (let i = 0; i < bufLen; i++) {
+            const barH = (dataArr[i] / 255) * canvas.height * 0.9;
+            ctx.fillStyle = `rgb(${168 + i * 0.5}, 85, 247)`;
+            ctx.fillRect(x, canvas.height - barH, barW, barH);
+            x += barW + 1;
+        }
+    }
+    draw();
+}
+
+function audioBufferToWav(buffer) {
+    const numOfChan = buffer.numberOfChannels;
+    const length = buffer.length * numOfChan * 2 + 44;
+    const view = new DataView(new ArrayBuffer(length));
+    const channels = [];
+    let offset = 0, pos = 0;
+    function su16(d) { view.setUint16(offset, d, true); offset += 2; }
+    function su32(d) { view.setUint32(offset, d, true); offset += 4; }
+    su32(0x46464952); su32(length - 8); su32(0x45564157);
+    su32(0x20746d66); su32(16); su16(1); su16(numOfChan);
+    su32(buffer.sampleRate); su32(buffer.sampleRate * 2 * numOfChan);
+    su16(numOfChan * 2); su16(16);
+    su32(0x61746164); su32(length - offset - 4);
+    for (let i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
+    while (pos < buffer.length) {
+        for (let i = 0; i < numOfChan; i++) {
+            let s = Math.max(-1, Math.min(1, channels[i][pos]));
+            view.setInt16(offset, (s < 0 ? s * 32768 : s * 32767)|0, true);
+            offset += 2;
+        }
+        pos++;
+    }
+    return new Blob([view.buffer], {type: 'audio/wav'});
+}
+
+async function exportV2T() {
+    if (v2tChunks.length === 0) { alert('No recording to export.'); return; }
+    const fmt = document.getElementById('v2t-format').value;
+    const blob = new Blob(v2tChunks, {type: 'audio/webm'});
+    const arrayBuffer = await blob.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    const audioBlob = audioBufferToWav(audioBuffer);
+    audioCtx.close();
+    const url = URL.createObjectURL(audioBlob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'recording.' + fmt;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
+const canvas = document.getElementById('particles');
+const ctx2d = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+for (let i = 0; i < 30; i++) particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, size:Math.random()*3+1, sx:(Math.random()-0.5)*0.5, sy:(Math.random()-0.5)*0.5, o:Math.random()*0.5+0.2});
+function animateParticles() {
+    ctx2d.clearRect(0,0,canvas.width,canvas.height);
+    for (let p of particles) {
+        p.x += p.sx; p.y += p.sy;
+        if (p.x>canvas.width||p.x<0) p.sx*=-1;
+        if (p.y>canvas.height||p.y<0) p.sy*=-1;
+        ctx2d.fillStyle = `rgba(0,188,212,${p.o})`;
+        ctx2d.beginPath(); ctx2d.arc(p.x,p.y,p.size,0,Math.PI*2); ctx2d.fill();
+    }
+    requestAnimationFrame(animateParticles);
+}
+animateParticles();
+window.addEventListener('resize', () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>
