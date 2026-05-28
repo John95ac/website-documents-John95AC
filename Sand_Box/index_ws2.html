@@ -83,6 +83,10 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
             <span id="wsHint" style="font-size:0.75rem;color:var(--text-muted)">No session</span>
         </div>
         <div class="form-group">
+            <label>Host</label>
+            <input type="text" id="hostInput" placeholder="PC_IP:PORT">
+        </div>
+        <div class="form-group" style="margin-top:8px">
             <label>Session ID</label>
             <input type="text" id="sessionInput" placeholder="ABC123DEF4" maxlength="12">
         </div>
@@ -149,7 +153,7 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
         <div class="form-group" style="margin-top:8px">
             <label>Send Text</label>
             <textarea id="msgInput" class="v2t-textarea" placeholder="Type text to send..."></textarea>
-            <button class="btn green" id="btnSend" onclick="sendText()" disabled style="margin-top:6px;">Send</button>
+            <button class="btn green" id="btnSend" onclick="sendText()" style="margin-top:6px;">Send</button>
         </div>
         <div class="v2t-result-actions">
             <button class="btn red" style="padding:8px 14px;font-size:0.8rem;" onclick="clearV2T()">Clear</button>
@@ -164,7 +168,8 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
 </div>
 
 <script>
-const SIGNALING_HOST = location.host || "127.0.0.1:8766";
+const urlParams = new URLSearchParams(location.search);
+let SIGNALING_HOST = urlParams.get("host") || location.host || "127.0.0.1:8766";
 function sigUrl(path) { return `http://${SIGNALING_HOST}/${path}`; }
 
 let sessionId = "";
@@ -176,6 +181,7 @@ const dot = document.getElementById('wsDot');
 const wsStatus = document.getElementById('wsStatus');
 const wsHint = document.getElementById('wsHint');
 const wsLogEl = document.getElementById('wsLog');
+const hostInput = document.getElementById('hostInput');
 const sessionInput = document.getElementById('sessionInput');
 const btnJoin = document.getElementById('btnJoin');
 const btnLeave = document.getElementById('btnLeave');
@@ -196,8 +202,9 @@ function setStatus(state, text) {
 }
 
 function initFromURL() {
-    const params = new URLSearchParams(location.search);
-    const sid = params.get("session");
+    const sid = urlParams.get("session");
+    const host = urlParams.get("host");
+    if (host) { SIGNALING_HOST = host; if (hostInput) hostInput.value = host; }
     if (sid) {
         sessionId = sid.toUpperCase();
         sessionInput.value = sessionId;
@@ -207,6 +214,8 @@ function initFromURL() {
 
 async function joinSession() {
     const sid = sessionInput.value.trim().toUpperCase();
+    const hostVal = hostInput.value.trim();
+    if (hostVal) SIGNALING_HOST = hostVal;
     if (!sid) return;
     sessionId = sid;
     sessionLog('Starting session: ' + sessionId, 'sent');
@@ -228,7 +237,7 @@ async function joinSession() {
         return;
     }
 
-    pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}]});
     dc = pc.createDataChannel('events', {ordered:true});
 
     dc.onopen = () => {
@@ -236,7 +245,6 @@ async function joinSession() {
         sessionLog('DataChannel open', 'sent');
         setStatus('authed', 'Connected');
         btnLeave.disabled = false;
-        btnSend.disabled = false;
         wsHint.textContent = 'Session: ' + sessionId;
         sendEvent('start', {});
     };
@@ -258,8 +266,8 @@ async function joinSession() {
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({
                     candidate: e.candidate.candidate,
-                    sdp_mid: e.candidate.sdpMid,
-                    sdp_mline_index: e.candidate.sdpMLineIndex,
+                    sdpMid: e.candidate.sdpMid,
+                    sdpMLineIndex: e.candidate.sdpMLineIndex,
                     from: 'phone'
                 })
             }).catch(err => sessionLog('ICE send error: ' + err.message, 'err'));
@@ -323,11 +331,15 @@ function startICEPoll() {
                 const cdata = await cres.json();
                 for (const c of (cdata.candidates || [])) {
                     if (c.candidate) {
-                        await pc.addIceCandidate(new RTCIceCandidate(c));
+                        try {
+                            await pc.addIceCandidate(new RTCIceCandidate(c));
+                        } catch (iceErr) {
+                            sessionLog('ICE candidate error: ' + iceErr.message, 'err');
+                        }
                     }
                 }
             }
-        } catch(e) {}
+        } catch(e) { sessionLog('ICE fetch error: ' + e.message, 'err'); }
     }, 500);
 }
 
@@ -339,22 +351,25 @@ function leaveSession() {
     wsHint.textContent = 'No session';
     btnJoin.disabled = false;
     btnLeave.disabled = true;
-    btnSend.disabled = true;
     sessionLog('Left session', 'err');
 }
 
 function sendEvent(type, payload) {
-    if (!dc || dc.readyState !== 'open') return;
+    if (!dc || dc.readyState !== 'open') {
+        sessionLog(type + ': not connected', 'err');
+        return false;
+    }
     const msg = JSON.stringify({type, session: sessionId, ts: Date.now(), payload});
     dc.send(msg);
     sessionLog('Send: ' + type, 'sent');
+    return true;
 }
 
 function sendText() {
     const text = msgInput.value.trim();
     if (!text) return;
+    if (!dc || dc.readyState !== 'open') { alert('Not connected yet'); return; }
     sendEvent('text', {content: text});
-    sessionLog('Text: ' + text, 'sent');
     msgInput.value = '';
 }
 
