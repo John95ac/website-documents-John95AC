@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mic-WebSocket Remote</title>
+<title>Mic-WebSocket Remote + Prism Dice</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-:root{--primary:#00bcd4;--secondary:#1b1f2e;--accent:#3b82f6;--success:#00c853;--warning:#ffd700;--danger:#ff6b6b;--purple:#a855f7;--text-primary:#e8e8e8;--text-secondary:#a0a0b0;--text-muted:#5c6370;--border-subtle:#2d3748;--surface:#161b22;--surface-hover:#1e293b;--background:#0f111a;--card-radius:8px;--button-radius:6px;--transition:0.2s}
+:root{--primary:#00bcd4;--secondary:#1b1f2e;--accent:#3b82f6;--success:#00c853;--warning:#ffd700;--danger:#ff6b6b;--purple:#a855f7;--text-primary:#e8e8e8;--text-secondary:#a0a0b0;--text-muted:#5c6370;--border-subtle:#2d3748;--surface:#161b22;--surface-hover:#1e293b;--background:#0f111a;--card-radius:8px;--button-radius:6px;--transition:0.2s;--slider-pct:50%}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:var(--background);color:var(--text-primary);min-height:100vh}
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:0.6}
@@ -20,6 +22,28 @@ body{font-family:'Segoe UI',sans-serif;background:var(--background);color:var(--
 .form-group label{font-size:0.8rem;color:var(--text-secondary);font-weight:500}
 input,select,textarea{background:var(--secondary);border:1px solid var(--border-subtle);border-radius:var(--button-radius);padding:10px 14px;color:var(--text-primary);font-size:0.95rem;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+input[type="range"]{
+    -webkit-appearance:none;
+    width:100%;
+    cursor:pointer;
+    background:transparent
+}
+input[type="range"]::-webkit-slider-runnable-track{
+    height:6px;
+    border-radius:3px;
+    background:linear-gradient(to right,#3b82f6 0%,#3b82f6 var(--slider-pct),#2d3748 var(--slider-pct),#2d3748 100%)
+}
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    height:18px;
+    width:18px;
+    background:#fff;
+    border:3px solid #3b82f6;
+    border-radius:50%;
+    margin-top:-6px;
+    cursor:pointer;
+    box-shadow:0 0 4px rgba(0,0,0,0.3)
+}
 .btn{background:var(--primary);color:#000;border:none;border-radius:var(--button-radius);padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all var(--transition)}
 .btn:hover{opacity:0.85;transform:translateY(-1px)}
 .btn:disabled{opacity:0.4;cursor:not-allowed}
@@ -66,6 +90,23 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
 .ws-log-line.recv{color:var(--success)}
 .ws-log-line.err{color:var(--danger)}
 @media(max-width:480px){.container{padding:20px 14px}.card{padding:18px 16px}.scene{width:140px;height:140px}.face{width:140px;height:140px}.face.front{transform:translateZ(70px)}.face.back{transform:rotateY(180deg) translateZ(70px)}.face.right{transform:rotateY(90deg) translateZ(70px)}.face.left{transform:rotateY(-90deg) translateZ(70px)}.face.top{transform:rotateX(90deg) translateZ(70px)}.face.bottom{transform:rotateX(-90deg) translateZ(70px)}}
+.dice-card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--card-radius);padding:24px;box-shadow:0 4px 6px rgba(0,0,0,0.15)}
+.dice-card:hover{box-shadow:0 8px 15px rgba(0,0,0,0.2);border-color:#50c878}
+.dice-card .card-title{color:#50c878}
+#dice-canvas-container{width:100%;max-width:360px;aspect-ratio:1/1;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:radial-gradient(circle,#1a2e1a 0%,#0f0f1a 100%);position:relative;touch-action:none;cursor:grab}
+#dice-canvas-container:active{cursor:grabbing}
+#dice-canvas-container canvas{width:100%!important;height:100%!important;outline:none}
+.dice-type-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.dice-type-btn{padding:5px 10px;font-size:0.72rem;font-weight:700;background:var(--secondary);color:#50c878;border:1.5px solid #50c878;border-radius:16px;cursor:pointer;transition:all var(--transition)}
+.dice-type-btn:hover,.dice-type-btn.active{background:#50c878;color:var(--background)}
+.dice-result{text-align:center;font-size:1rem;font-weight:700;min-height:32px;color:#50c878}
+.dice-result span{font-size:1.8rem;text-shadow:0 0 20px rgba(80,200,120,0.5)}
+.dice-hint{text-align:center;font-size:0.68rem;color:rgba(80,200,120,0.55);margin-top:4px}
+#qr-scanner-container{background:#000}
+#qr-reader{border:none!important}
+#qr-reader video{border-radius:8px}
+#qr-reader__scan_region{border:none!important;background:transparent!important}
+#qr-reader__dashboard{display:none!important}
 </style>
 </head>
 <body>
@@ -77,7 +118,7 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
     </div>
 
     <div class="card">
-        <div class="card-title">Session Connection</div>
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Session Connection</span><span id="appVersion" style="font-size:0.7rem;font-weight:400;color:var(--text-muted)"></span></div>
         <div class="status-bar">
             <span><span class="dot" id="wsDot"></span><span id="wsStatus">Disconnected</span></span>
             <span id="wsHint" style="font-size:0.75rem;color:var(--text-muted)">No session</span>
@@ -93,32 +134,38 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
         <div style="margin-top:10px">
             <button class="btn" id="btnJoin" onclick="joinSession()">Join Session</button>
             <button class="btn red" id="btnLeave" onclick="leaveSession()" disabled style="margin-left:8px">Leave</button>
+            <button class="btn" id="btnSound" onclick="toggleSound()" style="margin-left:8px;background:#4caf50;color:#fff;padding:6px 14px;font-size:0.8rem;border:none;border-radius:16px;cursor:pointer">♫</button>
+            <button class="btn" id="btnScanQR" onclick="startQRScanner()" style="margin-left:8px;background:#6c47ff;color:#fff;padding:6px 14px;font-size:0.8rem;border:none;border-radius:16px;cursor:pointer">📷</button>
+        </div>
+        <div id="qr-scanner-container" style="display:none;margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid var(--border-subtle)">
+            <div id="qr-reader" style="width:100%"></div>
         </div>
         <div class="ws-log" id="wsLog"></div>
     </div>
 
-    <div class="gyro-card">
-        <div class="card-title" style="margin-bottom:12px;">3D Gyroscope Cube</div>
-        <div class="gyro-status" id="gyroStatus">Tap button to activate gyroscope</div>
-        <div style="display:flex;justify-content:center;margin-bottom:4px;">
-            <button class="btn purple" id="btnActivateGyro" onclick="initGyro()">Activate Gyroscope</button>
+    <div class="dice-card">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Prism Dice</span><span id="diceRollStatus" style="font-size:0.8rem;font-weight:400"></span></div>
+        <div class="dice-type-row">
+            <button class="dice-type-btn" data-sides="4" onclick="changeDice(4,this)">D4</button>
+            <button class="dice-type-btn active" data-sides="6" onclick="changeDice(6,this)">D6</button>
+            <button class="dice-type-btn" data-sides="8" onclick="changeDice(8,this)">D8</button>
+            <button class="dice-type-btn" data-sides="10" onclick="changeDice(10,this)">D10</button>
+            <button class="dice-type-btn" data-sides="12" onclick="changeDice(12,this)">D12</button>
+            <button class="dice-type-btn" data-sides="20" onclick="changeDice(20,this)">D20</button>
         </div>
-        <div class="scene">
-            <div class="cube" id="cube">
-                <div class="face front"></div>
-                <div class="face back"></div>
-                <div class="face right"></div>
-                <div class="face left"></div>
-                <div class="face top"></div>
-                <div class="face bottom"></div>
-            </div>
+        <div id="dice-canvas-container"></div>
+        <div class="dice-result" id="diceResult">Tap & drag the dice to roll</div>
+        <div class="dice-hint" id="diceHint">Hold, drag, and release</div>
+    </div>
+
+    <div class="card" id="sensorsCard" style="border-color:var(--accent)">
+        <div class="card-title" style="color:var(--accent)">Sensors</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <label style="font-size:0.82rem;color:var(--text-secondary);min-width:80px">Shake Sensitivity:</label>
+            <input type="range" id="sensitivitySlider" min="0" max="50" value="25" oninput="updateSensitivity()">
+            <span id="sensitivityValue" style="font-size:0.82rem;color:var(--accent);min-width:30px;text-align:right">25</span>
         </div>
-        <div class="shake-count" id="shakeCount">Shakes: 0</div>
-        <div class="gyro-stats">
-            <span class="gyro-stat" id="gyroAlpha">alpha: 0</span>
-            <span class="gyro-stat" id="gyroBeta">beta: 0</span>
-            <span class="gyro-stat" id="gyroGamma">gamma: 0</span>
-        </div>
+        <p style="font-size:0.72rem;color:var(--text-muted)">Lower = more sensitive (triggers easier). Controls roll-on-shake in gyro mode.</p>
     </div>
 
     <div class="card v2t-section">
@@ -158,11 +205,37 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
         <div class="v2t-result-actions">
             <button class="btn red" style="padding:8px 14px;font-size:0.8rem;" onclick="clearV2T()">Clear</button>
             <button class="btn" style="padding:8px 14px;font-size:0.8rem;" onclick="copyV2T()">Copy</button>
+            <button class="btn" style="padding:8px 14px;font-size:0.8rem;" onclick="copyV2TToSend()">Copy to Send</button>
             <select id="v2t-format" class="format-select-inline">
                 <option value="wav" selected>WAV</option>
                 <option value="mp3">MP3</option>
             </select>
             <button id="v2t-export-btn" class="btn purple" style="padding:8px 14px;font-size:0.8rem;" onclick="exportV2T()">Export Audio</button>
+        </div>
+</div>
+
+    <div class="gyro-card">
+        <div class="card-title" style="margin-bottom:12px;">3D Gyroscope Cube</div>
+        <div class="gyro-status" id="gyroStatus">Tap button to activate gyroscope</div>
+        <div style="display:flex;justify-content:center;gap:10px;margin-bottom:4px;">
+            <button class="btn purple" id="btnActivateGyro" onclick="toggleGyro()">Activate Gyroscope</button>
+            <button class="btn" id="btnGyroLog" onclick="toggleGyroLog()" style="background:#555;color:#999;padding:10px 16px;font-size:0.85rem;">Log: OFF</button>
+        </div>
+        <div class="scene">
+            <div class="cube" id="cube">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
+                <div class="face top"></div>
+                <div class="face bottom"></div>
+            </div>
+        </div>
+        <div class="shake-count" id="shakeCount">Shakes: 0</div>
+        <div class="gyro-stats">
+            <span class="gyro-stat" id="gyroAlpha">alpha: 0</span>
+            <span class="gyro-stat" id="gyroBeta">beta: 0</span>
+            <span class="gyro-stat" id="gyroGamma">gamma: 0</span>
         </div>
     </div>
 </div>
@@ -170,6 +243,13 @@ textarea{width:100%;min-height:100px;resize:vertical;font-family:inherit}
 <script>
 const urlParams = new URLSearchParams(location.search);
 let SIGNALING_HOST = urlParams.get("host") || location.host || "127.0.0.1:8766";
+window.addEventListener('DOMContentLoaded', () => {
+    loadSoundConfig();
+    loadVersion();
+    loadSensitivity();
+    preloadDiceSounds();
+    toggleGyro();
+});
 function sigUrl(path) { return `http://${SIGNALING_HOST}/${path}`; }
 
 let sessionId = "";
@@ -247,6 +327,8 @@ async function joinSession() {
         btnLeave.disabled = false;
         wsHint.textContent = 'Session: ' + sessionId;
         sendEvent('start', {});
+        loadDiceFromIni();
+        playConnectSound();
     };
 
     dc.onmessage = (e) => {
@@ -389,6 +471,12 @@ const gyroGamma = document.getElementById('gyroGamma');
 let shakes = 0, lastShakeTime = 0, lastAccel = {x:0,y:0,z:0}, hasGyro = false;
 let curRX = 0, curRY = 0, tgtRX = 0, tgtRY = 0;
 let gyroThrottleLast = 0;
+let gyroEnabled = false, gyroLogEnabled = false;
+let gyroSensitivity = 25;
+let gyroMovementCount = 0;
+let gyroPrevAcc = {x:0,y:0,z:0};
+let gyroSettledTimeout = null;
+let gyroWasMoving = false;
 
 function updateCube() {
     curRX += (tgtRX - curRX) * 0.12;
@@ -398,24 +486,46 @@ function updateCube() {
 }
 
 function handleOrientation(e) {
+    if (!gyroEnabled) return;
     const b = Math.max(-90, Math.min(90, e.beta || 0));
     const g = e.gamma || 0;
     tgtRX = b; tgtRY = g;
-    gyroAlpha.textContent = 'alpha: ' + ((e.alpha || 0)).toFixed(1);
-    gyroBeta.textContent = 'beta: ' + b.toFixed(1);
-    gyroGamma.textContent = 'gamma: ' + g.toFixed(1);
-    if (!hasGyro) { hasGyro = true; gyroStatus.textContent = 'Gyroscope active'; gyroStatus.className = 'gyro-status active'; }
+    if (gyroLogEnabled) {
+        gyroAlpha.textContent = 'alpha: ' + ((e.alpha || 0)).toFixed(1);
+        gyroBeta.textContent = 'beta: ' + b.toFixed(1);
+        gyroGamma.textContent = 'gamma: ' + g.toFixed(1);
+    }
     const now = Date.now();
     if (now - gyroThrottleLast < 50) return;
     gyroThrottleLast = now;
-    sendEvent('gyro', {alpha: e.alpha || 0, beta: b, gamma: g});
+    if (gyroLogEnabled) sendEvent('gyro', {alpha: e.alpha || 0, beta: b, gamma: g});
 }
 
 function handleMotion(e) {
+    if (!gyroEnabled) return;
     const acc = e.accelerationIncludingGravity || {x:0,y:0,z:0};
-    const dx = Math.abs(acc.x - lastAccel.x);
-    const dy = Math.abs(acc.y - lastAccel.y);
-    const dz = Math.abs(acc.z - lastAccel.z);
+    const dx = Math.abs(acc.x - gyroPrevAcc.x);
+    const dy = Math.abs(acc.y - gyroPrevAcc.y);
+    const dz = Math.abs(acc.z - gyroPrevAcc.z);
+    const total = dx + dy + dz;
+    if (total > gyroSensitivity) {
+        gyroMovementCount++;
+        gyroWasMoving = true;
+        if (gyroSettledTimeout) clearTimeout(gyroSettledTimeout);
+        gyroSettledTimeout = setTimeout(() => {
+            if (gyroEnabled && gyroMovementCount > 3) {
+                gyroMovementCount = 0;
+                gyroWasMoving = false;
+                if (typeof rollDice === 'function') {
+                    cube.classList.remove('shake');
+                    void cube.offsetWidth;
+                    cube.classList.add('shake');
+                    rollDice();
+                }
+            }
+        }, 400);
+    }
+    gyroPrevAcc = {x:acc.x, y:acc.y, z:acc.z};
     if (dx + dy + dz > 25) {
         const now = Date.now();
         if (now - lastShakeTime > 300) {
@@ -425,22 +535,40 @@ function handleMotion(e) {
             void cube.offsetWidth;
             cube.classList.add('shake');
             lastShakeTime = now;
-            sendEvent('shake', {count: shakes});
+            if (gyroLogEnabled) sendEvent('shake', {count: shakes});
         }
     }
-    lastAccel = {x:acc.x, y:acc.y, z:acc.z};
 }
 
-function initGyro() {
-    const btn = document.getElementById('btnActivateGyro');
+function toggleGyro() {
+    if (gyroEnabled) {
+        window.removeEventListener('deviceorientation', handleOrientation);
+        window.removeEventListener('devicemotion', handleMotion);
+        gyroEnabled = false;
+        hasGyro = false;
+        gyroMovementCount = 0;
+        gyroWasMoving = false;
+        if (gyroSettledTimeout) clearTimeout(gyroSettledTimeout);
+        gyroStatus.textContent = 'Gyroscope disabled';
+        gyroStatus.className = 'gyro-status';
+        const btn = document.getElementById('btnActivateGyro');
+        btn.textContent = 'Activate Gyroscope';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        return;
+    }
     const isIOS = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function';
     function addListeners() {
         window.addEventListener('deviceorientation', handleOrientation);
         window.addEventListener('devicemotion', handleMotion);
+        gyroEnabled = true;
         hasGyro = true;
         gyroStatus.textContent = 'Gyroscope active';
         gyroStatus.className = 'gyro-status active';
-        if (btn) { btn.textContent = 'Active'; btn.disabled = true; btn.style.opacity='0.5'; }
+        const btn = document.getElementById('btnActivateGyro');
+        btn.textContent = 'Deactivate Gyroscope';
+        btn.disabled = false;
+        btn.style.opacity = '1';
     }
     if (isIOS) {
         DeviceOrientationEvent.requestPermission().then(r => {
@@ -448,6 +576,63 @@ function initGyro() {
             else gyroStatus.textContent = 'Permission denied';
         }).catch(err => { gyroStatus.textContent = 'Error: ' + err.message; });
     } else { addListeners(); }
+}
+
+function toggleGyroLog() {
+    gyroLogEnabled = !gyroLogEnabled;
+    const btn = document.getElementById('btnGyroLog');
+    if (gyroLogEnabled) {
+        btn.style.background = '#4caf50';
+        btn.style.color = '#fff';
+        btn.textContent = 'Log: ON';
+    } else {
+        btn.style.background = '#555';
+        btn.style.color = '#999';
+        btn.textContent = 'Log: OFF';
+    }
+}
+
+function updateSensitivity() {
+    const slider = document.getElementById('sensitivitySlider');
+    gyroSensitivity = parseInt(slider.value);
+    document.getElementById('sensitivityValue').textContent = gyroSensitivity;
+    const pct = (gyroSensitivity / 50) * 100;
+    document.documentElement.style.setProperty('--slider-pct', pct + '%');
+    if (window.electronAPI) electronAPI.saveSensitivity(gyroSensitivity);
+    fetch(`http://${SIGNALING_HOST}/config/sensitivity`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gyroSensitivity })
+    }).catch(() => {});
+}
+
+function loadSensitivity() {
+    if (window.electronAPI) {
+        electronAPI.getSensitivity().then(val => {
+            gyroSensitivity = val;
+            const slider = document.getElementById('sensitivitySlider');
+            slider.value = val;
+            document.getElementById('sensitivityValue').textContent = val;
+            const pct = (val / 50) * 100;
+            document.documentElement.style.setProperty('--slider-pct', pct + '%');
+        }).catch(() => {});
+    }
+    fetch(`http://${SIGNALING_HOST}/config/sensitivity`)
+        .then(r => r.json())
+        .then(data => {
+            gyroSensitivity = data.gyroSensitivity;
+            const slider = document.getElementById('sensitivitySlider');
+            slider.value = data.gyroSensitivity;
+            document.getElementById('sensitivityValue').textContent = data.gyroSensitivity;
+            const pct = (data.gyroSensitivity / 50) * 100;
+            document.documentElement.style.setProperty('--slider-pct', pct + '%');
+        }).catch(() => {});
+}
+
+function loadVersion() {
+    fetch(`http://${SIGNALING_HOST}/version`).then(r => r.json()).then(data => {
+        if (data && data.version) document.getElementById('appVersion').textContent = 'v' + data.version;
+    }).catch(() => {});
 }
 
 document.addEventListener('mousemove', e => {
@@ -461,28 +646,103 @@ updateCube();
 
 let v2tRecognizer = null, v2tChunks = [], v2tMediaRecorder = null;
 let v2tAudioCtx = null, v2tAnalyzer = null, v2tStream = null, v2tRecording = false;
+let v2tFinalText = '', v2tRestartAttempts = 0, v2tLastRestartTime = 0;
+let v2tServerMode = false, v2tScriptNode = null, v2tPcmBuffer = [], v2tChunkInterval = null;
+
+function showToast(msg, color, duration) {
+    let toast = document.getElementById('v2t-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'v2t-toast';
+        toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:8px;color:#fff;font-size:0.9rem;z-index:99999;font-family:inherit;pointer-events:none;transition:opacity 0.3s';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.background = color || '#00bcd4';
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, duration || 3000);
+}
 
 function startV2T() {
     if (v2tRecording) return;
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert('Speech Recognition not supported'); return;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        startV2TBrowser();
+    } else {
+        startV2TServer();
     }
+}
+
+function startV2TBrowser() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     v2tRecognizer = new SpeechRecognition();
     v2tRecognizer.lang = document.getElementById('v2t-lang').value;
     v2tRecognizer.continuous = true;
     v2tRecognizer.interimResults = true;
-    v2tRecognizer.onresult = e => {
-        let final = '', interim = '';
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-            if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
-            else interim += e.results[i][0].transcript + ' ';
+
+    v2tRecognizer.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+            if (e.results[i].isFinal) {
+                const t = e.results[i][0].transcript.trim();
+                if (t) {
+                    v2tFinalText += (v2tFinalText ? ' ' : '') + t;
+                    document.getElementById('v2t-text').value = v2tFinalText;
+                    document.getElementById('v2t-text').scrollTop = document.getElementById('v2t-text').scrollHeight;
+                }
+            }
         }
-        document.getElementById('v2t-text').value = final + interim;
-        if (final) sendEvent('v2t', {transcript: final.trim()});
+        v2tRestartAttempts = 0;
     };
-    v2tRecognizer.onerror = e => { console.error('V2T error:', e.error); };
-    v2tRecognizer.onend = () => { if (v2tRecording) v2tRecognizer.start(); };
+
+    v2tRecognizer.onerror = (e) => {
+        console.error('V2T error:', e.error);
+        switch (e.error) {
+            case 'no-speech':
+            case 'aborted':
+                break;
+            case 'network':
+                showToast('Network error - reconnecting...', '#fbbf24');
+                break;
+            case 'not-allowed':
+            case 'service-not-allowed':
+                showToast('Microphone access denied', '#ff6b6b');
+                stopV2T();
+                break;
+            case 'language-not-supported':
+                showToast('Language not supported', '#ff6b6b');
+                break;
+            default:
+                console.log('Speech error:', e.error);
+        }
+    };
+
+    v2tRecognizer.onend = () => {
+        if (!v2tRecording) return;
+        const now = Date.now();
+        if (now - v2tLastRestartTime < 500) return;
+        v2tLastRestartTime = now;
+        v2tRestartAttempts++;
+        if (v2tRestartAttempts > 5) {
+            showToast('Speech recognition failed after multiple attempts', '#ff6b6b');
+            stopV2T();
+            return;
+        }
+        setTimeout(() => {
+            if (v2tRecording && v2tRecognizer) {
+                try { v2tRecognizer.start(); } catch (err) { console.error('Restart error:', err); }
+            }
+        }, 300);
+    };
+
+    v2tRecording = true;
+    v2tRestartAttempts = 0;
+    v2tFinalText = '';
+    document.getElementById('v2t-text').value = '';
+    document.getElementById('v2t-record-btn').disabled = true;
+    document.getElementById('v2t-stop-btn').disabled = false;
+    document.getElementById('v2t-export-btn').disabled = true;
+    document.getElementById('v2t-visualizer').classList.add('active');
+
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
         v2tStream = stream;
         v2tAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -494,30 +754,146 @@ function startV2T() {
         v2tMediaRecorder = new MediaRecorder(stream);
         v2tMediaRecorder.ondataavailable = e => { if (e.data.size > 0) v2tChunks.push(e.data); };
         v2tMediaRecorder.start();
-        v2tRecording = true;
-        document.getElementById('v2t-record-btn').disabled = true;
-        document.getElementById('v2t-stop-btn').disabled = false;
-        document.getElementById('v2t-export-btn').disabled = true;
-        document.getElementById('v2t-visualizer').classList.add('active');
-        drawV2TVisualizer();
         v2tRecognizer.start();
-    }).catch(err => { alert('Microphone permission denied: ' + err.message); });
+        drawV2TVisualizer();
+        showToast('Recording...', '#00bcd4', 2000);
+    }).catch(err => {
+        v2tRecording = false;
+        document.getElementById('v2t-record-btn').disabled = false;
+        document.getElementById('v2t-stop-btn').disabled = true;
+        showToast('Microphone permission denied', '#ff6b6b');
+    });
+}
+
+function downsampleBuffer(buffer, inputRate, outputRate) {
+    if (inputRate === outputRate) return buffer;
+    const ratio = inputRate / outputRate;
+    const newLength = Math.round(buffer.length / ratio);
+    const result = new Float32Array(newLength);
+    for (let i = 0; i < newLength; i++) {
+        const srcIdx = i * ratio;
+        const srcFloor = Math.floor(srcIdx);
+        const srcCeil = Math.min(srcFloor + 1, buffer.length - 1);
+        const frac = srcIdx - srcFloor;
+        result[i] = buffer[srcFloor] * (1 - frac) + buffer[srcCeil] * frac;
+    }
+    return result;
+}
+
+function floatTo16BitPCM(float32Array) {
+    const int16 = new Int16Array(float32Array.length);
+    for (let i = 0; i < float32Array.length; i++) {
+        const s = Math.max(-1, Math.min(1, float32Array[i]));
+        int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    }
+    return int16.buffer;
+}
+
+function startV2TServer() {
+    v2tServerMode = true;
+    v2tRecording = true;
+    v2tRestartAttempts = 0;
+    v2tFinalText = '';
+    document.getElementById('v2t-text').value = '';
+    document.getElementById('v2t-record-btn').disabled = true;
+    document.getElementById('v2t-stop-btn').disabled = false;
+    document.getElementById('v2t-export-btn').disabled = true;
+    document.getElementById('v2t-visualizer').classList.add('active');
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        v2tStream = stream;
+        v2tAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = v2tAudioCtx.createMediaStreamSource(stream);
+        v2tAnalyzer = v2tAudioCtx.createAnalyser();
+        v2tAnalyzer.fftSize = 256;
+        src.connect(v2tAnalyzer);
+
+        v2tPcmBuffer = [];
+        const sampleRate = v2tAudioCtx.sampleRate;
+        const targetRate = 16000;
+        const bufferSize = 4096;
+        v2tScriptNode = v2tAudioCtx.createScriptProcessor(bufferSize, 1, 1);
+        v2tScriptNode.onaudioprocess = (e) => {
+            if (!v2tRecording) return;
+            const input = e.inputBuffer.getChannelData(0);
+            const downsampled = downsampleBuffer(input, sampleRate, targetRate);
+            const pcmData = floatTo16BitPCM(downsampled);
+            v2tPcmBuffer.push(new Uint8Array(pcmData));
+        };
+        src.connect(v2tScriptNode);
+        v2tScriptNode.connect(v2tAudioCtx.destination);
+
+        v2tChunkInterval = setInterval(() => {
+            if (v2tPcmBuffer.length === 0) return;
+            const totalLen = v2tPcmBuffer.reduce((s, b) => s + b.length, 0);
+            const merged = new Uint8Array(totalLen);
+            let offset = 0;
+            for (const chunk of v2tPcmBuffer) {
+                merged.set(chunk, offset);
+                offset += chunk.length;
+            }
+            v2tPcmBuffer = [];
+
+            const lang = document.getElementById('v2t-lang').value || 'es-ES';
+            fetch(`http://${SIGNALING_HOST}/v2t/transcribe?lang=${encodeURIComponent(lang)}&rate=16000`, {
+                method: 'POST',
+                body: merged,
+                headers: { 'Content-Type': 'application/octet-stream' }
+            }).then(r => r.json()).then(data => {
+                if (data.text && data.text.trim()) {
+                    v2tFinalText += (v2tFinalText ? ' ' : '') + data.text.trim();
+                    document.getElementById('v2t-text').value = v2tFinalText;
+                    document.getElementById('v2t-text').scrollTop = document.getElementById('v2t-text').scrollHeight;
+                }
+            }).catch(err => {
+                console.error('V2T server error:', err);
+            });
+        }, 3000);
+
+        drawV2TVisualizer();
+        showToast('Recording (server mode)...', '#00bcd4', 2000);
+    }).catch(err => {
+        v2tRecording = false;
+        v2tServerMode = false;
+        document.getElementById('v2t-record-btn').disabled = false;
+        document.getElementById('v2t-stop-btn').disabled = true;
+        showToast('Microphone permission denied', '#ff6b6b');
+    });
 }
 
 function stopV2T() {
-    if (!v2tRecording) return;
     v2tRecording = false;
-    if (v2tRecognizer) v2tRecognizer.stop();
-    if (v2tMediaRecorder) v2tMediaRecorder.stop();
-    if (v2tStream) v2tStream.getTracks().forEach(t => t.stop());
-    if (v2tAudioCtx) v2tAudioCtx.close();
+    v2tRestartAttempts = 0;
+    v2tServerMode = false;
+    if (v2tChunkInterval) { clearInterval(v2tChunkInterval); v2tChunkInterval = null; }
+    if (v2tScriptNode) { try { v2tScriptNode.disconnect(); } catch {} v2tScriptNode = null; }
+    v2tPcmBuffer = [];
+    if (v2tMediaRecorder && v2tMediaRecorder.state !== 'inactive') {
+        v2tMediaRecorder.stop();
+        v2tMediaRecorder.stream.getTracks().forEach(t => t.stop());
+    }
+    if (v2tRecognizer) {
+        try { v2tRecognizer.stop(); } catch (err) {}
+    }
+    if (v2tStream) { v2tStream.getTracks().forEach(t => t.stop()); }
+    if (v2tAudioCtx) { v2tAudioCtx.close(); }
     document.getElementById('v2t-record-btn').disabled = false;
     document.getElementById('v2t-stop-btn').disabled = true;
-    document.getElementById('v2t-export-btn').disabled = false;
+    document.getElementById('v2t-export-btn').disabled = v2tChunks.length === 0;
     document.getElementById('v2t-visualizer').classList.remove('active');
 }
 
-function clearV2T() { document.getElementById('v2t-text').value = ''; }
+function copyV2TToSend() {
+    const src = document.getElementById('v2t-text').value;
+    if (!src) return;
+    document.getElementById('msgInput').value = src;
+    showToast('Copied to Send', '#10b981', 1500);
+}
+
+function clearV2T() {
+    v2tFinalText = '';
+    document.getElementById('v2t-text').value = '';
+}
 function copyV2T() {
     const t = document.getElementById('v2t-text').value;
     if (!t) return;
@@ -595,6 +971,491 @@ async function exportV2T() {
     document.body.appendChild(a); a.click();
     setTimeout(() => URL.revokeObjectURL(url), 500);
 }
+
+let diceScene, diceCamera, diceRenderer, diceGroup;
+let diceRolling = false, currentDiceSides = 6, diceActiveFaces = [];
+let diceLuck = 0, diceDifficulty = 'medium', diceTargetNumber = 0;
+const ROUND_RANGES = {
+    4: { easy: { min: 2, max: 2 }, medium: { min: 3, max: 3 }, hard: { min: 4, max: 4 } },
+    6: { easy: { min: 2, max: 3 }, medium: { min: 4, max: 5 }, hard: { min: 5, max: 6 } },
+    8: { easy: { min: 2, max: 4 }, medium: { min: 5, max: 6 }, hard: { min: 6, max: 8 } },
+    10: { easy: { min: 2, max: 5 }, medium: { min: 6, max: 7 }, hard: { min: 8, max: 10 } },
+    12: { easy: { min: 2, max: 6 }, medium: { min: 7, max: 9 }, hard: { min: 10, max: 12 } },
+    20: { easy: { min: 2, max: 10 }, medium: { min: 11, max: 15 }, hard: { min: 16, max: 20 } }
+};
+function getLuckAdjustedResult(sides, luck) {
+    if (luck === 0) return Math.floor(Math.random() * sides) + 1;
+    const base = Math.random();
+    const transformed = Math.pow(base, 1 - luck);
+    return Math.min(Math.max(Math.floor(transformed * sides) + 1, 1), sides);
+}
+function generateTargetNumber(sides, difficulty) {
+    const range = ROUND_RANGES[sides] && ROUND_RANGES[sides][difficulty];
+    if (!range) return Math.floor(Math.random() * sides) + 1;
+    return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+}
+
+let soundEnabled = true;
+const DICE_SOUNDS = ['rolling-dice-003.wav', 'dice-001.wav', 'dice-002.wav'];
+const CONNECT_SOUNDS = ['miau-PDA.wav', 'bell.wav'];
+const audioCache = {};
+
+function preloadDiceSounds() {
+    DICE_SOUNDS.forEach(f => {
+        const a = new Audio(f);
+        a.load();
+        audioCache[f] = a;
+    });
+    CONNECT_SOUNDS.forEach(f => {
+        const a = new Audio(f);
+        a.load();
+        audioCache[f] = a;
+    });
+}
+
+function playDiceSound() {
+    if (!soundEnabled) return;
+    const url = DICE_SOUNDS[Math.floor(Math.random() * DICE_SOUNDS.length)];
+    playSoundFile(url);
+}
+
+function playConnectSound() {
+    if (!soundEnabled) return;
+    const url = CONNECT_SOUNDS[Math.floor(Math.random() * CONNECT_SOUNDS.length)];
+    playSoundFile(url);
+}
+
+function playSoundFile(filename) {
+    if (audioCache[filename]) {
+        audioCache[filename].pause();
+        audioCache[filename].currentTime = 0;
+        if (audioCache[filename].readyState < 2) audioCache[filename].load();
+        audioCache[filename].play().catch(() => {});
+    } else {
+        const a = new Audio(filename);
+        a.addEventListener('canplaythrough', () => { a.play().catch(() => {}); }, { once: true });
+        a.load();
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('btnSound');
+    if (soundEnabled) {
+        btn.style.background = '#4caf50';
+        btn.style.color = '#fff';
+    } else {
+        btn.style.background = '#555';
+        btn.style.color = '#999';
+    }
+    fetch(`http://${SIGNALING_HOST}/config/sound`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ start: soundEnabled })
+    }).catch(() => {});
+}
+
+function loadSoundConfig() {
+    fetch(`http://${SIGNALING_HOST}/config/sound`).then(r => r.json()).then(data => {
+        if (data && data.start !== undefined) {
+            soundEnabled = data.start === 'true';
+            const btn = document.getElementById('btnSound');
+            if (soundEnabled) {
+                btn.style.background = '#4caf50';
+                btn.style.color = '#fff';
+            } else {
+                btn.style.background = '#555';
+                btn.style.color = '#999';
+            }
+        }
+    }).catch(() => {});
+}
+let qrScanner = null;
+let qrScanning = false;
+
+function startQRScanner() {
+    const container = document.getElementById('qr-scanner-container');
+    const btn = document.getElementById('btnScanQR');
+    if (qrScanning) {
+        stopQRScanner();
+        return;
+    }
+    if (typeof Html5Qrcode === 'undefined') {
+        sessionLog('QR scanner library not loaded', 'err');
+        return;
+    }
+    container.style.display = 'block';
+    btn.style.background = '#f44336';
+    btn.textContent = '✕';
+    qrScanning = true;
+    qrScanner = new Html5Qrcode('qr-reader');
+    qrScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+        onQRScanned,
+        () => {}
+    ).catch(err => {
+        sessionLog('Camera error: ' + err, 'err');
+        stopQRScanner();
+    });
+}
+
+function stopQRScanner() {
+    const container = document.getElementById('qr-scanner-container');
+    const btn = document.getElementById('btnScanQR');
+    if (qrScanner) {
+        qrScanner.stop().then(() => {
+            qrScanner.clear();
+            qrScanner = null;
+        }).catch(() => { qrScanner = null; });
+    }
+    container.style.display = 'none';
+    btn.style.background = '#6c47ff';
+    btn.textContent = '📷';
+    qrScanning = false;
+}
+
+function onQRScanned(decodedText) {
+    stopQRScanner();
+    try {
+        const url = new URL(decodedText);
+        const sid = url.searchParams.get('session');
+        const host = url.searchParams.get('host');
+        if (sid && host) {
+            sessionInput.value = sid.toUpperCase();
+            hostInput.value = host;
+            SIGNALING_HOST = host;
+            sessionLog('QR scanned: session=' + sid + ' host=' + host, 'sent');
+            joinSession();
+        } else if (host) {
+            hostInput.value = host;
+            SIGNALING_HOST = host;
+            sessionLog('QR scanned: host=' + host, 'sent');
+        } else {
+            sessionLog('QR: no session/host params found', 'err');
+        }
+    } catch (e) {
+        sessionLog('QR: invalid URL - ' + decodedText.substring(0, 50), 'err');
+    }
+}
+const RED_FACE1 = '#e8001a';
+const diceMaterialsConfig = {
+    galaxy: { useGalaxyMap: true, roughness: 0.1, metalness: 0.4, textColor: '#ffffff', edgeColor: 0xffffff }
+};
+
+function initDice() {
+    const container = document.getElementById('dice-canvas-container');
+    if (!container || diceScene) return;
+    diceScene = new THREE.Scene();
+    diceCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    diceCamera.position.z = 7;
+    diceRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    diceRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const cw = container.clientWidth, ch = container.clientHeight;
+    diceRenderer.setSize(cw, ch, false);
+    container.appendChild(diceRenderer.domElement);
+    diceScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const hl = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5);
+    hl.position.set(0, 20, 0); diceScene.add(hl);
+    const ml = new THREE.DirectionalLight(0xffffff, 1.0);
+    ml.position.set(5, 10, 7); diceScene.add(ml);
+    const fl = new THREE.DirectionalLight(0xffffff, 0.5);
+    fl.position.set(-5, 0, -5); diceScene.add(fl);
+    createDice(currentDiceSides);
+    animateDice();
+    let touchStart = null, dragOffset = { x: 0, y: 0 };
+    const getPos = (e) => {
+        const t = e.touches ? e.touches[0] : (e.changedTouches ? e.changedTouches[0] : e);
+        return { x: t.clientX, y: t.clientY };
+    };
+    const applyDrag = (dx, dy) => {
+        if (!diceGroup) return;
+        const maxShift = 1.2;
+        const nx = Math.max(-maxShift, Math.min(maxShift, dx / 80));
+        const ny = Math.max(-maxShift, Math.min(maxShift, dy / 80));
+        dragOffset.x = nx * 0.3;
+        dragOffset.y = -ny * 0.3;
+        diceGroup.position.set(dragOffset.x, dragOffset.y, 0);
+    };
+    const resetDrag = () => {
+        dragOffset = { x: 0, y: 0 };
+        if (diceGroup) diceGroup.position.set(0, 0, 0);
+    };
+    container.addEventListener('touchstart', (e) => {
+        if (diceRolling) return;
+        touchStart = { pos: getPos(e), time: Date.now() };
+    }, { passive: true });
+    container.addEventListener('touchmove', (e) => {
+        if (!touchStart || diceRolling) return;
+        const pos = getPos(e);
+        applyDrag(pos.x - touchStart.pos.x, pos.y - touchStart.pos.y);
+    }, { passive: true });
+    container.addEventListener('touchend', (e) => {
+        if (!touchStart || diceRolling) { touchStart = null; resetDrag(); return; }
+        const end = getPos(e.changedTouches ? { touches: [e.changedTouches[0]] } : e);
+        const dx = end.x - touchStart.pos.x, dy = end.y - touchStart.pos.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        touchStart = null;
+        if (dist > 10) { resetDrag(); rollDice(); }
+        else { resetDrag(); }
+    }, { passive: true });
+    container.addEventListener('mousedown', (e) => {
+        if (diceRolling) return;
+        touchStart = { pos: { x: e.clientX, y: e.clientY }, time: Date.now() };
+    });
+    container.addEventListener('mousemove', (e) => {
+        if (!touchStart || diceRolling) return;
+        applyDrag(e.clientX - touchStart.pos.x, e.clientY - touchStart.pos.y);
+    });
+    container.addEventListener('mouseup', (e) => {
+        if (!touchStart || diceRolling) { touchStart = null; resetDrag(); return; }
+        const dx = e.clientX - touchStart.pos.x, dy = e.clientY - touchStart.pos.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        touchStart = null;
+        if (dist > 10) { resetDrag(); rollDice(); }
+        else { resetDrag(); }
+    });
+    container.addEventListener('mouseleave', () => { touchStart = null; resetDrag(); });
+}
+
+function createD10Geometry(radius) {
+    const geom = new THREE.BufferGeometry(), pos = [], uvs = [];
+    const h = radius * 1.15, top = [0, h, 0], bot = [0, -h, 0];
+    for (let i = 0; i < 5; i++) {
+        const a1 = i * Math.PI * 2 / 5, a2 = ((i+1)%5) * Math.PI * 2 / 5;
+        const p1 = [Math.cos(a1)*radius, 0, Math.sin(a1)*radius];
+        const p2 = [Math.cos(a2)*radius, 0, Math.sin(a2)*radius];
+        pos.push(...top, ...p2, ...p1); uvs.push(0.5,1,(i+1)/5,0.5,i/5,0.5);
+        pos.push(...bot, ...p1, ...p2); uvs.push(0.5,0,i/5,0.5,(i+1)/5,0.5);
+    }
+    geom.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geom.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    geom.computeVertexNormals();
+    return geom;
+}
+
+function createDiceFaceTexture(value, sides, cfg) {
+    const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 256, 256);
+    ctx.fillStyle = (value === 1) ? RED_FACE1 : cfg.textColor;
+    if (sides === 4 || sides === 6) {
+        const dot = (x, y) => { ctx.beginPath(); ctx.arc(x, y, 32, 0, Math.PI * 2); ctx.fill(); };
+        const c = 128, p1 = 44, p2 = 212;
+        if (sides === 6) {
+            if (value===1) dot(c,c);
+            else if (value===2) { dot(p1,p1); dot(p2,p2); }
+            else if (value===3) { dot(p1,p1); dot(c,c); dot(p2,p2); }
+            else if (value===4) { dot(p1,p1); dot(p2,p1); dot(p1,p2); dot(p2,p2); }
+            else if (value===5) { dot(p1,p1); dot(p2,p1); dot(c,c); dot(p1,p2); dot(p2,p2); }
+            else if (value===6) { dot(p1,p1); dot(p2,p1); dot(p1,c); dot(p2,c); dot(p1,p2); dot(p2,p2); }
+        } else {
+            if (value===1) dot(c,c);
+            else if (value===2) { dot(64,160); dot(192,160); }
+            else if (value===3) { dot(128,52); dot(60,188); dot(196,188); }
+            else if (value===4) { dot(128,52); dot(60,188); dot(196,188); dot(128,132); }
+        }
+    } else {
+        ctx.font = 'bold 116px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText((value===6||value===9)?value+'.':value, 128, 128);
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.anisotropy = diceRenderer.capabilities.getMaxAnisotropy();
+    return tex;
+}
+
+function createDice(sides) {
+    if (diceGroup) diceScene.remove(diceGroup);
+    diceGroup = new THREE.Group(); diceActiveFaces = [];
+    let geometry; const radius = 2.3;
+    switch (sides) {
+        case 4: geometry = new THREE.TetrahedronGeometry(radius); break;
+        case 6: geometry = new THREE.BoxGeometry(radius*1.2,radius*1.2,radius*1.2); break;
+        case 8: geometry = new THREE.OctahedronGeometry(radius); break;
+        case 10: geometry = createD10Geometry(radius); break;
+        case 12: geometry = new THREE.DodecahedronGeometry(radius); break;
+        case 20: geometry = new THREE.IcosahedronGeometry(radius); break;
+    }
+    const origGeom = geometry.clone();
+    if (geometry.index) geometry = geometry.toNonIndexed();
+    const pos = geometry.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 9) {
+        const a = new THREE.Vector3(pos[i], pos[i+1], pos[i+2]);
+        const b = new THREE.Vector3(pos[i+3], pos[i+4], pos[i+5]);
+        const c = new THREE.Vector3(pos[i+6], pos[i+7], pos[i+8]);
+        const center = new THREE.Vector3().addVectors(a, b).add(c).divideScalar(3);
+        let normal = new THREE.Vector3().subVectors(c, b).cross(new THREE.Vector3().subVectors(a, b)).normalize();
+        if (normal.dot(center) < 0) normal.negate();
+        let found = false;
+        for (let f of diceActiveFaces) { if (f.normal.dot(normal) > 0.85) { f.centers.push(center); found = true; break; } }
+        if (!found) diceActiveFaces.push({ normal, centers: [center] });
+    }
+    const cfg = diceMaterialsConfig.galaxy;
+    const mp = { roughness: cfg.roughness, metalness: cfg.metalness, flatShading: true, side: THREE.FrontSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, color: new THREE.Color(0x1a0f2e) };
+    diceGroup.add(new THREE.Mesh(geometry, new THREE.MeshStandardMaterial(mp)));
+    diceGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(origGeom, 15), new THREE.LineBasicMaterial({ color: cfg.edgeColor, transparent: true, opacity: 0.65 })));
+    diceActiveFaces.forEach((face, index) => {
+        const fc = new THREE.Vector3();
+        face.centers.forEach(c => fc.add(c)); fc.divideScalar(face.centers.length);
+        const nm = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), new THREE.MeshBasicMaterial({ map: createDiceFaceTexture(index + 1, sides, cfg), transparent: true, depthWrite: false }));
+        nm.position.copy(fc).add(face.normal.clone().multiplyScalar(0.02));
+        nm.lookAt(fc.clone().add(face.normal));
+        diceGroup.add(nm);
+    });
+    diceGroup.rotation.set(0.5, 0.7, 0.2);
+    diceScene.add(diceGroup);
+    currentDiceSides = sides;
+}
+
+function changeDice(sides, btnEl) {
+    if (diceRolling) return;
+    document.querySelectorAll('.dice-type-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    createDice(sides);
+    document.getElementById('diceResult').innerHTML = 'Tap & drag the dice to roll';
+    document.getElementById('diceHint').textContent = 'Hold, drag, and release';
+    saveDiceSelection(sides);
+}
+
+function rollDice() {
+    if (diceRolling) return;
+    diceRolling = true;
+    const result = getLuckAdjustedResult(currentDiceSides, diceLuck);
+    diceTargetNumber = generateTargetNumber(currentDiceSides, diceDifficulty);
+    playDiceSound();
+    const winFace = diceActiveFaces[result - 1];
+    const tQ = new THREE.Quaternion().setFromUnitVectors(winFace.normal.clone().normalize(), new THREE.Vector3(0, 0, 1));
+    tQ.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), (Math.random() - 0.5)));
+    const t0 = Date.now(), dur = 1500, sQ = diceGroup.quaternion.clone();
+    const ax = new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize();
+    document.getElementById('diceResult').innerHTML = 'Rolling...';
+    document.getElementById('diceHint').textContent = '';
+    function animateRoll() {
+        const p = Math.min((Date.now() - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
+        diceGroup.quaternion.copy(sQ.clone().slerp(tQ, e)).multiply(new THREE.Quaternion().setFromAxisAngle(ax, Math.PI * 15 * (1 - e)));
+        if (p < 1) { requestAnimationFrame(animateRoll); return; }
+        diceGroup.quaternion.copy(tQ);
+        document.getElementById('diceResult').innerHTML = '<span>' + result + '</span> / D' + currentDiceSides + ' <span style="font-size:1rem;">Target ' + diceTargetNumber + '</span>';
+        const statusEl = document.getElementById('diceRollStatus');
+        if (statusEl) {
+            if (result === 1) { statusEl.textContent = 'CRIT FAIL'; statusEl.style.color = '#f44336'; }
+            else if (result === currentDiceSides) { statusEl.textContent = 'WIN!'; statusEl.style.color = '#ffd700'; }
+            else if (result >= diceTargetNumber) { statusEl.textContent = 'SUCCESS'; statusEl.style.color = '#4caf50'; }
+            else { statusEl.textContent = 'FAIL'; statusEl.style.color = '#f44336'; }
+        }
+        document.getElementById('diceHint').textContent = 'Tap & drag to roll again';
+        sendEvent('dice', { dice: currentDiceSides, result: result });
+        saveDiceResult(result, currentDiceSides);
+        diceRolling = false;
+    }
+    animateRoll();
+}
+
+function animateDice() {
+    requestAnimationFrame(animateDice);
+    diceRenderer.render(diceScene, diceCamera);
+}
+
+setTimeout(initDice, 100);
+
+function rollDiceForced(sides, result) {
+    if (diceRolling) return;
+    diceTargetNumber = generateTargetNumber(sides, diceDifficulty);
+    playDiceSound();
+    if (diceRolling) return;
+    if (sides !== currentDiceSides) {
+        currentDiceSides = sides;
+        document.querySelectorAll('.dice-type-btn').forEach(b => {
+            b.classList.toggle('active', Number(b.dataset.sides) === sides);
+        });
+        createDice(sides);
+    }
+    diceRolling = true;
+    const winFace = diceActiveFaces[result - 1];
+    if (!winFace) { diceRolling = false; return; }
+    const tQ = new THREE.Quaternion().setFromUnitVectors(winFace.normal.clone().normalize(), new THREE.Vector3(0, 0, 1));
+    tQ.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), (Math.random() - 0.5)));
+    const t0 = Date.now(), dur = 1500, sQ = diceGroup.quaternion.clone();
+    const ax = new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize();
+    document.getElementById('diceResult').innerHTML = 'Rolling...';
+    document.getElementById('diceHint').textContent = '';
+    function anim() {
+        const p = Math.min((Date.now() - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
+        diceGroup.quaternion.copy(sQ.clone().slerp(tQ, e)).multiply(new THREE.Quaternion().setFromAxisAngle(ax, Math.PI * 15 * (1 - e)));
+        if (p < 1) { requestAnimationFrame(anim); return; }
+        diceGroup.quaternion.copy(tQ);
+        document.getElementById('diceResult').innerHTML = '<span>' + result + '</span> / D' + sides + ' <span style="font-size:1rem;">Target ' + diceTargetNumber + '</span>';
+        const statusEl = document.getElementById('diceRollStatus');
+        if (statusEl) {
+            if (result === 1) { statusEl.textContent = 'CRIT FAIL'; statusEl.style.color = '#f44336'; }
+            else if (result === sides) { statusEl.textContent = 'WIN!'; statusEl.style.color = '#ffd700'; }
+            else if (result >= diceTargetNumber) { statusEl.textContent = 'SUCCESS'; statusEl.style.color = '#4caf50'; }
+            else { statusEl.textContent = 'FAIL'; statusEl.style.color = '#f44336'; }
+        }
+        document.getElementById('diceHint').textContent = 'Remote roll';
+        sendEvent('dice', { dice: sides, result: result });
+        saveDiceResult(result, sides);
+        diceRolling = false;
+    }
+    anim();
+}
+
+function loadDiceFromIni() {
+    fetch(`http://${SIGNALING_HOST}/dice/ini`).then(r => r.json()).then(data => {
+        if (!data) return;
+        if (data.selection && data.selection.dice) {
+            const sides = Number(data.selection.dice);
+            if (sides && sides !== currentDiceSides) {
+                currentDiceSides = sides;
+                document.querySelectorAll('.dice-type-btn').forEach(b => {
+                    b.classList.toggle('active', Number(b.dataset.sides) === sides);
+                });
+                createDice(sides);
+            }
+        }
+        if (data.mode) {
+            if (data.mode.luck !== undefined) diceLuck = Number(data.mode.luck);
+            if (data.mode.difficulty) diceDifficulty = data.mode.difficulty;
+        }
+    }).catch(() => {});
+}
+
+function saveDiceSelection(sides) {
+    fetch(`http://${SIGNALING_HOST}/dice/selection`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dice: sides }) }).catch(() => {});
+}
+
+function saveDiceResult(number, dice) {
+    fetch(`http://${SIGNALING_HOST}/dice/results`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ number, dice }) }).catch(() => {});
+}
+
+let diceControlInterval = null;
+let diceControlMs = 1000;
+function diceControlPoll() {
+    fetch(`http://${SIGNALING_HOST}/dice/control`).then(r => r.json()).then(data => {
+        if (!data) return;
+        const newSec = Number(data.refresh) || 1;
+        const newMs = Math.max(200, newSec * 1000);
+        if (newMs !== diceControlMs) {
+            diceControlMs = newMs;
+            clearInterval(diceControlInterval);
+            diceControlInterval = setInterval(diceControlPoll, diceControlMs);
+        }
+        if (data.luck !== undefined) diceLuck = Number(data.luck);
+        if (data.difficulty) diceDifficulty = data.difficulty;
+        if (data.activator && data.dice > 0 && data.result > 0) {
+            if (data.dice !== currentDiceSides) {
+                currentDiceSides = data.dice;
+                document.querySelectorAll('.dice-type-btn').forEach(b => {
+                    b.classList.toggle('active', Number(b.dataset.sides) === data.dice);
+                });
+                createDice(data.dice);
+                saveDiceSelection(data.dice);
+                setTimeout(() => rollDiceForced(data.dice, data.result), 600);
+            } else {
+                rollDiceForced(data.dice, data.result);
+            }
+        }
+    }).catch(() => {});
+}
+diceControlInterval = setInterval(diceControlPoll, diceControlMs);
 
 const canvas = document.getElementById('particles');
 const ctx2d = canvas.getContext('2d');
